@@ -19,21 +19,12 @@
           <thead>
             <tr>
               <th>{{ __('customer.joinedAt') }}</th>
-              <th>{{ __('customer.name') }}</th>
-              <th>{{ __('customer.invoice') }}</th>
+              <th>{{ __('customer.firstname') }} {{ __('customer.lastname') }}</th>
+              <th></th>
               <th>{{ __('customer.createdBy') }}</th>
               <th>{{ __('ui.actions') }}</th>
             </tr>
           </thead>
-          <tfoot>
-            <tr>
-              <th>{{ __('customer.joinedAt') }}</th>
-              <th>{{ __('customer.name') }}</th>
-              <th>{{ __('customer.invoice') }}</th>
-              <th>{{ __('customer.createdBy') }}</th>
-              <th>{{ __('ui.actions') }}</th>
-            </tr>
-          </tfoot>
           <tbody>
           </tbody>
         </table>
@@ -89,6 +80,23 @@
 @endsection
 
 @section('scripts')
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $("#dataTable").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('customers') }}",
+        order: [[0, 'desc']],
+        columns: [
+          { data: 'joinedAt', name: 'joinedAt', render: ff.date},
+          { data: 'firstname', name: 'firstname', render: (_, __, row) => `${row.firstname} ${row.lastname}`},
+          { data: 'lastname', name: 'lastname', visible: false},
+          { data: 'owner', name: 'owner', orderable: false, searchable: false, render: (data) => data.name},
+          { data: 'action', name: 'action', orderable: false},
+        ]
+      }) 
+    })
+  </script>
   <script type="text/javascript">
     $("#create-form").submit(function(e) {
       e.preventDefault();
