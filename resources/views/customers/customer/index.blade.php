@@ -15,7 +15,7 @@
               class="fas fa-link mr-2 text-secondary"></i>{{ __('invoice.api') }}</a>
           <a class="dropdown-item" href="#"><i
               class="fas fa-cogs mr-2 text-info"></i>{{ __('invoice.application') }}</a>
-          <button class="dropdown-item" id="delete"><i class="fas fa-trash mr-2 text-danger"></i>ลบ</button>
+          <button class="dropdown-item" id="delete"><i class="fas fa-trash mr-2 text-danger"></i>{{__('ui.delete')}}</button>
         </div>
       </div>
 
