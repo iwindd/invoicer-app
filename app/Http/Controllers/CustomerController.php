@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
@@ -41,5 +42,20 @@ class CustomerController extends Controller
         $customer->save();
 
         return Response()->json($customer);
+    }
+
+    public function destroy(Request $request) {
+        try {
+            $customer = Customer::where([
+                ['id', $request->id],
+                ['application', Auth::user()->application]
+            ]);
+
+            $customer->delete();
+            return response()->noContent();
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
     }
 }
