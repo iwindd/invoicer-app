@@ -178,6 +178,8 @@
   <script src="{{ asset('js/demo/chart-pie-demo.js') }}"></script>
   <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
+  @yield('scripts')
 </body>
 
 </html>
