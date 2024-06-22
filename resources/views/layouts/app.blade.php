@@ -106,6 +106,7 @@
         <div class="container-fluid">
 
           <!-- Page Heading -->
+          @yield('heading')
           @yield('content')
 
         </div>

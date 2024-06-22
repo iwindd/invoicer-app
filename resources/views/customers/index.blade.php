@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('header')
+@section('heading')
   {{__('nav.customers')}}
 @endsection
 
