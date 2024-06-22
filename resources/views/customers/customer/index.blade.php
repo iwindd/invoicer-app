@@ -286,8 +286,6 @@
           }
         }
       }).then((result) => {
-        $('#edit-form input').attr('disabled', true)
-
         if (result.value == 422) return
         if (result.isConfirmed) {
           Alert.success.fire({
@@ -295,6 +293,7 @@
           });
           $('#edit-profile').show();
           $('button.editMode').hide();
+          $('#edit-form input').attr('disabled', true)
         }
       });
     })
