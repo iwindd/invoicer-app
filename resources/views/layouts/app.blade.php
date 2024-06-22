@@ -14,6 +14,7 @@
   <title>{{ config('app.name', 'Laravel') }}</title>
   <!-- Custom fonts for this template-->
   <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+  <link href="{{ asset('css/sweetalert2.min.css') }}" rel="stylesheet" type="text/css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -41,11 +42,11 @@
 
       @php
         $navItems = [
-            ['label' => __("nav.dashboard"), 'icon' => 'fas fa-fw fa-tachometer-alt', 'href' => 'dashboard'],
-            ['label' => __("nav.customers"), 'icon' => 'fas fa-fw fa-users', 'href' => 'customers'],
-            ['label' => __("nav.invoices"), 'icon' => 'fas fa-fw fa-receipt', 'href' => 'invoices'],
-            ['label' => __("nav.employees"), 'icon' => 'fas fa-fw fa-users-cog', 'href' => 'employees'],
-            ['label' => __("nav.payment"), 'icon' => 'fas fa-fw fa-credit-card', 'href' => 'payment'],
+            ['label' => __('nav.dashboard'), 'icon' => 'fas fa-fw fa-tachometer-alt', 'href' => 'dashboard'],
+            ['label' => __('nav.customers'), 'icon' => 'fas fa-fw fa-users', 'href' => 'customers'],
+            ['label' => __('nav.invoices'), 'icon' => 'fas fa-fw fa-receipt', 'href' => 'invoices'],
+            ['label' => __('nav.employees'), 'icon' => 'fas fa-fw fa-users-cog', 'href' => 'employees'],
+            ['label' => __('nav.payment'), 'icon' => 'fas fa-fw fa-credit-card', 'href' => 'payment'],
         ];
       @endphp
 
@@ -87,12 +88,12 @@
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="#">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                  {{__('nav.profile')}}
+                  {{ __('nav.profile') }}
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                   <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  {{__('nav.logout')}}
+                  {{ __('nav.logout') }}
                 </a>
               </div>
             </li>
@@ -146,15 +147,15 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{__('ui.dialogHeader')}}</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{ __('ui.dialogHeader') }}</h5>
           <button class="close" type="button" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div class="modal-body">{{__('nav.logoutDetail')}}</div>
+        <div class="modal-body">{{ __('nav.logoutDetail') }}</div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">{{__('ui.dialogCancel')}}</button>
-          <button class="btn btn-primary" type="submit" form="logout-form">{{__('ui.dialogConfirm')}}</button>
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">{{ __('ui.dialogCancel') }}</button>
+          <button class="btn btn-primary" type="submit" form="logout-form">{{ __('ui.dialogConfirm') }}</button>
         </div>
       </div>
     </div>
@@ -168,6 +169,7 @@
 
   <!-- Core plugin JavaScript-->
   <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+  <script src="{{ asset('js/sweetalert2.all.min.js') }}"></script>
 
   <!-- Custom scripts for all pages-->
   <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
@@ -181,6 +183,27 @@
   <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
 
+  <script type="text/javascript">
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "bottom-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    $(document).ready(function() {
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+      })
+    })
+  </script>
   @yield('scripts')
 </body>
 
