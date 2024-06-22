@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,3 +24,5 @@ Route::post("/login", [LoginController::class, 'login']);
 Route::post("/logout", [LoginController::class, 'logout'])->name("logout");
 
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
+
+Route::get("/customers", [CustomerController::class, 'index'])->name("customers");
