@@ -104,7 +104,7 @@
       $('input.is-invalid').removeClass("is-invalid");
       $('#create-alert').hide();
       $('#create button[type="submit"]').attr('disabled', true);
-      console.log(Toast);
+
       $.ajax({
         type: "POST",
         url: "{{ route('customers') }}",
