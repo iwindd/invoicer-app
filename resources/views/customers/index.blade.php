@@ -81,6 +81,11 @@
 
 @section('scripts')
   <script type="text/javascript">
+    const RefreshTable = () => {
+      const Table = $("#dataTable").dataTable();
+      Table.fnDraw(false);
+    }
+
     $(document).ready(function(){
       $("#dataTable").DataTable({
         processing: true,
@@ -117,6 +122,7 @@
           $('#create').modal('hide');
           $('#create button[type="submit"]').attr('disabled', false);
           Toast.fire({ icon: "success", title: "{{__('ui.added')}}" });
+          RefreshTable();
         },
         error: (data) => {
           $('#create button[type="submit"]').attr('disabled', false);
