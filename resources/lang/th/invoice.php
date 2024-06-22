@@ -1,0 +1,23 @@
+<?php
+
+return [
+  'invoice' => 'บิล',
+  'create' => 'บิลใหม่',
+  'application' => 'สร้างแอพพลิเคชั่น',
+  'api' => 'API',
+  'table' => 'ข้อมูลบิล',
+  'id' => "#",
+  'status' => "สถานะ",
+  'note' => "หมายเหตุ",
+  'value' => "มูลค่า",
+  'start' => "วันเริ่มต้น",
+  'end' => "วันครบกำหนด",
+  'createdBy' => "เพิ่มโดย",
+  'stats' => 'สถิติ',
+  'type-all' => "ทั้งหมด",
+  'type-success' => "สำเร็จ",
+  'type-process' => "กำลังดำเนินการ",
+  'type-overtime' => "เลยกำหนด",
+  'type-checking' => "กำลังตรวจสอบ",
+  'type-cancel' => "ยกเลิก",
+];

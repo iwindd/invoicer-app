@@ -4,7 +4,7 @@
   </a>
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <a class="dropdown-item" href="#"><i class="fas fa-info-circle mr-2 text-info"></i>รายละเอียด</a>
+    <a class="dropdown-item" href="{{route("customer", ['id' => $id])}}"><i class="fas fa-info-circle mr-2 text-info"></i>รายละเอียด</a>
     <a class="dropdown-item delete" href="#" onclick="delFunc({{$id}}, '{{$firstname}} {{$lastname}}')"><i class="fas fa-trash mr-2 text-danger"></i>ลบ</a>
   </div>
 </div>

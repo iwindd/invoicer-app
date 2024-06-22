@@ -24,6 +24,12 @@ class CustomerController extends Controller
         return view('customers.index');
     }
 
+    public function get(Request $request) {
+        $customer = Customer::find($request->id);
+
+        return view("customers.customer.index", compact('customer'));
+    }
+
     public function store(Request $request) {
         $request->validate([
             'firstname' => ['required', 'min:5', 'max:255'],

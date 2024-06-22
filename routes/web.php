@@ -26,5 +26,6 @@ Route::post("/logout", [LoginController::class, 'logout'])->name("logout");
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
 Route::get("/customers", [CustomerController::class, 'index'])->name("customers");
+Route::get("/customers/{id}", [CustomerController::class, 'get'])->name("customer");
 Route::post("/customers", [CustomerController::class, 'store']);
 Route::delete("/customers", [CustomerController::class, 'destroy']);
