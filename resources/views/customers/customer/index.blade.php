@@ -139,36 +139,44 @@
             {{ __('ui.line-connect') }}</a>
         </div>
         <div class="card-body">
-          <form action="#" method="post" id="create-form">
+          <form action="#" method="post" id="edit-form">
+            <input type="hidden" name="id" value="{{ $customer['id'] }}">
             <div class="form-row">
               <div class="form-group col-md-6">
                 <small class="form-text text-muted"> {{ __('customer.firstname') }} </small>
-                <input type="text" class="form-control" name="firstname" placeholder="{{ __('customer.firstname') }}"
-                  required>
+                <input type="text" class="form-control" disabled name="firstname" value="{{ $customer['firstname'] }}"
+                  placeholder="{{ __('customer.firstname') }}" required>
                 <div class="invalid-feedback" id="firstname-feedback"></div>
               </div>
               <div class="form-group col-md-6">
                 <small class="form-text text-muted"> {{ __('customer.lastname') }} </small>
-                <input type="text" class="form-control" name="lastname" placeholder="{{ __('customer.lastname') }}"
-                  required>
+                <input type="text" class="form-control" disabled name="lastname" value="{{ $customer['lastname'] }}"
+                  placeholder="{{ __('customer.lastname') }}" required>
                 <div class="invalid-feedback" id="lastname-feedback"></div>
               </div>
             </div>
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('auth.email') }} </small>
-              <input type="email" class="form-control" name="email" placeholder="{{ __('auth.email') }}" required>
+              <input type="email" class="form-control" disabled name="email" value="{{ $customer['email'] }}"
+                placeholder="{{ __('auth.email') }}" required>
               <div class="invalid-feedback" id="email-feedback"></div>
             </div>
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('customer.joinedAt') }} </small>
-              <input type="date" class="form-control" id="joinedAt" name="joinedAt" required>
+              <input type="date" class="form-control" disabled value="{{ $customer['joinedAt'] }}" id="joinedAt"
+                name="joinedAt" required>
               <div class="invalid-feedback" id="joinedAt-feedback"></div>
             </div>
           </form>
         </div>
         <div class="card-footer d-flex justify-content-end">
-          <a href="#" class="btn btn-success"><i
-              class="fas fa-save fa-sm text-white-50 mr-2"></i>{{ __('ui.save') }}</a>
+          <button href="#" class="btn btn-secondary editMode mr-2" id="cancel-edit-profile"
+            style="display: none"><i
+              class="fas fa-times fa-sm text-white-50 mr-2"></i>{{ __('ui.dialogCancel') }}</button>
+          <button href="#" class="btn btn-success editMode" type="submit" form="edit-form"
+            style="display: none"><i class="fas fa-save fa-sm text-white-50 mr-2"></i>{{ __('ui.save') }}</button>
+          <button class="btn btn-primary" id="edit-profile"><i
+              class="fas fa-pen fa-sm text-white-50 mr-2"></i>{{ __('ui.edit-btn') }}</button>
         </div>
       </div>
     </div>
@@ -218,4 +226,77 @@
 @endsection
 
 @section('scripts')
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#edit-profile").on('click', () => {
+        $('#edit-profile').hide();
+        $('#edit-form input').attr('disabled', false)
+        $('#edit-form input')[0].focus();
+        $('button.editMode').show();
+      })
+
+      $("#cancel-edit-profile").on('click', () => {
+        $('#edit-profile').show();
+        $('button.editMode').hide();
+        $('#edit-form input').attr('disabled', true)
+      })
+    })
+
+    $('#edit-form').submit(function(e) {
+      e.preventDefault();
+      $('#edit-form input.is-invalid').removeClass("is-invalid");
+
+      Confirmation.fire({
+        text: "{{ __('ui.edit', ['text' => $customer['firstname'] . ' ' . $customer['lastname']]) }}",
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({
+              url: "{{ route('customers') }}",
+              type: 'PUT',
+              data: JSON.stringify({
+                id: $("#edit-form input[name='id']").val(),
+                firstname: $("#edit-form input[name='firstname']").val(),
+                lastname: $("#edit-form input[name='lastname']").val(),
+                email: $("#edit-form input[name='email']").val(),
+                joinedAt: $("#edit-form input[name='joinedAt']").val(),
+              }),
+              contentType: 'application/json',
+            });
+
+            return true;
+          } catch (error) {
+            try {
+              if (error.status == 422) {
+                const response = error.responseJSON;
+                for (const [key, value] of Object.entries(response.errors)) {
+                  const input = $(`input[name="${key}"]`);
+                  const feedback = $(`#${key}-feedback`);
+                  input.addClass("is-invalid");
+                  feedback.html(value)
+                }
+
+                return 422;
+              }
+            } catch (error) {
+              console.error(error);
+            }
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+          }
+        }
+      }).then((result) => {
+        $('#edit-form input').attr('disabled', true)
+
+        if (result.value == 422) return
+        if (result.isConfirmed) {
+          Alert.success.fire({
+            text: "{{ __('ui.edited', ['text' => $customer['firstname'] . ' ' . $customer['lastname']]) }}",
+          });
+          $('#edit-profile').show();
+          $('button.editMode').hide();
+        }
+      });
+    })
+  </script>
 @endsection
