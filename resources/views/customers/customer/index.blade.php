@@ -15,7 +15,7 @@
               class="fas fa-link mr-2 text-secondary"></i>{{ __('invoice.api') }}</a>
           <a class="dropdown-item" href="#"><i
               class="fas fa-cogs mr-2 text-info"></i>{{ __('invoice.application') }}</a>
-          <a class="dropdown-item delete" href="#"><i class="fas fa-trash mr-2 text-danger"></i>ลบ</a>
+          <button class="dropdown-item" id="delete"><i class="fas fa-trash mr-2 text-danger"></i>ลบ</button>
         </div>
       </div>
 
@@ -226,6 +226,39 @@
 @endsection
 
 @section('scripts')
+  <script type="text/javascript">
+    $("#delete").on("click", () => {
+      Confirmation.fire({
+        text: `{{ __('ui.delete', ['text' => ':name']) }}`.replace(":name", name),
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({
+              url: "{{ route('customers') }}",
+              type: 'DELETE',
+              data: {
+                id: "{{$customer['id']}}"
+              }
+            });
+            return true;
+          } catch (error) {
+            console.error(error);
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Alert.success.fire({
+            text: `{{ __('ui.deleted', ['text' => ':name']) }}`.replace(":name", name),
+          }).then(() => {
+            window.location = "{{ route('customers') }}"
+          })
+        }
+      });
+    })
+  </script>
+
   <script type="text/javascript">
     $(document).ready(function() {
       $("#edit-profile").on('click', () => {
