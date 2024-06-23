@@ -4,7 +4,7 @@
   <div class="d-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">{{ $customer['firstname'] }} {{ $customer['lastname'] }}</h1>
     <div class="d-flex ">
-      <div class="dropdown show mr-1">
+      <div class="dropdown dropleft mr-1">
         <a class="sm-3 btn btn-sm btn-secondary shadow-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           {{ __('ui.etc') }}
@@ -12,11 +12,11 @@
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <a class="dropdown-item" href="#"><i
-              class="fas fa-link mr-2 text-secondary"></i>{{ __('invoice.api') }}</a>
+              class="fas fa-link fa-fw mr-2 text-secondary"></i>{{ __('invoice.api') }}</a>
           <a class="dropdown-item" href="#"><i
-              class="fas fa-cogs mr-2 text-info"></i>{{ __('invoice.application') }}</a>
+              class="fas fa-cogs fa-fw mr-2 text-info"></i>{{ __('invoice.application') }}</a>
           <button class="dropdown-item" id="delete"><i
-              class="fas fa-trash mr-2 text-danger"></i>{{ __('ui.delete-btn') }}</button>
+              class="fas fa-trash fa-fw mr-2 text-danger"></i>{{ __('ui.delete-btn') }}</button>
         </div>
       </div>
 
