@@ -20,7 +20,7 @@
             <tr>
               <th>{{ __('customer.joinedAt') }}</th>
               <th>{{ __('customer.firstname') }} {{ __('customer.lastname') }}</th>
-              <th></th>
+              <th style="display: none"></th>
               <th>{{ __('customer.createdBy') }}</th>
               <th>{{ __('ui.actions') }}</th>
             </tr>
