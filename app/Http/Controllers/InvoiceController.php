@@ -47,7 +47,7 @@ class InvoiceController extends Controller
     public function update(UpdateInvoiceRequest $request)
     {
         $invoiceData = $request->safe()->only(['id', 'note', 'start', 'end', 'items']);
-        $invoice = Invoice::find($request->id);
+        $invoice = Invoice::find($invoiceData['id']);
         $invoice->update([
             'note' => $invoiceData['note'],
             'start' => $invoiceData['start'],
