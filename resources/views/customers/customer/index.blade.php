@@ -297,10 +297,6 @@
 
 @section('scripts')
   <script type="text/javascript">
-    $(document).ready(function() {
-      $("#create").modal('show');
-    })
-
     const table = $('#invoice-items tbody');
     const total = $('#invoices-all-total');
     const startInput = $('#create input[name="start"]');
