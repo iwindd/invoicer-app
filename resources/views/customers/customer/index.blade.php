@@ -15,13 +15,13 @@
               class="fas fa-link mr-2 text-secondary"></i>{{ __('invoice.api') }}</a>
           <a class="dropdown-item" href="#"><i
               class="fas fa-cogs mr-2 text-info"></i>{{ __('invoice.application') }}</a>
-          <button class="dropdown-item" id="delete"><i class="fas fa-trash mr-2 text-danger"></i>{{__('ui.delete-btn')}}</button>
+          <button class="dropdown-item" id="delete"><i
+              class="fas fa-trash mr-2 text-danger"></i>{{ __('ui.delete-btn') }}</button>
         </div>
       </div>
 
-      {{--       <a href="#" class="sm-3 btn btn-sm btn-info shadow-sm" ><i
-        class="fas fa-cogs fa-sm text-white-50"></i> {{ __('invoice.application') }}</a> --}}
-      <a href="#" class="sm-3 btn btn-sm btn-primary shadow-sm"><i class="fas fa-plus fa-sm text-white-50"></i>
+      <a href="#" class="sm-3 btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#create"><i
+          class="fas fa-plus fa-sm text-white-50"></i>
         {{ __('invoice.create') }}</a>
     </div>
   </div>
@@ -150,8 +150,8 @@
               </div>
               <div class="form-group col-md-6">
                 <small class="form-text text-muted"> {{ __('customer.lastname') }} </small>
-                <input type="text" class="form-control" disabled name="lastname" value="{{ $customer['lastname'] }}"
-                  placeholder="{{ __('customer.lastname') }}" required>
+                <input type="text" class="form-control" disabled name="lastname"
+                  value="{{ $customer['lastname'] }}" placeholder="{{ __('customer.lastname') }}" required>
                 <div class="invalid-feedback" id="lastname-feedback"></div>
               </div>
             </div>
@@ -223,9 +223,156 @@
 @endsection
 
 @section('modals')
+  <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ __('ui.dialogHeaderAdd') }}</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="#" method="post" id="create-invoice-form">
+            <div class="row">
+              <div class="col-lg-6 col-md-12">
+                <small class="form-text text-muted"> {{ __('invoice.note') }} </small>
+                <input type="text" class="form-control" name="text" placeholder="{{ __('invoice.note') }}"
+                  required>
+                <div class="invalid-feedback" id="note-feedback"></div>
+              </div>
+              <div class="col-lg-3 col-md-12">
+                <small class="form-text text-muted"> {{ __('invoice.start') }} </small>
+                <input type="date" class="form-control" name="start" required>
+                <div class="invalid-feedback" id="start-feedback"></div>
+              </div>
+              <div class="col-lg-3 col-md-12">
+                <small class="form-text text-muted"> {{ __('invoice.end') }} </small>
+                <input type="date" min="{{ now()->toDateString('Y-m-d') }}" class="form-control" name="end"
+                  required>
+                <div class="invalid-feedback" id="end-feedback"></div>
+              </div>
+              <div class="col-sm-12">
+                <table id="invoice-items" class="table table-striped mt-2">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">{{ __('invoice.item-name') }}</th>
+                      <th scope="col">{{ __('invoice.item-amount') }}</th>
+                      <th scope="col">{{ __('invoice.item-value') }}</th>
+                      <th scope="col">{{ __('ui.total') }}</th>
+                      <th scope="col">{{ __('ui.actions') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colspan="4" class="text-right">{{ __('ui.total') }}</td>
+                      <td colspan="2" id="invoices-all-total" class="text-left">0</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <div class="col-sm-12 d-flex justify-content-end">
+                <button id="add-invoice-item" class="sm-3 btn btn-sm btn-primary shadow-sm"><i
+                    class="fas fa-plus fa-sm text-white-50"></i>
+                  {{ __('ui.dialogHeaderAdd') }}</button>
+              </div>
+            </div>
+          </form>
+          <div class="alert alert-danger" style="display: none;" id="create-alert" role="alert">
+            {{ __('ui.error') }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">{{ __('ui.dialogCancel') }}</button>
+          <button class="btn btn-primary" type="submit" form="create-invoice-form">{{ __('ui.dialogConfirm') }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('scripts')
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $("#create").modal('show');
+    })
+
+    const table = $('#invoice-items tbody');
+    const total = $('#invoices-all-total');
+    const startInput = $('#create input[name="start"]');
+    const endInput = $('#create input[name="end"]');
+    let items = [];
+
+    const removeItem = (index) => {
+      items = items.filter((_, idx) => idx !== index);
+      update()
+    }
+
+    const onChange = (key, index) => {
+      const val = $(`#${index}-${key}`).val();
+      items[index][key] = val;
+      total.html(ff.money(items.reduce((total, item) => total + (item.amount * item.price), 0)))
+      $(`#${index}-total`).html(ff.money(items[index].amount * items[index].price))
+    }
+
+    const update = () => {
+      table.html("")
+      if (items.length > 0) {
+        items.map((item, index) => {
+          table.append(`
+              <tr>
+                <th>${ff.number(index+1)}</th>
+                <td><input type="text" id="${index}-name" class="form-control" onkeyup='onChange("name", ${index})' value='${item.name}' placeholder="{{ __('invoice.item-name') }}" required></td>
+                <td><input type="number" id="${index}-amount" class="form-control" onchange='onChange("amount", ${index})' onkeyup='onChange("amount", ${index})' value='${item.amount}' min="0" placeholder="{{ __('invoice.item-amount') }}" required></td>
+                <td><input type="number" id="${index}-price" class="form-control" onchange='onChange("price", ${index})' onkeyup='onChange("price", ${index})' value='${item.price}' min="0" placeholder="{{ __('invoice.item-value') }}" required></td>
+                <td id="${index}-total">${ff.money(item.amount * item.price)}</td>
+                <td>
+                  <button 
+                    class="sm-3 btn btn-sm btn-danger shadow-sm"
+                    data-index='${index}'
+                    onclick='removeItem(${index})'
+                    >
+                    <i class="fas fa-trash fa-sm text-white-50"></i>
+                      {{ __('ui.delete-btn') }}
+                    </button>
+                </td>
+              </tr>
+            `);
+        })
+
+        total.html(ff.money(items.reduce((total, item) => total + (item.amount * item.price), 0)))
+      } else {
+        table.append(`
+            <tr>
+              <td colSpan="6" class="text-center">{{ __('ui.noItems') }}</td>
+            </tr>
+          `)
+      }
+    }
+
+    $("#add-invoice-item").on("click", () => {
+      items.push({
+        name: "",
+        amount: 0,
+        price: 0
+      })
+      update()
+    })
+
+    startInput.on("change", () => {
+      const startVal = startInput.val();
+      const endVal = endInput.val();
+
+      if (endVal && startVal && dayjs(startVal).isAfter(dayjs(endVal))) endInput.val(startVal);
+      if (startVal) endInput.attr('min', startVal);
+    })
+
+    update()
+  </script>
+
   <script type="text/javascript">
     $("#delete").on("click", () => {
       Confirmation.fire({
@@ -238,7 +385,7 @@
               url: "{{ route('customers') }}",
               type: 'DELETE',
               data: {
-                id: "{{$customer['id']}}"
+                id: "{{ $customer['id'] }}"
               }
             });
             return true;

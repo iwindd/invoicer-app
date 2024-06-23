@@ -181,7 +181,8 @@
   <!-- Page level custom scripts -->
   <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
-
+  <script src="{{ asset('js/dayjs.min.js') }}"></script>
+  
   <script type="text/javascript">
     const Toast = Swal.mixin({
       toast: true,

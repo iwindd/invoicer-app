@@ -20,4 +20,7 @@ return [
   'type-overtime' => "เลยกำหนด",
   'type-checking' => "กำลังตรวจสอบ",
   'type-cancel' => "ยกเลิก",
+  'item-name' => 'ชื่อรายการ',
+  'item-amount' =>  'จำนวน',
+  'item-value' => 'มูลค่า',
 ];
