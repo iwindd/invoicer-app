@@ -187,6 +187,7 @@
     dayjs.extend(window.dayjs_plugin_isBetween)
   </script>
   <script src="{{ asset('js/validation.js') }}"></script>
+  <script src="{{ asset('js/autoformatter.js') }}"></script>
   <script>
     const Toast = Swal.mixin({
       toast: true,
