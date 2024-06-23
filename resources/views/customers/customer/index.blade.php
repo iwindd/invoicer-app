@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      <a href="#" class="sm-3 btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#create"><i
+      <a href="#" class="sm-3 btn btn-sm btn-primary shadow-sm" id="create-btn"><i
           class="fas fa-plus fa-sm text-white-50"></i>
         {{ __('invoice.create') }}</a>
     </div>
@@ -296,31 +296,69 @@
   </div>
 @endsection
 
-  @section('scripts')
-    <script type="text/javascript">
-      const RefreshTable = () => {
-        const Table = $("#dataTable").dataTable();
-        Table.fnDraw(false);
-      }
-      
-      $(document).ready(function(){
-        $("#dataTable").DataTable({
-          processing: true,
-          serverSide: true,
-          ajax: "{{ route('invoice', ['id' => $customer['id']]) }}",
-          order: [[0, 'desc']],
-          columns: [
-            { data: 'id', name: 'id', render: ff.number},
-            { data: 'status', name: 'status', orderable: false, render: (_, __, row) => ff.invoice_label(ff.invoice(row), true)},
-            { data: 'note', name: 'note', render: ff.text},
-            { data: 'items', name: 'items', orderable: false, searchable: false, render: ff.itemsvalue},
-            { data: 'start', name: 'start', render: ff.date},
-            { data: 'end', name: 'end', render: ff.date},
-            { data: 'user', name: 'user', orderable: false, searchable: false, render: data => data.name},
-            { data: 'action', name: 'action', orderable: false},
-          ],
-        }) 
+@section('scripts')
+  <script type="text/javascript">
+    const RefreshTable = () => {
+      const Table = $("#dataTable").dataTable();
+      Table.fnDraw(false);
+    }
+
+    $(document).ready(function() {
+      $("#dataTable").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('invoice', ['id' => $customer['id']]) }}",
+        order: [
+          [0, 'desc']
+        ],
+        columns: [{
+            data: 'id',
+            name: 'id',
+            render: ff.number
+          },
+          {
+            data: 'status',
+            name: 'status',
+            orderable: false,
+            render: (_, __, row) => ff.invoice_label(ff.invoice(row), true)
+          },
+          {
+            data: 'note',
+            name: 'note',
+            render: ff.text
+          },
+          {
+            data: 'items',
+            name: 'items',
+            orderable: false,
+            searchable: false,
+            render: ff.itemsvalue
+          },
+          {
+            data: 'start',
+            name: 'start',
+            render: ff.date
+          },
+          {
+            data: 'end',
+            name: 'end',
+            render: ff.date
+          },
+          {
+            data: 'user',
+            name: 'user',
+            orderable: false,
+            searchable: false,
+            render: data => data.name
+          },
+          {
+            data: 'action',
+            name: 'action',
+            orderable: false
+          },
+        ],
       })
+    })
   </script>
 
   <script type="text/javascript">
@@ -328,6 +366,9 @@
     const total = $('#invoices-all-total');
     const startInput = $('#create input[name="start"]');
     const endInput = $('#create input[name="end"]');
+    const modal = $('#create');
+    const submitBtn = $('#create button[type="submit"]')
+    let status = 0; //  0 = create, 1 = update
     let items = [];
 
     const removeItem = (index) => {
@@ -343,6 +384,26 @@
     }
 
     const update = () => {
+      if (status == 0) {
+        submitBtn.html("{{ __('ui.dialogConfirm') }}");
+        $('#create .modal-title').html('{{ __('ui.dialogHeaderAdd') }}')
+        if (submitBtn.hasClass('btn-success')) {
+          submitBtn.addClass('btn-primary').removeClass('btn-success')
+        }
+      } else {
+        submitBtn.html("{{ __('ui.save') }}");
+        $('#create .modal-title').html('{{ __('ui.edit-btn') }}')
+        if (submitBtn.hasClass('btn-primary')) {
+          submitBtn.removeClass('btn-primary').addClass('btn-success')
+        }
+      }
+
+      const startVal = startInput.val();
+      const endVal = endInput.val();
+
+      if (endVal && startVal && dayjs(startVal).isAfter(dayjs(endVal))) endInput.val(startVal);
+      if (startVal) endInput.attr('min', startVal);
+
       table.html("")
       if (items.length > 0) {
         items.map((item, index) => {
@@ -391,52 +452,102 @@
       e.preventDefault();
 
       validation.clear("#create");
-      const payload = JSON.stringify({
+      const payload = {
         id: $("#create-invoice-form input[name='id']").val(),
         note: $("#create-invoice-form input[name='note']").val(),
         start: startInput.val(),
         end: endInput.val(),
         items: items,
-      })
+      }
 
-      $.ajax({
-        url: "{{ route('invoices') }}",
-        type: 'POST',
-        data: payload,
-        contentType: 'application/json',
-        success: (data) => {
-          items = []
-          $('#create-invoice-form').trigger("reset");
-          $('#create').modal('hide');
-          validation.clear("#create");
-          Toast.fire({
-            icon: "success",
-            title: "{{ __('ui.added') }}"
-          });
-          update()
-          RefreshTable()
-        },
-        error: (data) => {
-          if (!validation.error("#create", error)) {
+      if (status == 0) {
+        $.ajax({
+          url: "{{ route('invoices') }}",
+          type: 'POST',
+          data: payload,
+          contentType: 'application/json',
+          success: (data) => {
             items = []
             $('#create-invoice-form').trigger("reset");
-            $('#create').modal('hide');
+            modal.modal('hide');
+            validation.clear("#create", false);
             Toast.fire({
-              icon: "error",
-              title: "{{ __('ui.error') }}"
+              icon: "success",
+              title: "{{ __('ui.added') }}"
             });
             update()
+            RefreshTable()
+          },
+          error: (error) => {
+            if (!validation.error("#create", error)) {
+              items = []
+              $('#create-invoice-form').trigger("reset");
+              modal.modal('hide');
+              Toast.fire({
+                icon: "error",
+                title: "{{ __('ui.error') }}"
+              });
+              update()
+            }
           }
-        }
-      });
+        });
+      } else {
+        $.ajax({
+          url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", payload.id),
+          type: 'PUT',
+          data: JSON.stringify(payload),
+          contentType: 'application/json',
+          success: (data) => {
+            items = []
+            $('#create-invoice-form').trigger("reset");
+            modal.modal('hide');
+            validation.clear("#create", false);
+            Toast.fire({
+              icon: "success",
+              title: "{{ __('ui.edited', ['text' => ':id']) }}".replace(":id", "{{__('invoice.id')}}"+ff.number(payload.id))
+            });
+            update()
+            RefreshTable()
+          },
+          error: (error) => {
+            if (!validation.error("#create", error)) {
+              items = []
+              $('#create-invoice-form').trigger("reset");
+              modal.modal('hide');
+              Toast.fire({
+                icon: "error",
+                title: "{{ __('ui.error') }}"
+              });
+              update()
+            }
+          }
+        });
+      }
     })
 
-    startInput.on("change", () => {
-      const startVal = startInput.val();
-      const endVal = endInput.val();
+    startInput.on("change", update)
 
-      if (endVal && startVal && dayjs(startVal).isAfter(dayjs(endVal))) endInput.val(startVal);
-      if (startVal) endInput.attr('min', startVal);
+    const editFunc = (id, note, start, end, _items) => {
+      status = 1;
+      $("#create-invoice-form input[name='id']").val(id)
+      startInput.val(start);
+      endInput.val(end);
+      $("#create-invoice-form input[name='note']").val(note),
+        items = JSON.parse(_items);
+      update();
+      validation.clear("#create", false);
+      modal.modal('show');
+    }
+
+    $('#create-btn').on('click', () => {
+      status = 0;
+      $("#create-invoice-form input[name='id']").val('{{$customer['id']}}')
+      startInput.val("");
+      endInput.val("");
+      items = [];
+      update();
+      validation.clear("#create", false);
+      modal.modal('show');
     })
 
     update()
@@ -520,8 +631,8 @@
               contentType: 'application/json',
             });
 
-            for (const [key, value] of Object.entries(payload)){
-              if (key != 'id'){
+            for (const [key, value] of Object.entries(payload)) {
+              if (key != 'id') {
                 $(`#edit-form input[name="${key}"]`).attr('default', value)
               }
             }

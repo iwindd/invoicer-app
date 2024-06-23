@@ -1,14 +1,15 @@
 const validation = {}
 
-validation.clear = (scope) => {
+validation.clear = (scope, disable = true) => {
   $(`${scope} .is-invalid`).removeClass("is-invalid");
   $(`${scope} .is-valid`).removeClass("is-is-valid");
   $(`${scope} .was-validated`).removeClass("is-was-validated");
-  $(`${scope} [type="submit"]`).attr('disabled', true);
+  $(`${scope} [type="submit"]`).attr('disabled', disable);
 }
 
 validation.error = (scope, error) => {
   $(`${scope} [type="submit"]`).attr('disabled', false);
+  if (!error) return;
 
   if (error?.status == 422) {
     for (const [key, value] of Object.entries(error.responseJSON.errors)) {
