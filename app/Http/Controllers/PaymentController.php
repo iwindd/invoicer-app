@@ -19,6 +19,14 @@ class PaymentController extends Controller
     }
     //
     public function index() {
+        if (request()->ajax()) {
+            return datatables()->of(Payment::where('application', Auth::user()->application)->select('*'))
+                ->addColumn("action", "payments.action")
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+
         return view('payments.index');
     }
 

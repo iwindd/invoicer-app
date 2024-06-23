@@ -82,10 +82,51 @@
 
 @section('scripts')
   <script type="text/javascript">
+    const RefreshTable = () => {
+      const Table = $("#dataTable").dataTable();
+      Table.fnDraw(false);
+    }
+
+    $(document).ready(function() {
+      $("#dataTable").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('payments') }}",
+        order: [
+          [0, 'desc']
+        ],
+        columns: [{
+            data: 'active',
+            name: 'active',
+            render: isActive => isActive ? "<span class='text-primary'>{{__('payment.active')}}</span>" : "{{__('payment.deactive')}}"
+          },
+          {
+            data: 'account',
+            name: 'account',
+          },
+          {
+            data: 'title',
+            name: 'title',
+          },
+          {
+            data: 'account',
+            name: 'account',
+          },
+          {
+            data: 'action',
+            name: 'action',
+            orderable: false
+          },
+        ]
+      })
+    })
+  </script>
+
+  <script type="text/javascript">
     $("#create-form").submit(function(e) {
       e.preventDefault();
       const formData = new FormData(this);
-      formData.append("active", $('#create-form input[name="use"]').is(":checked") ? '1' : '0') 
+      formData.append("active", $('#create-form input[name="use"]').is(":checked") ? '1' : '0')
       validation.clear('#create-form');
 
       $.ajax({
@@ -99,6 +140,7 @@
           $('form#create-form').trigger("reset");
           $('#create').modal('hide');
           validation.clear('#create-form', false);
+          RefreshTable();
           Toast.fire({
             icon: "success",
             title: "{{ __('ui.added') }}"
