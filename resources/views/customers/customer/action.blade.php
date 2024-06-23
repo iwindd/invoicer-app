@@ -5,11 +5,21 @@
   </a>
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <button class="dropdown-item" onclick="editFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}')"><i class="fas fa-pen fa-fw mr-2 text-primary"></i>{{ __('ui.edit-btn') }}</button>
-    <div class="dropdown-divider"></div>
-    <button class="dropdown-item"><i class="fas fa-check mr-2 fa-fw text-success"></i>{{ __('invoice.type-success') }}</button>
-    <button class="dropdown-item"><i class="fas fa-undo fa-fw mr-2 text-danger"></i>{{ __('invoice.cancel-payment') }}</button>
-    <button class="dropdown-item"><i class="fas fa-times mr-2 fa-fw text-secondary"></i>{{ __('invoice.type-cancel') }}</button>
+
+    @if ($status == 0)
+      <button class="dropdown-item" onclick="editFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}')"><i class="fas fa-pen fa-fw mr-2 text-primary"></i>{{ __('ui.edit-btn') }}</button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item" onclick="patchFunc({{$id}}, 1)"><i class="fas fa-check mr-2 fa-fw text-success"></i>{{ __('invoice.type-success') }}</button>
+      <button class="dropdown-item" onclick="patchFunc({{$id}}, -1)"><i class="fas fa-times mr-2 fa-fw text-secondary"></i>{{ __('invoice.type-cancel') }}</button>
+    @endif
+
+    @if ($status == 1)
+      <button class="dropdown-item" onclick="patchFunc({{$id}}, 0)"><i class="fas fa-undo fa-fw mr-2 text-danger"></i>{{ __('invoice.cancel-payment') }}</button>
+    @endif
+
+    @if ($status == -1)
+      <button class="dropdown-item" onclick="patchFunc({{$id}}, 0)"><i class="fas fa-undo fa-fw mr-2 text-secondary"></i>{{ __('ui.recovery') }}</button>
+    @endif
   </div>
 </div>
 

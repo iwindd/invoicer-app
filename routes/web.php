@@ -35,4 +35,5 @@ Route::delete("/customers", [CustomerController::class, 'destroy']);
 Route::get("/invoices", [InvoiceController::class, 'index'])->name("invoices");
 Route::get("/invoices/{id}", [InvoiceController::class, 'get'])->name("invoice");
 Route::put("/invoices/{id}", [InvoiceController::class, 'update']);
+Route::patch("/invoices/{id}", [InvoiceController::class, 'patch']);
 Route::post("/invoices", [InvoiceController::class, 'store']);

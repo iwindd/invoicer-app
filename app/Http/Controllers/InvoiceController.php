@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PatchInvoiceRequest;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Customer;
@@ -58,5 +59,11 @@ class InvoiceController extends Controller
         $invoice->items()->createMany($invoiceData['items']);
 
         return Response()->noContent();
+    }
+
+    public function patch(PatchInvoiceRequest $request)
+    {
+        $data = $request->validated();
+        Invoice::find($data['id'])->update($request->safe()->only(['status']));
     }
 }
