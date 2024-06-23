@@ -29,8 +29,9 @@ class CustomerController extends Controller
     public function get(Request $request)
     {
         $customer = Customer::find($request->id);
+        $invoices = $customer->invoices()->get(['status', 'end']);
 
-        return view("customers.customer.index", compact('customer'));
+        return view("customers.customer.index", compact('customer', 'invoices'));
     }
 
     public function store(StoreCustomerRequest $request)
