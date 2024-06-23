@@ -5,6 +5,6 @@
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
     <button class="dropdown-item"><i class="fas fa-pen fa-fw mr-2 text-primary"></i>{{ __('ui.edit-btn') }}</button>
-    <button class="dropdown-item"><i class="fas fa-trash fa-fw mr-2 text-danger"></i>{{ __('ui.delete-btn') }}</button>
+    <button class="dropdown-item" onclick="delFunc({{$id}}, '{{$title}}: {{$account}}')"><i class="fas fa-trash fa-fw mr-2 text-danger"></i>{{ __('ui.delete-btn') }}</button>
   </div>
 </div>

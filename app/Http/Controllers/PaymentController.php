@@ -47,4 +47,15 @@ class PaymentController extends Controller
 
         return Response()->json(isNull($request->use));
     }
+
+    public function destroy(Request $request) {
+        $paymeny = Payment::where([
+            ['id', $request->id],
+            ['application', Auth::user()->application]
+        ]);
+
+        $paymeny->delete();
+
+        return Response()->noContent();
+    }
 }

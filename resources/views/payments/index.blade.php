@@ -87,6 +87,30 @@
       Table.fnDraw(false);
     }
 
+    const delFunc = (id, name) => {
+      Confirmation.fire({
+        text: `{{__('ui.delete', ['text' => ':name'])}}`.replace(":name", name),
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({ url: "{{ route('payments') }}", type: 'DELETE', data: {id}});
+            return true;
+          } catch (error) {
+            console.error(error);
+            return Swal.showValidationMessage(`{{__("ui.error")}}`);
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          RefreshTable();
+          Alert.success.fire({
+            text: `{{__('ui.deleted', ['text' => ':name'])}}`.replace(":name", name),
+          }); 
+        }
+      });
+    }
+
     $(document).ready(function() {
       $("#dataTable").DataTable({
         processing: true,
