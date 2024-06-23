@@ -194,34 +194,40 @@
           <h6 class="m-0 font-weight-bold text-primary">{{ __('invoice.stats') }}</h6>
         </div>
         <div class="card-body">
+          @php
+              $all = count($invoices);
+              $success = $invoices->where('status', 1)->count();
+              $process = $invoices->where('status', 0)->where('end', '>', now())->count();
+              $overtime = $invoices->where('status', 0)->where('end', '<', now())->count();
+              $cancelled = $invoices->where('status', -1)->count();
+              
+              $successPercentage = $all > 0 ? ($success / $all) * 100 : 0;
+              $processPercentage = $all > 0 ? ($process / $all) * 100 : 0;
+              $overtimePercentage = $all > 0 ? ($overtime / $all) * 100 : 0;
+              $cancelledPercentage = $all > 0 ? ($cancelled / $all) * 100 : 0;
+          @endphp
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-success') }}<span
-              class="float-right">50%</span></h4>
+              class="float-right">{{$successPercentage}}%</span></h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50"
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{$successPercentage}}%" aria-valuenow="{{$successPercentage}}"
               aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-process') }}<span
-              class="float-right">50%</span></h4>
+              class="float-right">{{$processPercentage}}%</span></h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50"
+            <div class="progress-bar bg-warning" role="progressbar" style="width: {{$processPercentage}}%" aria-valuenow="{{$processPercentage}}"
               aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-overtime') }}<span
-              class="float-right">50%</span></h4>
+              class="float-right">{{$overtimePercentage}}%</span></h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-danger" role="progressbar" style="width: 50%" aria-valuenow="50"
-              aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-checking') }}<span
-              class="float-right">50%</span></h4>
-          <div class="progress mb-4">
-            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50"
+            <div class="progress-bar bg-danger" role="progressbar" style="width: {{$overtimePercentage}}%" aria-valuenow="{{$overtimePercentage}}"
               aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-cancel') }}<span
-              class="float-right">50%</span></h4>
+              class="float-right">{{$cancelledPercentage}}%</span></h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-secondary" role="progressbar" style="width: 50%" aria-valuenow="50"
+            <div class="progress-bar bg-secondary" role="progressbar" style="width: {{$cancelledPercentage}}%" aria-valuenow="{{$cancelledPercentage}}"
               aria-valuemin="0" aria-valuemax="100"></div>
           </div>
         </div>
