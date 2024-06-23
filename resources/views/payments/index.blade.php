@@ -64,7 +64,7 @@
             <div class="form-check">
               <input class="form-check-input" name="use" type="checkbox" value="" id="flexCheckChecked" checked>
               <label class="form-check-label" for="flexCheckChecked">
-                {{__('payment.use')}}
+                {{ __('payment.use') }}
               </label>
             </div>
           </form>
@@ -81,4 +81,35 @@
 @endsection
 
 @section('scripts')
+  <script type="text/javascript">
+    $("#create-form").submit(function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      formData.append("active", $('#create-form input[name="use"]').is(":checked") ? '1' : '0') 
+      validation.clear('#create-form');
+
+      $.ajax({
+        type: "POST",
+        url: "{{ route('payments') }}",
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: (data) => {
+          $('form#create-form').trigger("reset");
+          $('#create').modal('hide');
+          validation.clear('#create-form', false);
+          Toast.fire({
+            icon: "success",
+            title: "{{ __('ui.added') }}"
+          });
+        },
+        error: (error) => {
+          if (!validation.error(error)) {
+            $('#create-alert').show();
+          }
+        }
+      })
+    })
+  </script>
 @endsection

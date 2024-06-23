@@ -41,3 +41,4 @@ Route::patch("/invoices/{id}", [InvoiceController::class, 'patch']);
 Route::post("/invoices", [InvoiceController::class, 'store']);
 
 Route::get("/payments", [PaymentController::class, 'index'])->name('payments');
+Route::post("/payments", [PaymentController::class, 'store']);
