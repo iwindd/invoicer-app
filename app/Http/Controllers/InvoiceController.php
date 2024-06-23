@@ -9,12 +9,30 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InvoiceController extends Controller
 {
     //
     public function index()
     {
+        if (request()->ajax()) {
+            return datatables()->of(
+                    Invoice::with(['items', 'user', 'customer'])
+                    ->whereHas('user', function($query) {
+                        $query->where('application', Auth::user()->application);
+                    })
+                    ->whereHas('customer', function($query) {
+                        $query->withoutTrashed();
+                    })
+                    ->select('*')
+                )
+                ->addColumn("action", "invoices.action")
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+        
         return view('invoices.index');
     }
 
