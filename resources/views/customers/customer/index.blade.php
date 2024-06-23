@@ -510,7 +510,7 @@
         $.ajax({
           url: "{{ route('invoices') }}",
           type: 'POST',
-          data: payload,
+          data: JSON.stringify(payload),
           contentType: 'application/json',
           success: (data) => {
             items = []
