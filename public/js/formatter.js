@@ -7,7 +7,7 @@ ff.money = (val) => {
         return new Intl.NumberFormat("th-TH", {
             style: "currency",
             currency: "THB",
-        }).format(val);
+        }).format(+val);
     } catch (error) {
         return 0;
     }
@@ -17,7 +17,7 @@ ff.number = (val) => {
     try {
         if (!val) return 0;
 
-        return val.toLocaleString();
+        return (+val).toLocaleString();
     } catch (error) {
         return 0;
     }
