@@ -7,6 +7,7 @@ use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Customer;
 use App\Models\Invoice;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -32,10 +33,12 @@ class InvoiceController extends Controller
     {
         $invoiceData = $request->safe()->only(['id', 'note', 'start', 'end', 'items']);
         $customer = Customer::find($invoiceData['id']);
+        $startOfDay = Carbon::parse($invoiceData['start'])->startOfDay();
+        $endOfDay = Carbon::parse($invoiceData['end'])->endOfDay();
         $invoice  = $customer->invoices()->create([
             'note' => $invoiceData['note'],
-            'start' => $invoiceData['start'],
-            'end' => $invoiceData['end'],
+            'start' => $startOfDay,
+            'end' => $endOfDay,
             'status' => 0,
             'createdby_id' => auth()->id()
         ]);
@@ -49,10 +52,12 @@ class InvoiceController extends Controller
     {
         $invoiceData = $request->safe()->only(['id', 'note', 'start', 'end', 'items']);
         $invoice = Invoice::find($invoiceData['id']);
+        $startOfDay = Carbon::parse($invoiceData['start'])->startOfDay();
+        $endOfDay = Carbon::parse($invoiceData['end'])->endOfDay();
         $invoice->update([
             'note' => $invoiceData['note'],
-            'start' => $invoiceData['start'],
-            'end' => $invoiceData['end'],
+            'start' => $startOfDay,
+            'end' => $endOfDay,
         ]);
 
         $invoice->items()->delete();
