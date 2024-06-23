@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePaymentRequest;
+use App\Http\Requests\UpdatePaymentRequest;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,6 +47,13 @@ class PaymentController extends Controller
         $payment->save();
 
         return Response()->json(isNull($request->use));
+    }
+
+    public function update(UpdatePaymentRequest $request){
+        $payment = Payment::find($request->id);
+        $payment->update($request->validated());
+        
+        return Response()->noContent();
     }
 
     public function destroy(Request $request) {
