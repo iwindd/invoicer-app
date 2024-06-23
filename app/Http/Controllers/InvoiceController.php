@@ -15,7 +15,7 @@ class InvoiceController extends Controller
     //
     public function index()
     {
-        return view('welcome');
+        return view('invoices.index');
     }
 
     public function get(Request $request)
