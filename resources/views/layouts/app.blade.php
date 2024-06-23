@@ -48,7 +48,7 @@
             ['label' => __('nav.customers'), 'icon' => 'fas fa-fw fa-users', 'href' => 'customers'],
             ['label' => __('nav.invoices'), 'icon' => 'fas fa-fw fa-receipt', 'href' => 'invoices'],
             ['label' => __('nav.employees'), 'icon' => 'fas fa-fw fa-users-cog', 'href' => 'employees'],
-            ['label' => __('nav.payment'), 'icon' => 'fas fa-fw fa-credit-card', 'href' => 'payment'],
+            ['label' => __('nav.payments'), 'icon' => 'fas fa-fw fa-credit-card', 'href' => 'payments'],
         ];
       @endphp
 

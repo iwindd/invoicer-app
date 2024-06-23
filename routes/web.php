@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,3 +39,5 @@ Route::get("/invoices/{id}", [InvoiceController::class, 'get'])->name("invoice")
 Route::put("/invoices/{id}", [InvoiceController::class, 'update']);
 Route::patch("/invoices/{id}", [InvoiceController::class, 'patch']);
 Route::post("/invoices", [InvoiceController::class, 'store']);
+
+Route::get("/payments", [PaymentController::class, 'index'])->name('payments');
