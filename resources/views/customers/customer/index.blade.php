@@ -145,26 +145,27 @@
               <div class="form-group col-md-6">
                 <small class="form-text text-muted"> {{ __('customer.firstname') }} </small>
                 <input type="text" class="form-control" disabled name="firstname" value="{{ $customer['firstname'] }}"
-                  placeholder="{{ __('customer.firstname') }}" required>
+                  default="{{ $customer['firstname'] }}" placeholder="{{ __('customer.firstname') }}" required>
                 <div class="invalid-feedback" id="firstname-feedback"></div>
               </div>
               <div class="form-group col-md-6">
                 <small class="form-text text-muted"> {{ __('customer.lastname') }} </small>
                 <input type="text" class="form-control" disabled name="lastname"
-                  value="{{ $customer['lastname'] }}" placeholder="{{ __('customer.lastname') }}" required>
+                  value="{{ $customer['lastname'] }}" default="{{ $customer['lastname'] }}"
+                  placeholder="{{ __('customer.lastname') }}" required>
                 <div class="invalid-feedback" id="lastname-feedback"></div>
               </div>
             </div>
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('auth.email') }} </small>
               <input type="email" class="form-control" disabled name="email" value="{{ $customer['email'] }}"
-                placeholder="{{ __('auth.email') }}" required>
+                default="{{ $customer['email'] }}" placeholder="{{ __('auth.email') }}" required>
               <div class="invalid-feedback" id="email-feedback"></div>
             </div>
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('customer.joinedAt') }} </small>
-              <input type="date" class="form-control" disabled value="{{ $customer['joinedAt'] }}" id="joinedAt"
-                name="joinedAt" required>
+              <input type="date" class="form-control" disabled value="{{ $customer['joinedAt'] }}"
+                default="{{ $customer['joinedAt'] }}" id="joinedAt" name="joinedAt" required>
               <div class="invalid-feedback" id="joinedAt-feedback"></div>
             </div>
           </form>
@@ -382,7 +383,10 @@
           $('#create-invoice-form').trigger("reset");
           $('#create').modal('hide');
           validation.clear("#create");
-          Toast.fire({ icon: "success", title: "{{__('ui.added')}}" });
+          Toast.fire({
+            icon: "success",
+            title: "{{ __('ui.added') }}"
+          });
           update()
         },
         error: (data) => {
@@ -390,7 +394,10 @@
             items = []
             $('#create-invoice-form').trigger("reset");
             $('#create').modal('hide');
-            Toast.fire({ icon: "error", title: "{{__('ui.error')}}" });
+            Toast.fire({
+              icon: "error",
+              title: "{{ __('ui.error') }}"
+            });
             update()
           }
         }
@@ -451,15 +458,27 @@
       })
 
       $("#cancel-edit-profile").on('click', () => {
+        const inputs = $('#edit-form input');
         $('#edit-profile').show();
         $('button.editMode').hide();
-        $('#edit-form input').attr('disabled', true)
+        inputs.attr('disabled', true);
+        inputs.map((ele) => {
+          const input = $(inputs[ele]);
+          input.val(input.attr('default'))
+        })
       })
     })
 
     $('#edit-form').submit(function(e) {
       e.preventDefault();
       $('#edit-form input.is-invalid').removeClass("is-invalid");
+      const payload = {
+        id: $("#edit-form input[name='id']").val(),
+        firstname: $("#edit-form input[name='firstname']").val(),
+        lastname: $("#edit-form input[name='lastname']").val(),
+        email: $("#edit-form input[name='email']").val(),
+        joinedAt: $("#edit-form input[name='joinedAt']").val(),
+      }
 
       Confirmation.fire({
         text: "{{ __('ui.edit', ['text' => $customer['firstname'] . ' ' . $customer['lastname']]) }}",
@@ -470,15 +489,15 @@
             const resp = await $.ajax({
               url: "{{ route('customer', ['id' => $customer['id']]) }}",
               type: 'PUT',
-              data: JSON.stringify({
-                id: $("#edit-form input[name='id']").val(),
-                firstname: $("#edit-form input[name='firstname']").val(),
-                lastname: $("#edit-form input[name='lastname']").val(),
-                email: $("#edit-form input[name='email']").val(),
-                joinedAt: $("#edit-form input[name='joinedAt']").val(),
-              }),
+              data: JSON.stringify(payload),
               contentType: 'application/json',
             });
+
+            for (const [key, value] of Object.entries(payload)){
+              if (key != 'id'){
+                $(`#edit-form input[name="${key}"]`).attr('default', value)
+              }
+            }
 
             return true;
           } catch (error) {
