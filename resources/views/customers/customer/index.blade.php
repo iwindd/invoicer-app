@@ -296,7 +296,33 @@
   </div>
 @endsection
 
-@section('scripts')
+  @section('scripts')
+    <script type="text/javascript">
+      const RefreshTable = () => {
+        const Table = $("#dataTable").dataTable();
+        Table.fnDraw(false);
+      }
+      
+      $(document).ready(function(){
+        $("#dataTable").DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: "{{ route('invoice', ['id' => $customer['id']]) }}",
+          order: [[0, 'desc']],
+          columns: [
+            { data: 'id', name: 'id', render: ff.number},
+            { data: 'status', name: 'status', orderable: false, render: (_, __, row) => ff.invoice_label(ff.invoice(row), true)},
+            { data: 'note', name: 'note', render: ff.text},
+            { data: 'items', name: 'items', orderable: false, searchable: false, render: ff.itemsvalue},
+            { data: 'start', name: 'start', render: ff.date},
+            { data: 'end', name: 'end', render: ff.date},
+            { data: 'user', name: 'user', orderable: false, searchable: false, render: data => data.name},
+            { data: 'action', name: 'action', orderable: false},
+          ],
+        }) 
+      })
+  </script>
+
   <script type="text/javascript">
     const table = $('#invoice-items tbody');
     const total = $('#invoices-all-total');
@@ -388,6 +414,7 @@
             title: "{{ __('ui.added') }}"
           });
           update()
+          RefreshTable()
         },
         error: (data) => {
           if (!validation.error("#create", error)) {

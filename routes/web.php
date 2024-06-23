@@ -33,4 +33,5 @@ Route::post("/customers", [CustomerController::class, 'store']);
 Route::delete("/customers", [CustomerController::class, 'destroy']);
 
 Route::get("/invoices", [InvoiceController::class, 'index'])->name("invoices");
+Route::get("/invoices/{id}", [InvoiceController::class, 'get'])->name("invoice");
 Route::post("/invoices", [InvoiceController::class, 'store']);

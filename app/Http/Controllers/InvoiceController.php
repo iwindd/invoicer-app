@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Models\Customer;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -11,6 +12,16 @@ class InvoiceController extends Controller
     //
     public function index(){
         return view('welcome');
+    }
+
+    public function get(Request $request) {
+        if (request()->ajax()) {
+            return datatables()->of(Invoice::with(['items', 'user'])->where('owner_id', $request->id)->select('*'))
+                ->addColumn("action", "customers.customer.action")
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
     }
 
     public function store(StoreInvoiceRequest $request)

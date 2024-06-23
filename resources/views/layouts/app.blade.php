@@ -182,6 +182,10 @@
   <script src="{{ asset('vendor/datatables/jquery.dataTables.min.js') }}"></script>
   <script src="{{ asset('vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
   <script src="{{ asset('js/dayjs.min.js') }}"></script>
+  <script src="{{ asset('js/dayjs.isBetween.min.js') }}"></script>
+  <script>
+    dayjs.extend(window.dayjs_plugin_isBetween)
+  </script>
   <script src="{{ asset('js/validation.js') }}"></script>
   <script>
     const Toast = Swal.mixin({

@@ -14,6 +14,7 @@ return [
   'end' => "วันครบกำหนด",
   'createdBy' => "เพิ่มโดย",
   'stats' => 'สถิติ',
+  'cancel-payment' => 'ยกเลิกการชำระเงิน',
   'type-all' => "ทั้งหมด",
   'type-success' => "สำเร็จ",
   'type-process' => "กำลังดำเนินการ",
