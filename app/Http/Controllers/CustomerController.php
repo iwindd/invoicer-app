@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,24 +49,19 @@ class CustomerController extends Controller
         return Response()->json($customer);
     }
 
-    public function update(Request $request)
+    public function update(UpdateCustomerRequest $request)
     {
-        $request->validate([
-            'firstname' => ['required', 'min:5', 'max:255'],
-            'lastname' => ['required', 'min:5', 'max:255'],
-            'email' => ['required', 'max:255', 'email', Rule::unique('customers')->ignore($request->id), Rule::unique('users')->ignore($request->id)],
-            'joinedAt' => ['required']
-        ]);
+        $data = $request->validated();
 
         try {
             Customer::where([
                 ['id', $request->id],
                 ['application', Auth::user()->application]
             ])->update([
-                'firstname' => $request->firstname,
-                'lastname' => $request->lastname,
-                'email' => $request->email,
-                'joinedAt' => $request->joinedAt,
+                'firstname' => $data['firstname'],
+                'lastname' => $data['lastname'],
+                'email' => $data['email'],
+                'joinedAt' => $data['joinedAt'],
             ]);
 
             return response()->noContent();

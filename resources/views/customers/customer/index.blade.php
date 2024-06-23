@@ -468,7 +468,7 @@
         preConfirm: async () => {
           try {
             const resp = await $.ajax({
-              url: "{{ route('customers') }}",
+              url: "{{ route('customer', ['id' => $customer['id']]) }}",
               type: 'PUT',
               data: JSON.stringify({
                 id: $("#edit-form input[name='id']").val(),

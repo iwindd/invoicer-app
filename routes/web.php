@@ -28,7 +28,7 @@ Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])-
 
 Route::get("/customers", [CustomerController::class, 'index'])->name("customers");
 Route::get("/customers/{id}", [CustomerController::class, 'get'])->name("customer");
-Route::put("/customers", [CustomerController::class, 'update']);
+Route::put("/customers/{id}", [CustomerController::class, 'update']);
 Route::post("/customers", [CustomerController::class, 'store']);
 Route::delete("/customers", [CustomerController::class, 'destroy']);
 
