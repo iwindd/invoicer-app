@@ -364,11 +364,13 @@
   <script type="text/javascript">
     const table = $('#invoice-items tbody');
     const total = $('#invoices-all-total');
+    const noteInput = $("#create-invoice-form input[name='note']");
     const startInput = $('#create input[name="start"]');
     const endInput = $('#create input[name="end"]');
     const modal = $('#create');
-    const submitBtn = $('#create button[type="submit"]')
-    let status = 0; //  0 = create, 1 = update
+    const submitBtn = $('#create button[type="submit"]');
+    const addItemBtn = $('#add-invoice-item');
+    let status = 0; //  -1 = look, 0 = create, 1 = update
     let items = [];
 
     const removeItem = (index) => {
@@ -390,12 +392,29 @@
         if (submitBtn.hasClass('btn-success')) {
           submitBtn.addClass('btn-primary').removeClass('btn-success')
         }
-      } else {
+        addItemBtn.show();
+        submitBtn.show();
+        noteInput.attr('disabled', false);
+        startInput.attr('disabled', false);
+        endInput.attr('disabled', false);
+      } else if (status == 1) {
         submitBtn.html("{{ __('ui.save') }}");
         $('#create .modal-title').html('{{ __('ui.edit-btn') }}')
         if (submitBtn.hasClass('btn-primary')) {
           submitBtn.removeClass('btn-primary').addClass('btn-success')
         }
+        addItemBtn.show();
+        submitBtn.show();
+        noteInput.attr('disabled', false);
+        startInput.attr('disabled', false);
+        endInput.attr('disabled', false);
+      } else {
+        $('#create .modal-title').html('{{ __('ui.details') }}')
+        addItemBtn.hide();
+        submitBtn.hide();
+        noteInput.attr('disabled', true);
+        startInput.attr('disabled', true);
+        endInput.attr('disabled', true);
       }
 
       const startVal = startInput.val();
@@ -407,7 +426,8 @@
       table.html("")
       if (items.length > 0) {
         items.map((item, index) => {
-          table.append(`
+          const formatter = () => {
+            return `
               <tr>
                 <th>${ff.number(index+1)}</th>
                 <td><input type="text" id="${index}-name" class="form-control" onkeyup='onChange("name", ${index})' value='${item.name}' placeholder="{{ __('invoice.item-name') }}" required></td>
@@ -425,7 +445,31 @@
                     </button>
                 </td>
               </tr>
-            `);
+            `
+          }
+
+          const lookFormatter = () => {
+            return `
+              <tr>
+                <th>${ff.number(index+1)}</th>
+                <td>${item.name}</td>
+                <td>${ff.number(item.amount)}</td>
+                <td>${ff.money(item.value)}</td>
+                <td id="${index}-total">${ff.money(item.amount * item.value)}</td>
+                <td>
+                  <button 
+                    class="sm-3 btn btn-sm btn-danger shadow-sm"
+                    disabled={true}
+                    >
+                    <i class="fas fa-trash fa-sm text-white-50"></i>
+                      {{ __('ui.delete-btn') }}
+                    </button>
+                </td>
+              </tr>
+            `
+          }
+
+          table.append(status != -1 ? formatter() : lookFormatter());
         })
 
         total.html(ff.money(items.reduce((total, item) => total + (item.amount * item.value), 0)))
@@ -439,7 +483,7 @@
       }
     }
 
-    $("#add-invoice-item").on("click", () => {
+    addItemBtn.on("click", () => {
       items.push({
         name: "",
         amount: 0,
@@ -450,6 +494,8 @@
 
     $('#create-invoice-form').submit(function(e) {
       e.preventDefault();
+
+      if (status == -1) return;
 
       validation.clear("#create");
       const payload = {
@@ -504,7 +550,8 @@
             validation.clear("#create", false);
             Toast.fire({
               icon: "success",
-              title: "{{ __('ui.edited', ['text' => ':id']) }}".replace(":id", "{{__('invoice.id')}}"+ff.number(payload.id))
+              title: "{{ __('ui.edited', ['text' => ':id']) }}".replace(":id", "{{ __('invoice.id') }}" +
+                ff.number(payload.id))
             });
             update()
             RefreshTable()
@@ -532,8 +579,20 @@
       $("#create-invoice-form input[name='id']").val(id)
       startInput.val(start);
       endInput.val(end);
-      $("#create-invoice-form input[name='note']").val(note),
-        items = JSON.parse(_items);
+      noteInput.val(note);
+      items = JSON.parse(_items);
+      update();
+      validation.clear("#create", false);
+      modal.modal('show');
+    }
+
+    const lookFunc = (id, note, start, end, _items) => {
+      status = -1;
+      $("#create-invoice-form input[name='id']").val(id)
+      startInput.val(start);
+      endInput.val(end);
+      noteInput.val(note);
+      items = JSON.parse(_items);
       update();
       validation.clear("#create", false);
       modal.modal('show');
@@ -542,33 +601,40 @@
     const patchFunc = (id, status) => {
       Confirmation.fire({
         text: (
-          status == -1 ? `{{__('invoice.change-status-(-1)', ['id' => ':id'])}}` :
-          status == 0 ? `{{__('invoice.change-status-(0)', ['id' => ':id'])}}` : `{{__('invoice.change-status-(1)', ['id' => ':id'])}}` 
+          status == -1 ? `{{ __('invoice.change-status-(-1)', ['id' => ':id']) }}` :
+          status == 0 ? `{{ __('invoice.change-status-(0)', ['id' => ':id']) }}` :
+          `{{ __('invoice.change-status-(1)', ['id' => ':id']) }}`
         ).replace(":id", ff.number(id)),
         showLoaderOnConfirm: true,
         allowOutsideClick: () => !Swal.isLoading(),
-        
+
         preConfirm: async () => {
           try {
-            const resp = await $.ajax({ url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", id), type: 'PATCH', data: {status}});
+            const resp = await $.ajax({
+              url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", id),
+              type: 'PATCH',
+              data: {
+                status
+              }
+            });
             return true;
           } catch (error) {
-            return Swal.showValidationMessage(`{{__("ui.error")}}`);
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
           }
         }
       }).then((result) => {
         if (result.isConfirmed) {
           RefreshTable();
           Alert.success.fire({
-            text: `{{__('invoice.changed-status')}}`,
-          }); 
+            text: `{{ __('invoice.changed-status') }}`,
+          });
         }
       });
     }
 
     $('#create-btn').on('click', () => {
       status = 0;
-      $("#create-invoice-form input[name='id']").val('{{$customer['id']}}')
+      $("#create-invoice-form input[name='id']").val('{{ $customer['id'] }}')
       startInput.val("");
       endInput.val("");
       items = [];
