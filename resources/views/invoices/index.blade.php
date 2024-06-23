@@ -444,8 +444,8 @@
     const lookFunc = (id, note, start, end, _items) => {
       status = -1;
       $("#create-invoice-form input[name='id']").val(id)
-      startInput.val(start);
-      endInput.val(end);
+      startInput.val(dayjs(start).format('YYYY-MM-DD'));
+      endInput.val(dayjs(end).format('YYYY-MM-DD'));
       noteInput.val(note);
       items = JSON.parse(_items);
       update();
