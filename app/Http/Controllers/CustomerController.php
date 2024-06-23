@@ -26,6 +26,16 @@ class CustomerController extends Controller
         return view('customers.index');
     }
 
+    public function selectize()
+    {
+        if (request()->ajax()) {
+            $customers = Customer::where('application', Auth::user()->application)->get(['id', 'firstname', 'lastname']);
+            return Response()->json($customers);
+        }
+
+        return view('customers.index');
+    }
+
     public function get(Request $request)
     {
         $customer = Customer::find($request->id);

@@ -23,6 +23,7 @@
 
   <!-- Custom styles for this template-->
   <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet">
+  <link href="{{ asset('css/selectize.bootstrap4.css') }}" rel="stylesheet">
   <link href="{{ asset('vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
   <script src="{{ asset('js/formatter.js') }}"></script>
 </head>
@@ -188,6 +189,7 @@
   </script>
   <script src="{{ asset('js/validation.js') }}"></script>
   <script src="{{ asset('js/autoformatter.js') }}"></script>
+  <script src="{{ asset('js/selectize.min.js') }}"></script>
   <script>
     const Toast = Swal.mixin({
       toast: true,
