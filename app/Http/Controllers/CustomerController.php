@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCustomerRequest;
 use App\Models\Customer;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -32,21 +32,16 @@ class CustomerController extends Controller
         return view("customers.customer.index", compact('customer'));
     }
 
-    public function store(Request $request)
+    public function store(StoreCustomerRequest $request)
     {
-        $request->validate([
-            'firstname' => ['required', 'min:5', 'max:255'],
-            'lastname' => ['required', 'min:5', 'max:255'],
-            'email' => ['required', 'max:255', 'email', 'unique:customers', 'unique:users'],
-            'joinedAt' => ['required']
-        ]);
+        $data = $request->validated();
 
         $customer = new Customer;
         $customer->application = Auth::user()->application;
-        $customer->firstname = $request->firstname;
-        $customer->lastname = $request->lastname;
-        $customer->email = $request->email;
-        $customer->joinedAt = $request->joinedAt;
+        $customer->firstname = $data['firstname'];
+        $customer->lastname = $data['lastname'];
+        $customer->email = $data['email'];
+        $customer->joinedAt = $data['joinedAt'];
         $customer->createdBy_id = Auth::user()->id;
         $customer->save();
 
