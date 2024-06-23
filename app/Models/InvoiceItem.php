@@ -10,6 +10,11 @@ class InvoiceItem extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+    protected $fillable = [
+        'name', 'amount', 'value'
+    ];
+
     public function customer() : BelongsTo
     {
         return $this->belongsTo(Invoice::class, "invoice_id");

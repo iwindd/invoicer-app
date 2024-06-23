@@ -43,4 +43,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Customer::class, 'createdBy_id');
     }
+
+    public function invoices() : HasMany
+    {
+        return $this->hasMany(Invoice::class, 'createdby_id');
+    }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,3 +31,6 @@ Route::get("/customers/{id}", [CustomerController::class, 'get'])->name("custome
 Route::put("/customers", [CustomerController::class, 'update']);
 Route::post("/customers", [CustomerController::class, 'store']);
 Route::delete("/customers", [CustomerController::class, 'destroy']);
+
+Route::get("/invoices", [InvoiceController::class, 'index'])->name("invoices");
+Route::post("/invoices", [InvoiceController::class, 'store']);

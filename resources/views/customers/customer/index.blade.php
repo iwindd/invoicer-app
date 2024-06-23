@@ -235,10 +235,10 @@
         <div class="modal-body">
           <form action="#" method="post" id="create-invoice-form">
             <div class="row">
+              <input type="hidden" name="id" value="{{ $customer['id'] }}">
               <div class="col-lg-6 col-md-12">
                 <small class="form-text text-muted"> {{ __('invoice.note') }} </small>
-                <input type="text" class="form-control" name="text" placeholder="{{ __('invoice.note') }}"
-                  required>
+                <input type="text" class="form-control" name="note" placeholder="{{ __('invoice.note') }}">
                 <div class="invalid-feedback" id="note-feedback"></div>
               </div>
               <div class="col-lg-3 col-md-12">
@@ -287,7 +287,8 @@
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" type="button" data-dismiss="modal">{{ __('ui.dialogCancel') }}</button>
-          <button class="btn btn-primary" type="submit" form="create-invoice-form">{{ __('ui.dialogConfirm') }}</button>
+          <button class="btn btn-primary" type="submit"
+            form="create-invoice-form">{{ __('ui.dialogConfirm') }}</button>
         </div>
       </div>
     </div>
@@ -296,6 +297,10 @@
 
 @section('scripts')
   <script type="text/javascript">
+    $(document).ready(function() {
+      $("#create").modal('show');
+    })
+
     const table = $('#invoice-items tbody');
     const total = $('#invoices-all-total');
     const startInput = $('#create input[name="start"]');
@@ -310,8 +315,8 @@
     const onChange = (key, index) => {
       const val = $(`#${index}-${key}`).val();
       items[index][key] = val;
-      total.html(ff.money(items.reduce((total, item) => total + (item.amount * item.price), 0)))
-      $(`#${index}-total`).html(ff.money(items[index].amount * items[index].price))
+      total.html(ff.money(items.reduce((total, item) => total + (item.amount * item.value), 0)))
+      $(`#${index}-total`).html(ff.money(items[index].amount * items[index].value))
     }
 
     const update = () => {
@@ -323,8 +328,8 @@
                 <th>${ff.number(index+1)}</th>
                 <td><input type="text" id="${index}-name" class="form-control" onkeyup='onChange("name", ${index})' value='${item.name}' placeholder="{{ __('invoice.item-name') }}" required></td>
                 <td><input type="number" id="${index}-amount" class="form-control" onchange='onChange("amount", ${index})' onkeyup='onChange("amount", ${index})' value='${item.amount}' min="0" placeholder="{{ __('invoice.item-amount') }}" required></td>
-                <td><input type="number" id="${index}-price" class="form-control" onchange='onChange("price", ${index})' onkeyup='onChange("price", ${index})' value='${item.price}' min="0" placeholder="{{ __('invoice.item-value') }}" required></td>
-                <td id="${index}-total">${ff.money(item.amount * item.price)}</td>
+                <td><input type="number" id="${index}-value" class="form-control" onchange='onChange("value", ${index})' onkeyup='onChange("value", ${index})' value='${item.value}' min="0" placeholder="{{ __('invoice.item-value') }}" required></td>
+                <td id="${index}-total">${ff.money(item.amount * item.value)}</td>
                 <td>
                   <button 
                     class="sm-3 btn btn-sm btn-danger shadow-sm"
@@ -339,8 +344,9 @@
             `);
         })
 
-        total.html(ff.money(items.reduce((total, item) => total + (item.amount * item.price), 0)))
+        total.html(ff.money(items.reduce((total, item) => total + (item.amount * item.value), 0)))
       } else {
+        total.html(ff.money(0))
         table.append(`
             <tr>
               <td colSpan="6" class="text-center">{{ __('ui.noItems') }}</td>
@@ -353,9 +359,46 @@
       items.push({
         name: "",
         amount: 0,
-        price: 0
+        value: 0
       })
       update()
+    })
+
+    $('#create-invoice-form').submit(function(e) {
+      e.preventDefault();
+
+      validation.clear("#create");
+      const payload = JSON.stringify({
+        id: $("#create-invoice-form input[name='id']").val(),
+        note: $("#create-invoice-form input[name='note']").val(),
+        start: startInput.val(),
+        end: endInput.val(),
+        items: items,
+      })
+
+      $.ajax({
+        url: "{{ route('invoices') }}",
+        type: 'POST',
+        data: payload,
+        contentType: 'application/json',
+        success: (data) => {
+          items = []
+          $('#create-invoice-form').trigger("reset");
+          $('#create').modal('hide');
+          validation.clear("#create");
+          Toast.fire({ icon: "success", title: "{{__('ui.added')}}" });
+          update()
+        },
+        error: (data) => {
+          if (!validation.error("#create", error)) {
+            items = []
+            $('#create-invoice-form').trigger("reset");
+            $('#create').modal('hide');
+            Toast.fire({ icon: "error", title: "{{__('ui.error')}}" });
+            update()
+          }
+        }
+      });
     })
 
     startInput.on("change", () => {
