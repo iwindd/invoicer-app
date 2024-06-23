@@ -499,6 +499,8 @@
               }
             }
 
+            $('h1').html(`${payload.firstname} ${payload.lastname}`);
+
             return true;
           } catch (error) {
             try {
