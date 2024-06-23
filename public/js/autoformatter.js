@@ -11,4 +11,11 @@ $(document).ready(function(){
       console.error('not found formatter : '+formatType);
     }
   })
+
+  const suffix = $('[data-suffix]');
+
+  elements.map((index) => {
+    const element = $(elements[index]);
+    element.html(element.html() + " " + element.attr('data-suffix'));
+  })
 })
