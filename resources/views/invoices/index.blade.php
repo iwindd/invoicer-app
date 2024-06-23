@@ -111,4 +111,39 @@
       })
     })
   </script>
+  <script type="text/javascript">
+    const patchFunc = (id, status) => {
+      Confirmation.fire({
+        text: (
+          status == -1 ? `{{ __('invoice.change-status-(-1)', ['id' => ':id']) }}` :
+          status == 0 ? `{{ __('invoice.change-status-(0)', ['id' => ':id']) }}` :
+          `{{ __('invoice.change-status-(1)', ['id' => ':id']) }}`
+        ).replace(":id", ff.number(id)),
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({
+              url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", id),
+              type: 'PATCH',
+              data: {
+                status
+              }
+            });
+            return true;
+          } catch (error) {
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          RefreshTable();
+          Alert.success.fire({
+            text: `{{ __('invoice.changed-status') }}`,
+          });
+        }
+      });
+    }
+  </script>
 @endsection
