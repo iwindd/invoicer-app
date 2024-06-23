@@ -13,9 +13,12 @@
       <button class="dropdown-item" onclick="patchFunc({{$id}}, -1)"><i class="fas fa-times mr-2 fa-fw text-secondary"></i>{{ __('invoice.type-cancel') }}</button>
     @endif
 
+    @if ($status == 1 || $status == -1)
+      <button class="dropdown-item" onclick="lookFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}')"><i class="fas fa-search fa-fw mr-2 text-info"></i>{{ __('ui.details') }}</button>
+      <div class="dropdown-divider"></div>
+    @endif
+
     @if ($status == 1)
-    <button class="dropdown-item" onclick="lookFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}')"><i class="fas fa-search fa-fw mr-2 text-info"></i>{{ __('ui.details') }}</button>
-    <div class="dropdown-divider"></div>
       <button class="dropdown-item" onclick="patchFunc({{$id}}, 0)"><i class="fas fa-undo fa-fw mr-2 text-danger"></i>{{ __('invoice.cancel-payment') }}</button>
     @endif
 
