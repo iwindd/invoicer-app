@@ -471,7 +471,7 @@
 
     $('#edit-form').submit(function(e) {
       e.preventDefault();
-      $('#edit-form input.is-invalid').removeClass("is-invalid");
+      validation.clear('#edit-form')
       const payload = {
         id: $("#edit-form input[name='id']").val(),
         firstname: $("#edit-form input[name='firstname']").val(),
@@ -502,17 +502,7 @@
             return true;
           } catch (error) {
             try {
-              if (error.status == 422) {
-                const response = error.responseJSON;
-                for (const [key, value] of Object.entries(response.errors)) {
-                  const input = $(`input[name="${key}"]`);
-                  const feedback = $(`#${key}-feedback`);
-                  input.addClass("is-invalid");
-                  feedback.html(value)
-                }
-
-                return 422;
-              }
+              if (validation.error('#edit-form', error)) return 422;
             } catch (error) {
               console.error(error);
             }
@@ -527,7 +517,7 @@
           });
           $('#edit-profile').show();
           $('button.editMode').hide();
-          $('#edit-form input').attr('disabled', true)
+          validation.clear('#edit-form');
         }
       });
     })
