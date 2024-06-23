@@ -514,12 +514,13 @@
       }).then((result) => {
         if (result.value == 422) return
         if (result.isConfirmed) {
+          validation.clear('#edit-form');
           Alert.success.fire({
             text: "{{ __('ui.edited', ['text' => $customer['firstname'] . ' ' . $customer['lastname']]) }}",
           });
           $('#edit-profile').show();
           $('button.editMode').hide();
-          validation.clear('#edit-form');
+          $('#edit-form input').attr('disabled', true);
         }
       });
     })
