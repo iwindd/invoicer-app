@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,9 @@ Route::get('/', function () {
 Route::get("/login", [LoginController::class, 'showLoginForm'])->name("login");
 Route::post("/login", [LoginController::class, 'login']);
 Route::post("/logout", [LoginController::class, 'logout'])->name("logout");
+
+Route::get("/profile", [ProfileController::class, 'index'])->name("profile");
+Route::put("/profile", [ProfileController::class, 'update']);
 
 Route::get("/customers", [CustomerController::class, 'index'])->name("customers");
 Route::get("/customers2", [CustomerController::class, 'selectize'])->name("customers2");
