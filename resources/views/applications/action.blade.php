@@ -5,6 +5,5 @@
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
     <a class="dropdown-item fa-fw" ><i class="fas fa-info-circle mr-2 text-info"></i>{{__('ui.details')}}</a>
-    <a class="dropdown-item fa-fw" ><i class="fas fa-trash mr-2 text-danger"></i>{{__('ui.delete-btn')}}</a>
   </div>
 </div>
