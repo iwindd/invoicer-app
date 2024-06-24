@@ -11,6 +11,16 @@ class ApplicationController extends Controller
     //
     public function index()
     {
+        if (request()->ajax()) {
+            return datatables()->of(
+                    User::where("role", "application")
+                )
+                ->addColumn("action", "applications.action")
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+
         return view('applications.index');
     }
 

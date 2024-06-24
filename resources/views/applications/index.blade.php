@@ -18,7 +18,7 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
             <tr>
-              <th>{{ __('customer.joinedAt') }}</th>
+              <th>{{ __('ui.created_at') }}</th>
               <th>{{ __('customer.firstname') }}</th>
               <th>{{ __('ui.actions') }}</th>
             </tr>
@@ -47,8 +47,8 @@
             <div class="row">
               <div class="col-sm-12" id="customer-col">
                 <small class="form-text text-muted"> {{ __('customer.customer') }} </small>
-                <select id="select-tools"  class="w-100" placeholder="{{ __('customer.customer') }}"></select>
-                <div class="invalid-feedback" id="id-feedback" ></div>
+                <select id="select-tools" class="w-100" placeholder="{{ __('customer.customer') }}"></select>
+                <div class="invalid-feedback" id="id-feedback"></div>
               </div>
             </div>
           </form>
@@ -124,14 +124,48 @@
         },
         error: (error) => {
           if (!validation.error("#create", error)) {
-              modal.modal('hide');
-              Toast.fire({
-                icon: "error",
-                title: "{{ __('ui.error') }}"
-              });
-            }
+            modal.modal('hide');
+            Toast.fire({
+              icon: "error",
+              title: "{{ __('ui.error') }}"
+            });
+          }
         }
       });
+    })
+  </script>
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      const RefreshTable = () => {
+        const Table = $("#dataTable").dataTable();
+        Table.fnDraw(false);
+      }
+
+      $("#dataTable").DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('applications') }}",
+        order: [
+          [0, 'desc']
+        ],
+        columns: [
+          {
+            data: 'created_at',
+            name: 'created_at',
+            render: ff.date
+          },
+          {
+            data: 'name',
+            name: 'name',
+          },
+          {
+            data: 'action',
+            name: 'action',
+            orderable: false
+          },
+        ]
+      })
     })
   </script>
 @endsection
