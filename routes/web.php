@@ -48,3 +48,4 @@ Route::post("/payments", [PaymentController::class, 'store']);
 Route::delete("/payments", [PaymentController::class, 'destroy']);
 
 Route::get("/applications", [ApplicationController::class, 'index'])->name("applications");
+Route::post("/applications", [ApplicationController::class, 'store']);

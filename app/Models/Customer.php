@@ -14,8 +14,17 @@ class Customer extends Model
     use SoftDeletes;
     
     protected $fillable = [
-        'firstname', 'lastname', 'email', 'joined_at'
+        'id', 'firstname', 'lastname', 'email', 'joined_at', 'application_id'
     ];
+
+    public function application() : BelongsTo {
+        return $this->belongsTo(User::class);
+    }
+    
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'application_id', 'customer_id');
+    }
 
     public function user() : BelongsTo
     {
