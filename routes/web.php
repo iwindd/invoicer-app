@@ -4,6 +4,7 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,3 +51,6 @@ Route::delete("/payments", [PaymentController::class, 'destroy']);
 
 Route::get("/applications", [ApplicationController::class, 'index'])->name("applications");
 Route::post("/applications", [ApplicationController::class, 'store']);
+
+Route::get("/notice/{id}", [NoticeController::class, 'index'])->name("notice");
+Route::post("/notice", [NoticeController::class, 'patch'])->name("notice.patch");
