@@ -4,7 +4,7 @@ return [
   'dashboard' => 'ภาพรวม',
   'customers' => 'ลูกค้า',
   'invoices' => 'บิลทั้งหมด',
-  'employees' => 'พนักงาน',
+  'applications' => 'แอพพลิเคชั่น',
   'payments' => 'ช่องทางการชำระเงิน',
   'profile' => 'โปรไฟล์',
   'logout' => 'ออกจากระบบ',
