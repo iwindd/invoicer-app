@@ -707,7 +707,7 @@
   <script type="text/javascript">
     $("#delete").on("click", () => {
       Confirmation.fire({
-        text: `{{ __('ui.delete', ['text' => ':name']) }}`.replace(":name", name),
+        text: `{{ __('ui.delete', ['text' => ':name']) }}`.replace(":name", `{{ $customer['firstname'] }} {{ $customer['lastname'] }}`),
         showLoaderOnConfirm: true,
         allowOutsideClick: () => !Swal.isLoading(),
         preConfirm: async () => {
