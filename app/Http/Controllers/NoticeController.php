@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PatchNoticeRequest;
 use App\Models\Customer;
+use App\Models\Invoice;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Exception;
@@ -50,6 +51,19 @@ class NoticeController extends Controller
     }
 
     public function patch(PatchNoticeRequest $request) {
-        dd($request->image);
+        $invoice = Invoice::find($request->invoice);
+
+        $extention = $request->image->getClientOriginalExtension();
+        $imageName = date('mdYHis') . uniqid() . '.' . $extention;
+        $request->image->storeAs('images', $imageName);
+
+        $invoice->evidence()->create([
+            'image' => $imageName,
+            'status' => false
+        ]);
+
+        $invoice->update(['status' => 2]);
+
+        return redirect()->back();
     }
 }

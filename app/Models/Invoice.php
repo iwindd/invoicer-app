@@ -20,6 +20,10 @@ class Invoice extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function evidence() : HasMany {
+        return $this->hasMany(Report::class);
+    }
+
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
