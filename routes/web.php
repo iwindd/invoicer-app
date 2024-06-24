@@ -30,6 +30,7 @@ Route::post("/logout", [LoginController::class, 'logout'])->name("logout");
 
 Route::get("/profile", [ProfileController::class, 'index'])->name("profile");
 Route::put("/profile", [ProfileController::class, 'update']);
+Route::patch("/profile", [ProfileController::class, 'patch']);
 
 Route::get("/customers", [CustomerController::class, 'index'])->name("customers");
 Route::get("/customers2", [CustomerController::class, 'selectize'])->name("customers2");
