@@ -183,8 +183,8 @@
             name: 'title',
           },
           {
-            data: 'account',
-            name: 'account',
+            data: 'name',
+            name: 'name',
           },
           {
             data: 'action',
