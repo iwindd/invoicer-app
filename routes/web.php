@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoiceController;
@@ -45,3 +46,5 @@ Route::put("/payments/{id}", [PaymentController::class, 'update'])->name('paymen
 Route::patch("/payments/{id}", [PaymentController::class, 'patch']);
 Route::post("/payments", [PaymentController::class, 'store']);
 Route::delete("/payments", [PaymentController::class, 'destroy']);
+
+Route::get("/applications", [ApplicationController::class, 'index'])->name("applications");
