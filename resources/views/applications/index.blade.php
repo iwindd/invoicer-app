@@ -119,7 +119,8 @@
           validation.clear("#create", false);
           Toast.fire({
             icon: "success",
-            title: "{{ __('ui.added') }}"
+            timer: 15000,
+            title: "{{ __('application.added') }}"
           });
         },
         error: (error) => {
