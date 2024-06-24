@@ -13,7 +13,10 @@ validation.error = (scope, error) => {
 
   if (error?.status == 422) {
     for (const [key, value] of Object.entries(error.responseJSON.errors)) {
-      const input = $(`${scope} input[name="${key}"]`);
+      let input = $(`${scope} [name="${key}"]`);
+      if (input.attr('data-validate')) {
+        input = $(`${input.attr('data-validate')}`)
+      }
       const feedback = $(`${scope} #${key}-feedback`);
       input.addClass("is-invalid");
       feedback.html(value)
