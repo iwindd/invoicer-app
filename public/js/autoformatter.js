@@ -16,6 +16,6 @@ $(document).ready(function(){
 
   elements.map((index) => {
     const element = $(elements[index]);
-    element.html(element.html() + " " + element.attr('data-suffix'));
+    element.html(element.html() + " " + (element.attr('data-suffix') || ""));
   })
 })
