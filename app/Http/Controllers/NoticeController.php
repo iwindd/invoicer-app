@@ -23,6 +23,17 @@ class NoticeController extends Controller
         $invoices = $customer->invoices()
             ->whereIn('status', [0, 2])
             ->where('start', '<=', now())->with('items')->get();
+
+        if ($invoices->count() <= 0) abort(404); 
+
+        // payment
+        $payment = Payment::where([
+            ['active', true],
+            ['user_id', $customer->user_id]
+        ])->first();
+
+        if (!$payment) abort(404); 
+
         // invoices total value
         $total = $invoices->sum(function ($invoice) {
             return $invoice->items->sum('value');
@@ -31,17 +42,11 @@ class NoticeController extends Controller
         $invoices->each(function ($invoice) {
             $invoice->totalValue = $invoice->items->sum('value');
         });
-        // payment
-        $payment = Payment::where([
-            ['active', true],
-            ['user_id', $customer->user_id]
-        ])->first();
 
         // end date parse
-
         $endDate = Carbon::parse($invoices->first()->end)
-            ->locale('th_TH')
-            ->translatedFormat('j F Y');
+        ->locale('th_TH')
+        ->translatedFormat('j F Y');
 
         // format total;
         $fmt = new NumberFormatter('th_TH', NumberFormatter::CURRENCY);
