@@ -200,10 +200,10 @@
             $overtime = $invoices->where('status', 0)->where('end', '<', now())->count();
             $cancelled = $invoices->where('status', -1)->count();
 
-            $successPercentage = $all > 0 ? ($success / $all) * 100 : 0;
-            $processPercentage = $all > 0 ? ($process / $all) * 100 : 0;
-            $overtimePercentage = $all > 0 ? ($overtime / $all) * 100 : 0;
-            $cancelledPercentage = $all > 0 ? ($cancelled / $all) * 100 : 0;
+            $successPercentage = round($all > 0 ? ($success / $all) * 100 : 0, 2);
+            $processPercentage = round($all > 0 ? ($process / $all) * 100 : 0, 2);
+            $overtimePercentage = round($all > 0 ? ($overtime / $all) * 100 : 0, 2);
+            $cancelledPercentage = round($all > 0 ? ($cancelled / $all) * 100 : 0, 2);
           @endphp
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-success') }}<span
               class="float-right">{{ $successPercentage }}%</span></h4>
