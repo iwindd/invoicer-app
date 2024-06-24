@@ -4,6 +4,6 @@
   </a>
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <a class="dropdown-item fa-fw" ><i class="fas fa-info-circle mr-2 text-info"></i>{{__('ui.details')}}</a>
+    <button class="dropdown-item fa-fw" onclick="ApplicationLogin({{$id}})" ><i class="fas fa-sign-in-alt mr-2 text-info"></i>{{__('application.login')}}</button>
   </div>
 </div>

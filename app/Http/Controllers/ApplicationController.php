@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginAsRequest;
 use App\Http\Requests\StoreApplicationRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
@@ -35,6 +37,13 @@ class ApplicationController extends Controller
         ]);
         $customer->update(['application_id' => $application->id]);
 
+        return Response()->noContent();
+    }
+
+    
+    public function loginAs(LoginAsRequest $request) {
+        Auth::loginUsingId($request->id);
+        
         return Response()->noContent();
     }
 }

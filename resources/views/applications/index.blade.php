@@ -150,8 +150,7 @@
         order: [
           [0, 'desc']
         ],
-        columns: [
-          {
+        columns: [{
             data: 'created_at',
             name: 'created_at',
             render: ff.date
@@ -168,5 +167,35 @@
         ]
       })
     })
+  </script>
+
+  <script type="text/javascript">
+    const ApplicationLogin = (id) => {
+      Confirmation.fire({
+        text: `{{ __('application.login-confirm') }}`,
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({
+              url: "{{ route('loginAs', ['id' => ':id']) }}".replace(":id", id),
+              type: 'POST',
+            });
+            return true;
+          } catch (error) {
+            console.error(error);
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Alert.success.fire({
+            text: `{{ __('application.login-success') }}`,
+          }).then(() => {
+            location.reload();
+          });
+        }
+      });
+    }
   </script>
 @endsection
