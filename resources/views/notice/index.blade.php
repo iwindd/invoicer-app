@@ -32,13 +32,19 @@
 
   <div class="w-full h-full d-flex justify-content-center align-items-center flex-column" style="height: 100vh; ">
     <section style="height: fit-content; margin-bottom: 5%; color: black;" class="text-center">
-      <h1 class="display-4 mb-4" style="font-weight: 500;">{{ __('notice.header') }}</h1>
-      <p class="mb-4">{{ __('notice.content', ['date' => $endDate, 'total' => $total]) }}</p>
-      <button class="btn btn-primary" data-toggle="modal" data-target="#payment"><i
-          class="far fa-credit-card mr-2 fa-fw"></i>{{ __('notice.button') }}</button>
+      @if ($invoices->where('status', 0)->count() > 0)
+        <h1 class="display-4 mb-4" style="font-weight: 500;">{{ __('notice.header') }}</h1>
+        <p class="mb-4">{{ __('notice.content', ['date' => $endDate, 'total' => $total]) }}</p>
+        <button class="btn btn-primary" data-toggle="modal" data-target="#payment"><i
+            class="far fa-credit-card mr-2 fa-fw"></i>{{ __('notice.button') }}</button>
+      @else
+        <h1 class="display-4 mb-4" style="font-weight: 500;">{{ __('notice.header2') }}</h1>
+      @endif
     </section>
     <section>
-      <span>{{ __('notice.footer') }}</span>
+      @if ($invoices->where('status', 0)->count() > 0)
+        <span>{{ __('notice.footer') }}</span>
+      @endif
     </section>
   </div>
 
@@ -70,20 +76,22 @@
                 <input type="hidden" name="invoice" value="{{ $invoices->first()->id }}">
               @endif
               @foreach ($invoices as $invoice)
-                <div data-id="{{ $invoice->id }}"
-                  class="invoice card-body mb-1 border rounded d-flex align-items-center p-2 px-4">
-                  <div class="mr-4">
-                    <i class="fas fa-receipt fa-lg"></i>
+                @if ($invoice->status == 0)
+                  <div data-id="{{ $invoice->id }}"
+                    class="invoice card-body mb-1 border rounded d-flex align-items-center p-2 px-4">
+                    <div class="mr-4">
+                      <i class="fas fa-receipt fa-lg"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="card-title mb-0 text-dark">{{ __('notice.itemHeader', ['id' => $invoice->id]) }}</h6>
+                      <small class="card-subtitle text-muted">{{ __('notice.itemContent') }} <span
+                          data-format="date">{{ $invoice->end }}</span> </small>
+                    </div>
+                    <div data-format="money" class="text-dark">
+                      {{ $invoice->totalValue }}
+                    </div>
                   </div>
-                  <div class="flex-grow-1">
-                    <h6 class="card-title mb-0 text-dark">{{ __('notice.itemHeader', ['id' => $invoice->id]) }}</h6>
-                    <small class="card-subtitle text-muted">{{ __('notice.itemContent') }} <span
-                        data-format="date">{{ $invoice->end }}</span> </small>
-                  </div>
-                  <div data-format="money" class="text-dark">
-                    {{ $invoice->totalValue }}
-                  </div>
-                </div>
+                @endif
               @endforeach
               @error('id')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -91,9 +99,14 @@
             </section>
             <section>
               <div class="custom-file mb-3">
-                <input type="file" class="custom-file-input @error('image') is-invalid @enderror" name="image" accept='image/*' required>
+                <input type="file" class="custom-file-input @error('image') is-invalid @enderror" name="image"
+                  accept='image/*' required>
                 <label class="custom-file-label" for="validatedCustomFile">{{ __('notice.choose') }}</label>
-                <div class="invalid-feedback">@error('image') {{ $message }} @enderror"</div>
+                <div class="invalid-feedback">
+                  @error('image')
+                    {{ $message }}
+                  @enderror"
+                </div>
               </div>
             </section>
           </form>
