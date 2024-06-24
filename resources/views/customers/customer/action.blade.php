@@ -1,3 +1,6 @@
+@php
+    $evidence = $evidence != null ? $evidence['image'] : null;
+@endphp
 <div class="dropdown dropleft">
   <a class="btn btn-primary dropright btn-sm sm-3 shadow-sm dropdown-toggle" href="#" role="button"
     id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -13,17 +16,24 @@
       <button class="dropdown-item" onclick="patchFunc({{$id}}, -1)"><i class="fas fa-times mr-2 fa-fw text-secondary"></i>{{ __('invoice.type-cancel') }}</button>
     @endif
 
-    @if ($status == 1 || $status == -1)
-      <button class="dropdown-item" onclick="lookFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}')"><i class="fas fa-search fa-fw mr-2 text-info"></i>{{ __('ui.details') }}</button>
-      <div class="dropdown-divider"></div>
-    @endif
 
     @if ($status == 1)
+      <button class="dropdown-item" onclick="lookFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}', '{{$evidence}}')"><i class="fas fa-search fa-fw mr-2 text-info"></i>{{ __('ui.details') }}</button>
+      <div class="dropdown-divider"></div>
       <button class="dropdown-item" onclick="patchFunc({{$id}}, 0)"><i class="fas fa-undo fa-fw mr-2 text-danger"></i>{{ __('invoice.cancel-payment') }}</button>
     @endif
 
     @if ($status == -1)
+      <button class="dropdown-item" onclick="lookFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}', '{{$evidence}}')"><i class="fas fa-search fa-fw mr-2 text-info"></i>{{ __('ui.details') }}</button>
+      <div class="dropdown-divider"></div>
       <button class="dropdown-item" onclick="patchFunc({{$id}}, 0)"><i class="fas fa-undo fa-fw mr-2 text-secondary"></i>{{ __('ui.recovery') }}</button>
+    @endif
+
+    @if ($status == 2)
+      <button class="dropdown-item" onclick="lookFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}', '{{$evidence}}')"><i class="fas fa-search fa-fw mr-2 text-info"></i>{{ __('ui.check') }}</button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item" onclick="patchFunc({{$id}}, 1)"><i class="fas fa-check fa-fw mr-2 text-success"></i>{{ __('invoice.allow') }}</button>
+      <button class="dropdown-item" onclick="patchFunc({{$id}}, 0)"><i class="fas fa-times fa-fw mr-2 text-danger"></i>{{ __('invoice.deny') }}</button>
     @endif
   </div>
 </div>

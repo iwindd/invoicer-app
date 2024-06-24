@@ -60,7 +60,7 @@ class NoticeController extends Controller
 
         $extention = $request->image->getClientOriginalExtension();
         $imageName = date('mdYHis') . uniqid() . '.' . $extention;
-        $request->image->storeAs('images', $imageName);
+        $request->image->storeAs('images', $imageName, 'public');
 
         $invoice->evidence()->create([
             'image' => $imageName,

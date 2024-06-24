@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Invoice extends Model
 {
@@ -20,8 +21,12 @@ class Invoice extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function evidence() : HasMany {
+    public function evidences() : HasMany {
         return $this->hasMany(Report::class);
+    }
+
+    public function evidence() : HasOne {
+        return $this->hasOne(Report::class)->latest();
     }
 
     public function user() : BelongsTo

@@ -47,66 +47,82 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="#" method="post" id="create-invoice-form">
-            <input type="hidden" name="id" value="0">
-            <div class="row">
-              <div class="col-sm-12" id="customer-col">
-                <small class="form-text text-muted"> {{ __('customer.customer') }} </small>
-                <select id="select-tools" class="w-100" placeholder="{{__('customer.customer')}}"></select>
-                <div class="id-feedback" id="note-feedback"></div>
-              </div>
-              <div class="col-lg-6 col-md-12">
-                <small class="form-text text-muted"> {{ __('invoice.note') }} </small>
-                <input type="text" class="form-control" name="note" placeholder="{{ __('invoice.note') }}">
-                <div class="invalid-feedback" id="note-feedback"></div>
-              </div>
-              <div class="col-lg-3 col-md-12">
-                <small class="form-text text-muted"> {{ __('invoice.start') }} </small>
-                <input type="date" class="form-control" name="start" required>
-                <div class="invalid-feedback" id="start-feedback"></div>
-              </div>
-              <div class="col-lg-3 col-md-12">
-                <small class="form-text text-muted"> {{ __('invoice.end') }} </small>
-                <input type="date" min="{{ now()->toDateString('Y-m-d') }}" class="form-control" name="end"
-                  required>
-                <div class="invalid-feedback" id="end-feedback"></div>
-              </div>
-              <div class="col-sm-12">
-                <table id="invoice-items" class="table table-striped mt-2">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">{{ __('invoice.item-name') }}</th>
-                      <th scope="col">{{ __('invoice.item-amount') }}</th>
-                      <th scope="col">{{ __('invoice.item-value') }}</th>
-                      <th scope="col">{{ __('ui.total') }}</th>
-                      <th scope="col">{{ __('ui.actions') }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colspan="4" class="text-right">{{ __('ui.total') }}</td>
-                      <td colspan="2" id="invoices-all-total" class="text-left">0</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <div class="col-sm-12 d-flex justify-content-end">
-                <button id="add-invoice-item" class="sm-3 btn btn-sm btn-primary shadow-sm"><i
-                    class="fas fa-plus fa-sm text-white-50"></i>
-                  {{ __('ui.dialogHeaderAdd') }}</button>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 detail-section">
+              <form action="#" method="post" id="create-invoice-form">
+                <input type="hidden" name="id" value="0">
+                <div class="row">
+                  <div class="col-sm-12" id="customer-col">
+                    <small class="form-text text-muted"> {{ __('customer.customer') }} </small>
+                    <select id="select-tools" class="w-100" placeholder="{{ __('customer.customer') }}"></select>
+                    <div class="id-feedback" id="note-feedback"></div>
+                  </div>
+                  <div class="col-lg-6 col-md-12">
+                    <small class="form-text text-muted"> {{ __('invoice.note') }} </small>
+                    <input type="text" class="form-control" name="note" placeholder="{{ __('invoice.note') }}">
+                    <div class="invalid-feedback" id="note-feedback"></div>
+                  </div>
+                  <div class="col-lg-3 col-md-12">
+                    <small class="form-text text-muted"> {{ __('invoice.start') }} </small>
+                    <input type="date" class="form-control" name="start" required>
+                    <div class="invalid-feedback" id="start-feedback"></div>
+                  </div>
+                  <div class="col-lg-3 col-md-12">
+                    <small class="form-text text-muted"> {{ __('invoice.end') }} </small>
+                    <input type="date" min="{{ now()->toDateString('Y-m-d') }}" class="form-control" name="end"
+                      required>
+                    <div class="invalid-feedback" id="end-feedback"></div>
+                  </div>
+                  <div class="col-sm-12">
+                    <table id="invoice-items" class="table table-striped mt-2">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">{{ __('invoice.item-name') }}</th>
+                          <th scope="col">{{ __('invoice.item-amount') }}</th>
+                          <th scope="col">{{ __('invoice.item-value') }}</th>
+                          <th scope="col">{{ __('ui.total') }}</th>
+                          <th scope="col">{{ __('ui.actions') }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="4" class="text-right">{{ __('ui.total') }}</td>
+                          <td colspan="2" id="invoices-all-total" class="text-left">0</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                  <div class="col-sm-12 d-flex justify-content-end">
+                    <button id="add-invoice-item" class="sm-3 btn btn-sm btn-primary shadow-sm"><i
+                        class="fas fa-plus fa-sm text-white-50"></i>
+                      {{ __('ui.dialogHeaderAdd') }}</button>
+                  </div>
+                </div>
+              </form>
+              <div class="alert alert-danger" style="display: none;" id="create-alert" role="alert">
+                {{ __('ui.error') }}
               </div>
             </div>
-          </form>
-          <div class="alert alert-danger" style="display: none;" id="create-alert" role="alert">
-            {{ __('ui.error') }}
+            <div class="col-lg-4 col-md-12 evidence-section" style="display: none; overflow-y: scroll;">
+              <section class="w-full " style="background: black; width:100%">
+                <img src="" style="width: 100%;" id="evidence-image" alt="evidence">
+              </section>
+            </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">{{ __('ui.dialogCancel') }}</button>
-          <button class="btn btn-primary" type="submit" form="create-invoice-form">{{ __('ui.dialogConfirm') }}</button>
+          <section>
+            <button class="btn btn-success btn-evidence" data-action="allow">{{ __('invoice.allow') }}</button>
+            <button class="btn btn-danger btn-evidence" data-action="deny">{{ __('invoice.deny') }}</button>
+          </section>
+          <section>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">{{ __('ui.dialogCancel') }}</button>
+            <button class="btn btn-primary" type="submit"
+              form="create-invoice-form">{{ __('ui.dialogConfirm') }}</button>
+          </section>
         </div>
       </div>
     </div>
@@ -187,6 +203,8 @@
     const submitBtn = $('#create button[type="submit"]');
     const addItemBtn = $('#add-invoice-item');
     const customerCol = $('#customer-col');
+    const detailSection = $("#create .detail-section")
+    const evidenceSection = $("#create .evidence-section")
     let status = 0; //  -1 = look, 0 = create, 1 = update
     let items = [];
 
@@ -208,7 +226,10 @@
       url: "{{ route('customers2') }}",
       success: (data) => {
         selectize.clearOptions();
-        data = data.map(d => ({id: d.id, name: `${d.firstname} ${d.lastname}`}));
+        data = data.map(d => ({
+          id: d.id,
+          name: `${d.firstname} ${d.lastname}`
+        }));
         for (const i in data) {
           selectize.addOption(data[i]);
         }
@@ -421,6 +442,24 @@
 
     startInput.on("change", update)
 
+    const updateEvidence = (evidence = false) => {
+      if (evidence) {
+        evidenceSection.show();
+        $('.btn-evidence').show();
+        
+        if (detailSection.hasClass("col-lg-12")) {
+          detailSection.removeClass("col-lg-12").addClass("col-lg-8");
+        }
+      } else {
+        evidenceSection.hide();
+        $('.btn-evidence').hide();
+
+        if (detailSection.hasClass("col-lg-8")) {
+          detailSection.addClass("col-lg-12").removeClass("col-lg-8");
+        }
+      }
+    }
+
     const editFunc = (id, note, start, end, _items) => {
       status = 1;
       $("#create-invoice-form input[name='id']").val(id);
@@ -431,9 +470,11 @@
       update();
       validation.clear("#create", false);
       modal.modal('show');
+      
+      updateEvidence(false);
     }
 
-    const lookFunc = (id, note, start, end, _items) => {
+    const lookFunc = (id, note, start, end, _items, evidence = null) => {
       status = -1;
       $("#create-invoice-form input[name='id']").val(id)
       startInput.val(dayjs(start).format('YYYY-MM-DD'));
@@ -443,6 +484,13 @@
       update();
       validation.clear("#create", false);
       modal.modal('show');
+      
+      if (evidence != null) {
+        $('#evidence-image').attr('src', "{{ url('storage/images/'.':image') }}".replace(":image", evidence));
+        $('.btn-evidence').attr('data-id', id);
+      }
+
+      updateEvidence(evidence != null)
     }
 
     const patchFunc = (id, status) => {
@@ -472,6 +520,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           RefreshTable();
+          modal.modal('hide');
           Alert.success.fire({
             text: `{{ __('invoice.changed-status') }}`,
           });
@@ -488,6 +537,14 @@
       validation.clear("#create", false);
       modal.modal('show');
     })
+
+    $('.btn-evidence').on('click', function(){
+      const action = $(this).attr('data-action');
+      const id = $(this).attr('data-id');
+
+      return action == "allow" ? patchFunc(id, 1) : patchFunc(id, 0);
+    })
+
 
     update()
   </script>

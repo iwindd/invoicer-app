@@ -77,7 +77,7 @@
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                 {{ __('invoice.type-process') }}</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800"data-format="number" data-suffix="{{__('ui.item')}}">
+              <div class="h5 mb-0 font-weight-bold text-gray-800"data-format="number" data-suffix="{{ __('ui.item') }}">
                 {{ $invoices->where('status', 0)->where('end', '>', now())->count() }}
               </div>
             </div>
@@ -97,7 +97,7 @@
             <div class="col mr-2">
               <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                 {{ __('invoice.type-overtime') }}</div>
-              <div class="h5 mb-0 font-weight-bold text-gray-800"data-format="number" data-suffix="{{__('ui.item')}}">
+              <div class="h5 mb-0 font-weight-bold text-gray-800"data-format="number" data-suffix="{{ __('ui.item') }}">
                 {{ $invoices->where('status', 0)->where('end', '<', now())->count() }}
               </div>
             </div>
@@ -194,40 +194,40 @@
         </div>
         <div class="card-body">
           @php
-              $all = count($invoices);
-              $success = $invoices->where('status', 1)->count();
-              $process = $invoices->where('status', 0)->where('end', '>', now())->count();
-              $overtime = $invoices->where('status', 0)->where('end', '<', now())->count();
-              $cancelled = $invoices->where('status', -1)->count();
-              
-              $successPercentage = $all > 0 ? ($success / $all) * 100 : 0;
-              $processPercentage = $all > 0 ? ($process / $all) * 100 : 0;
-              $overtimePercentage = $all > 0 ? ($overtime / $all) * 100 : 0;
-              $cancelledPercentage = $all > 0 ? ($cancelled / $all) * 100 : 0;
+            $all = count($invoices);
+            $success = $invoices->where('status', 1)->count();
+            $process = $invoices->where('status', 0)->where('end', '>', now())->count();
+            $overtime = $invoices->where('status', 0)->where('end', '<', now())->count();
+            $cancelled = $invoices->where('status', -1)->count();
+
+            $successPercentage = $all > 0 ? ($success / $all) * 100 : 0;
+            $processPercentage = $all > 0 ? ($process / $all) * 100 : 0;
+            $overtimePercentage = $all > 0 ? ($overtime / $all) * 100 : 0;
+            $cancelledPercentage = $all > 0 ? ($cancelled / $all) * 100 : 0;
           @endphp
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-success') }}<span
-              class="float-right">{{$successPercentage}}%</span></h4>
+              class="float-right">{{ $successPercentage }}%</span></h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-success" role="progressbar" style="width: {{$successPercentage}}%" aria-valuenow="{{$successPercentage}}"
-              aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $successPercentage }}%"
+              aria-valuenow="{{ $successPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-process') }}<span
-              class="float-right">{{$processPercentage}}%</span></h4>
+              class="float-right">{{ $processPercentage }}%</span></h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: {{$processPercentage}}%" aria-valuenow="{{$processPercentage}}"
-              aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $processPercentage }}%"
+              aria-valuenow="{{ $processPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-overtime') }}<span
-              class="float-right">{{$overtimePercentage}}%</span></h4>
+              class="float-right">{{ $overtimePercentage }}%</span></h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-danger" role="progressbar" style="width: {{$overtimePercentage}}%" aria-valuenow="{{$overtimePercentage}}"
-              aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $overtimePercentage }}%"
+              aria-valuenow="{{ $overtimePercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">{{ __('invoice.invoice') }}{{ __('invoice.type-cancel') }}<span
-              class="float-right">{{$cancelledPercentage}}%</span></h4>
+              class="float-right">{{ $cancelledPercentage }}%</span></h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-secondary" role="progressbar" style="width: {{$cancelledPercentage}}%" aria-valuenow="{{$cancelledPercentage}}"
-              aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $cancelledPercentage }}%"
+              aria-valuenow="{{ $cancelledPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
         </div>
       </div>
@@ -236,7 +236,7 @@
 @endsection
 
 @section('modals')
-  <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal fade " id="create" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -246,62 +246,77 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="#" method="post" id="create-invoice-form">
-            <div class="row">
-              <input type="hidden" name="id" value="{{ $customer['id'] }}">
-              <div class="col-lg-6 col-md-12">
-                <small class="form-text text-muted"> {{ __('invoice.note') }} </small>
-                <input type="text" class="form-control" name="note" placeholder="{{ __('invoice.note') }}">
-                <div class="invalid-feedback" id="note-feedback"></div>
-              </div>
-              <div class="col-lg-3 col-md-12">
-                <small class="form-text text-muted"> {{ __('invoice.start') }} </small>
-                <input type="date" class="form-control" name="start" required>
-                <div class="invalid-feedback" id="start-feedback"></div>
-              </div>
-              <div class="col-lg-3 col-md-12">
-                <small class="form-text text-muted"> {{ __('invoice.end') }} </small>
-                <input type="date" min="{{ now()->toDateString('Y-m-d') }}" class="form-control" name="end"
-                  required>
-                <div class="invalid-feedback" id="end-feedback"></div>
-              </div>
-              <div class="col-sm-12">
-                <table id="invoice-items" class="table table-striped mt-2">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">{{ __('invoice.item-name') }}</th>
-                      <th scope="col">{{ __('invoice.item-amount') }}</th>
-                      <th scope="col">{{ __('invoice.item-value') }}</th>
-                      <th scope="col">{{ __('ui.total') }}</th>
-                      <th scope="col">{{ __('ui.actions') }}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colspan="4" class="text-right">{{ __('ui.total') }}</td>
-                      <td colspan="2" id="invoices-all-total" class="text-left">0</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <div class="col-sm-12 d-flex justify-content-end">
-                <button id="add-invoice-item" class="sm-3 btn btn-sm btn-primary shadow-sm"><i
-                    class="fas fa-plus fa-sm text-white-50"></i>
-                  {{ __('ui.dialogHeaderAdd') }}</button>
+          <div class="row">
+            <div class="col-lg-12 col-md-12 detail-section">
+              <form action="#" method="post" id="create-invoice-form">
+                <div class="row">
+                  <input type="hidden" name="id" value="{{ $customer['id'] }}">
+                  <div class="col-lg-6 col-md-12">
+                    <small class="form-text text-muted"> {{ __('invoice.note') }} </small>
+                    <input type="text" class="form-control" name="note" placeholder="{{ __('invoice.note') }}">
+                    <div class="invalid-feedback" id="note-feedback"></div>
+                  </div>
+                  <div class="col-lg-3 col-md-12">
+                    <small class="form-text text-muted"> {{ __('invoice.start') }} </small>
+                    <input type="date" class="form-control" name="start" required>
+                    <div class="invalid-feedback" id="start-feedback"></div>
+                  </div>
+                  <div class="col-lg-3 col-md-12">
+                    <small class="form-text text-muted"> {{ __('invoice.end') }} </small>
+                    <input type="date" min="{{ now()->toDateString('Y-m-d') }}" class="form-control"
+                      name="end" required>
+                    <div class="invalid-feedback" id="end-feedback"></div>
+                  </div>
+                  <div class="col-sm-12">
+                    <table id="invoice-items" class="table table-striped mt-2">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">{{ __('invoice.item-name') }}</th>
+                          <th scope="col">{{ __('invoice.item-amount') }}</th>
+                          <th scope="col">{{ __('invoice.item-value') }}</th>
+                          <th scope="col">{{ __('ui.total') }}</th>
+                          <th scope="col">{{ __('ui.actions') }}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="4" class="text-right">{{ __('ui.total') }}</td>
+                          <td colspan="2" id="invoices-all-total" class="text-left">0</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                  <div class="col-sm-12 d-flex justify-content-end">
+                    <button id="add-invoice-item" class="sm-3 btn btn-sm btn-primary shadow-sm"><i
+                        class="fas fa-plus fa-sm text-white-50"></i>
+                      {{ __('ui.dialogHeaderAdd') }}</button>
+                  </div>
+                </div>
+              </form>
+              <div class="alert alert-danger" style="display: none;" id="create-alert" role="alert">
+                {{ __('ui.error') }}
               </div>
             </div>
-          </form>
-          <div class="alert alert-danger" style="display: none;" id="create-alert" role="alert">
-            {{ __('ui.error') }}
+            <div class="col-lg-4 col-md-12 evidence-section" style="display: none; overflow-y: scroll;">
+              <section class="w-full " style="background: black; width:100%">
+                <img src="" style="width: 100%;" id="evidence-image" alt="evidence"> 
+              </section>
+            </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">{{ __('ui.dialogCancel') }}</button>
-          <button class="btn btn-primary" type="submit"
-            form="create-invoice-form">{{ __('ui.dialogConfirm') }}</button>
+        <div class="modal-footer ">
+          <section>
+            <button class="btn btn-success btn-evidence" data-action="allow">{{ __('invoice.allow') }}</button>
+            <button class="btn btn-danger btn-evidence" data-action="deny">{{ __('invoice.deny') }}</button>
+          </section>
+          <section>
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">{{ __('ui.dialogCancel') }}</button>
+            <button class="btn btn-primary" type="submit"
+              form="create-invoice-form">{{ __('ui.dialogConfirm') }}</button>
+          </section>
         </div>
       </div>
     </div>
@@ -375,6 +390,8 @@
     const modal = $('#create');
     const submitBtn = $('#create button[type="submit"]');
     const addItemBtn = $('#add-invoice-item');
+    const detailSection = $("#create .detail-section")
+    const evidenceSection = $("#create .evidence-section")
     let status = 0; //  -1 = look, 0 = create, 1 = update
     let items = [];
 
@@ -555,7 +572,8 @@
             validation.clear("#create", false);
             Toast.fire({
               icon: "success",
-              title: "{{ __('ui.edited', ['text' => ':id']) }}".replace(":id", "{{ __('invoice.id') }}" +
+              title: "{{ __('ui.edited', ['text' => ':id']) }}".replace(":id",
+                "{{ __('invoice.id') }}" +
                 ff.number(payload.id))
             });
             update()
@@ -579,6 +597,24 @@
 
     startInput.on("change", update)
 
+    const updateEvidence = (evidence = false) => {
+      if (evidence) {
+        evidenceSection.show();
+        $('.btn-evidence').show();
+        
+        if (detailSection.hasClass("col-lg-12")) {
+          detailSection.removeClass("col-lg-12").addClass("col-lg-8");
+        }
+      } else {
+        evidenceSection.hide();
+        $('.btn-evidence').hide();
+
+        if (detailSection.hasClass("col-lg-8")) {
+          detailSection.addClass("col-lg-12").removeClass("col-lg-8");
+        }
+      }
+    }
+
     const editFunc = (id, note, start, end, _items) => {
       status = 1;
       $("#create-invoice-form input[name='id']").val(id)
@@ -589,9 +625,11 @@
       update();
       validation.clear("#create", false);
       modal.modal('show');
+
+      updateEvidence(false);
     }
 
-    const lookFunc = (id, note, start, end, _items) => {
+    const lookFunc = (id, note, start, end, _items, evidence = null) => {
       status = -1;
       $("#create-invoice-form input[name='id']").val(id)
       startInput.val(dayjs(start).format('YYYY-MM-DD'));
@@ -601,6 +639,13 @@
       update();
       validation.clear("#create", false);
       modal.modal('show');
+
+      if (evidence != null) {
+        $('#evidence-image').attr('src', "{{ url('storage/images/'.':image') }}".replace(":image", evidence));
+        $('.btn-evidence').attr('data-id', id);
+      }
+
+      updateEvidence(evidence != null)
     }
 
     const patchFunc = (id, status) => {
@@ -630,6 +675,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           RefreshTable();
+          modal.modal('hide');
           Alert.success.fire({
             text: `{{ __('invoice.changed-status') }}`,
           });
@@ -646,6 +692,13 @@
       update();
       validation.clear("#create", false);
       modal.modal('show');
+    })
+
+    $('.btn-evidence').on('click', function(){
+      const action = $(this).attr('data-action');
+      const id = $(this).attr('data-id');
+
+      return action == "allow" ? patchFunc(id, 1) : patchFunc(id, 0);
     })
 
     update()

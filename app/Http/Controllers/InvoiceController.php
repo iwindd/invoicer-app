@@ -19,7 +19,7 @@ class InvoiceController extends Controller
         if (request()->ajax()) {
             return datatables()->of(
                 $this->auth()->invoices()
-                    ->with(['items', 'customer'])
+                    ->with(['items', 'customer', 'evidence'])
                     ->whereHas('customer', function($query) {
                         $query->withoutTrashed();
                     })
@@ -37,7 +37,12 @@ class InvoiceController extends Controller
     public function get(Request $request)
     {
         if (request()->ajax()) {
-            return datatables()->of($this->auth()->customers()->find($request->id)->invoices()->with('items')->select('*'))
+            return datatables()->of(
+                $this->auth()->customers()->find($request->id)
+                ->invoices()->with([
+                    'items', 
+                    'evidence'
+                ])->select('*'))
                 ->addColumn("action", "customers.customer.action")
                 ->rawColumns(['action'])
                 ->addIndexColumn()
