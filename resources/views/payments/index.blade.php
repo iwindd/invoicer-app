@@ -130,6 +130,36 @@
       });
     }
 
+    const patchFunc = (id, name) => {
+      Confirmation.fire({
+        text: `{{ __('payment.active_confirmation', ['text' => ':name']) }}`.replace(":name", name),
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({
+              url:  "{{ route('payment', ['id' => ':id']) }}".replace(":id", id),
+              type: 'PATCH',
+              data: {
+                id
+              }
+            });
+            return true;
+          } catch (error) {
+            console.error(error);
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          RefreshTable();
+          Alert.success.fire({
+            text: `{{ __('payment.active_success', ['text' => ':name']) }}`.replace(":name", name),
+          });
+        }
+      });
+    }
+
     $(document).ready(function() {
       $("#dataTable").DataTable({
         processing: true,

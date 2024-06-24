@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PatchPaymentRequest;
 use App\Http\Requests\StorePaymentRequest;
 use App\Http\Requests\UpdatePaymentRequest;
 use App\Models\Payment;
@@ -54,6 +55,13 @@ class PaymentController extends Controller
         $payment->update($request->validated());
         
         return Response()->noContent();
+    }
+
+    public function patch(PatchPaymentRequest $request) {
+        $this->deactivePayment(); 
+        $payment = Payment::find($request->id)->update(['active' => true]);
+
+        return Response()->json($payment);
     }
 
     public function destroy(Request $request) {
