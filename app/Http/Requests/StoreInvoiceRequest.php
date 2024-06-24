@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\CustomerOwnership;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreInvoiceRequest extends FormRequest
@@ -34,5 +35,19 @@ class StoreInvoiceRequest extends FormRequest
             'items.*.amount' => ['required', 'numeric', 'min:0'],
             'items.*.value' => ['required', 'numeric', 'min:0']
         ];
+    }
+
+    /**
+     * Modify the input data before validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'id' => $this->route('id'),
+            'start' => Carbon::parse($this->start)->startOfDay(),
+            'end' => Carbon::parse($this->end)->endOfDay(),
+        ]);
     }
 }

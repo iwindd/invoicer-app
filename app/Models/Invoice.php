@@ -12,21 +12,21 @@ class Invoice extends Model
     use HasFactory;
 
     protected $fillable = [
-        'note', 'start', 'end', 'status', 'createdby_id'
+        'note', 'start', 'end', 'status', 'user_id'
     ];
     
     public function customer() : BelongsTo
     {
-        return $this->belongsTo(Customer::class, "owner_id");
+        return $this->belongsTo(Customer::class);
     }
 
     public function user() : BelongsTo
     {
-        return $this->belongsTo(User::class, "createdby_id");
+        return $this->belongsTo(User::class);
     }
 
     public function items() : HasMany
     {
-        return $this->hasMany(InvoiceItem::class, 'invoice_id');
+        return $this->hasMany(InvoiceItem::class);
     }
 }

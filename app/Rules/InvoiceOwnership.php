@@ -27,7 +27,7 @@ class InvoiceOwnership implements Rule
      */
     public function passes($attribute, $value)
     {
-        return (Invoice::with('customer')->findOrFail($value))->customer->application === Auth::user()->application;
+        return (Invoice::findOrFail($value))->user_id == auth()->id();  
     }
 
     /**

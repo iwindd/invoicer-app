@@ -125,7 +125,6 @@
               <th>{{ __('invoice.value') }}</th>
               <th>{{ __('invoice.start') }}</th>
               <th>{{ __('invoice.end') }}</th>
-              <th>{{ __('invoice.createdBy') }}</th>
               <th>{{ __('ui.actions') }}</th>
             </tr>
           </thead>
@@ -358,13 +357,6 @@
             render: ff.date
           },
           {
-            data: 'user',
-            name: 'user',
-            orderable: false,
-            searchable: false,
-            render: data => data.name
-          },
-          {
             data: 'action',
             name: 'action',
             orderable: false
@@ -511,8 +503,8 @@
       if (status == -1) return;
 
       validation.clear("#create");
+      const id = $("#create-invoice-form input[name='id']").val();
       const payload = {
-        id: $("#create-invoice-form input[name='id']").val(),
         note: $("#create-invoice-form input[name='note']").val(),
         start: startInput.val(),
         end: endInput.val(),
@@ -521,7 +513,7 @@
 
       if (status == 0) {
         $.ajax({
-          url: "{{ route('invoices') }}",
+          url: "{{ route('invoice', ['id' => ':id']) }}".replace(':id', id),
           type: 'POST',
           data: JSON.stringify(payload),
           contentType: 'application/json',
@@ -552,7 +544,7 @@
         });
       } else {
         $.ajax({
-          url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", payload.id),
+          url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", id),
           type: 'PUT',
           data: JSON.stringify(payload),
           contentType: 'application/json',

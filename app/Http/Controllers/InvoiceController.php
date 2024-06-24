@@ -18,14 +18,12 @@ class InvoiceController extends Controller
     {
         if (request()->ajax()) {
             return datatables()->of(
-                    Invoice::with(['items', 'user', 'customer'])
-                    ->whereHas('user', function($query) {
-                        $query->where('application', Auth::user()->application);
-                    })
+                $this->auth()->invoices()
+                    ->with(['items', 'customer'])
                     ->whereHas('customer', function($query) {
                         $query->withoutTrashed();
                     })
-                    ->select('*')
+                    ->select('*') 
                 )
                 ->addColumn("action", "invoices.action")
                 ->rawColumns(['action'])
@@ -39,7 +37,7 @@ class InvoiceController extends Controller
     public function get(Request $request)
     {
         if (request()->ajax()) {
-            return datatables()->of(Invoice::with(['items', 'user'])->where('owner_id', $request->id)->select('*'))
+            return datatables()->of($this->auth()->customers()->find($request->id)->invoices()->with('items')->select('*'))
                 ->addColumn("action", "customers.customer.action")
                 ->rawColumns(['action'])
                 ->addIndexColumn()
@@ -49,44 +47,29 @@ class InvoiceController extends Controller
 
     public function store(StoreInvoiceRequest $request)
     {
-        $invoiceData = $request->safe()->only(['id', 'note', 'start', 'end', 'items']);
-        $customer = Customer::find($invoiceData['id']);
-        $startOfDay = Carbon::parse($invoiceData['start'])->startOfDay();
-        $endOfDay = Carbon::parse($invoiceData['end'])->endOfDay();
-        $invoice  = $customer->invoices()->create([
-            'note' => $invoiceData['note'],
-            'start' => $startOfDay,
-            'end' => $endOfDay,
-            'status' => 0,
-            'createdby_id' => auth()->id()
-        ]);
+        $payload  = array_merge($request->safe()->except('items'), ['user_id' => auth()->id()]);
+        $customer = $this->auth()->customers()->find($request->id);
+        $invoice  = $customer->invoices()->create($payload);
+        $invoice->items()->createMany($request->safe()->only('items')['items']); 
 
-        $invoice->items()->createMany($invoiceData['items']);
-
-        return Response()->noContent();
+        return Response()->noContent( );
     }
 
     public function update(UpdateInvoiceRequest $request)
     {
-        $invoiceData = $request->safe()->only(['id', 'note', 'start', 'end', 'items']);
-        $invoice = Invoice::find($invoiceData['id']);
-        $startOfDay = Carbon::parse($invoiceData['start'])->startOfDay();
-        $endOfDay = Carbon::parse($invoiceData['end'])->endOfDay();
-        $invoice->update([
-            'note' => $invoiceData['note'],
-            'start' => $startOfDay,
-            'end' => $endOfDay,
-        ]);
-
+        $invoice = $this->auth()->invoices()->find($request->id);
+        $invoice->update($request->safe()->only("note", "start", "end"));
         $invoice->items()->delete();
-        $invoice->items()->createMany($invoiceData['items']);
+        $invoice->items()->createMany($request->safe()->only('items')['items']);
 
         return Response()->noContent();
     }
 
     public function patch(PatchInvoiceRequest $request)
     {
-        $data = $request->validated();
-        Invoice::find($data['id'])->update($request->safe()->only(['status']));
+        $invoice = $this->auth()->invoices()->find($request->id);
+        $invoice->update($request->safe()->only('status'));
+
+        return Response()->noContent();
     }
 }

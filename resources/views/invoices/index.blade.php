@@ -25,7 +25,6 @@
               <th>{{ __('invoice.start') }}</th>
               <th>{{ __('invoice.end') }}</th>
               <th>{{ __('customer.customer') }}</th>
-              <th>{{ __('invoice.createdBy') }}</th>
               <th>{{ __('ui.actions') }}</th>
             </tr>
           </thead>
@@ -168,13 +167,6 @@
             orderable: false,
             searchable: false,
             render: data => data ? `${data?.firstname} ${data?.lastname}` : "ไม่พบ",
-          },
-          {
-            data: 'user',
-            name: 'user',
-            orderable: false,
-            searchable: false,
-            render: data => data.name
           },
           {
             data: 'action',
@@ -353,8 +345,8 @@
       if (status == -1) return;
 
       validation.clear("#create");
+      const id = $("#create-invoice-form input[name='id']").val();
       const payload = {
-        id: $("#create-invoice-form input[name='id']").val(),
         note: $("#create-invoice-form input[name='note']").val(),
         start: startInput.val(),
         end: endInput.val(),
@@ -363,7 +355,7 @@
 
       if (status == 0) {
         $.ajax({
-          url: "{{ route('invoices') }}",
+          url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", id),
           type: 'POST',
           data: JSON.stringify(payload),
           contentType: 'application/json',
@@ -394,7 +386,7 @@
         });
       } else {
         $.ajax({
-          url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", payload.id),
+          url: "{{ route('invoice', ['id' => ':id']) }}".replace(":id", id),
           type: 'PUT',
           data: JSON.stringify(payload),
           contentType: 'application/json',
@@ -406,7 +398,7 @@
             Toast.fire({
               icon: "success",
               title: "{{ __('ui.edited', ['text' => ':id']) }}".replace(":id", "{{ __('invoice.id') }}" +
-                ff.number(payload.id))
+                ff.number(id))
             });
             update()
             RefreshTable()

@@ -21,7 +21,6 @@
               <th>{{ __('customer.joinedAt') }}</th>
               <th>{{ __('customer.firstname') }} {{ __('customer.lastname') }}</th>
               <th style="display: none"></th>
-              <th>{{ __('customer.createdBy') }}</th>
               <th>{{ __('ui.actions') }}</th>
             </tr>
           </thead>
@@ -63,8 +62,8 @@
             </div>
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('customer.joinedAt') }} </small>
-              <input type="date" class="form-control" id="joinedAt" name="joinedAt" required>
-              <div class="invalid-feedback" id="joinedAt-feedback"></div>
+              <input type="date" class="form-control" id="joined_at" name="joined_at" required>
+              <div class="invalid-feedback" id="joined_at-feedback"></div>
             </div>
           </form>
           <div class="alert alert-danger" style="display: none;" id="create-alert" role="alert">{{ __('ui.error') }}
@@ -117,10 +116,9 @@
         ajax: "{{ route('customers') }}",
         order: [[0, 'desc']],
         columns: [
-          { data: 'joinedAt', name: 'joinedAt', render: ff.date},
+          { data: 'joined_at', name: 'joined_at', render: ff.date},
           { data: 'firstname', name: 'firstname', render: (_, __, row) => `${row.firstname} ${row.lastname}`},
           { data: 'lastname', name: 'lastname', visible: false},
-          { data: 'owner', name: 'owner', orderable: false, searchable: false, render: (data) => data.name},
           { data: 'action', name: 'action', orderable: false},
         ]
       }) 

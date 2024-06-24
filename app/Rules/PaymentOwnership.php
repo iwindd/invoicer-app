@@ -4,7 +4,6 @@ namespace App\Rules;
 
 use App\Models\Payment;
 use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Support\Facades\Auth;
 
 class PaymentOwnership implements Rule
 {
@@ -27,7 +26,7 @@ class PaymentOwnership implements Rule
      */
     public function passes($attribute, $value)
     {
-        return (Payment::findOrFail($value))->application === Auth::user()->application;
+        return (Payment::findOrFail($value))->user_id === auth()->id();
     }
 
     /**

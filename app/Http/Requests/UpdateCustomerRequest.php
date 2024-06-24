@@ -34,7 +34,7 @@ class UpdateCustomerRequest extends FormRequest
                 Rule::unique('customers')->ignore($this->route('id')), 
                 Rule::unique('users')->ignore($this->route('id'))
             ],
-            'joinedAt' => ['required']
+            'joined_at' => ['required']
         ];
     }
 }

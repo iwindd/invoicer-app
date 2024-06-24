@@ -16,13 +16,10 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
             'id' => 1,
-            'application' => 1,
             'name' => 'SiamIT Admin',
             'email' => 'siamit@gmail.com',
             'password' => \bcrypt('password'),
-            'root' => true,
-            'owner' => true,
-            'permission' => 1
+            'role' => 'user',
         ]);;
     }
 }

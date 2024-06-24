@@ -14,16 +14,16 @@ class Customer extends Model
     use SoftDeletes;
     
     protected $fillable = [
-        'application', 'isApplication', 'firstname', 'lastname', 'email', 'joinedAt', 'createdBy_id'
+        'firstname', 'lastname', 'email', 'joined_at'
     ];
 
-    public function owner() : BelongsTo
+    public function user() : BelongsTo
     {
-        return $this->belongsTo(User::class, "createdBy_id");
+        return $this->belongsTo(User::class);
     }
 
     public function invoices() : HasMany
     {
-        return $this->hasMany(Invoice::class, 'owner_id');
+        return $this->hasMany(Invoice::class);
     }
 }

@@ -27,7 +27,20 @@ class StorePaymentRequest extends FormRequest
             'title' => ['required'],
             'account' => ['required'],
             'name' => ['required'],
-            'active' => ['required']
+            'active' => ['required', 'boolean']
         ];
+    }
+
+    /**
+     * Modify the input data before validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'id' => $this->route('id'),
+            'active' => $this->active == '1'
+        ]);
     }
 }

@@ -5,7 +5,7 @@
   </a>
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <a class="dropdown-item fa-fw" href="{{route("customer", ['id' => $owner_id])}}"><i class="fas fa-user fa-fw mr-2 text-gray-400"></i>{{__('customer.customer')}}</a>
+    <a class="dropdown-item fa-fw" href="{{route("customer", ['id' => $user_id])}}"><i class="fas fa-user fa-fw mr-2 text-gray-400"></i>{{__('customer.customer')}}</a>
     @if ($status == 0)
       <button class="dropdown-item" onclick="editFunc({{$id}}, '{{$note}}', '{{$start}}', '{{$end}}', '{{json_encode($items)}}')"><i class="fas fa-pen fa-fw mr-2 text-primary"></i>{{ __('ui.edit-btn') }}</button>
       <div class="dropdown-divider"></div>

@@ -14,15 +14,12 @@ use function PHPUnit\Framework\isNull;
 class PaymentController extends Controller
 {
     private function deactivePayment(){
-        Payment::where([
-            ['application', Auth::user()->application],
-            ['active', true]
-        ])->update(['active' => false]);
+        $this->auth()->payments()->where('active', true)->update(['active' => false]);
     }
     //
     public function index() {
         if (request()->ajax()) {
-            return datatables()->of(Payment::where('application', Auth::user()->application)->select('*'))
+            return datatables()->of($this->auth()->payments())
                 ->addColumn("action", "payments.action")
                 ->rawColumns(['action'])
                 ->addIndexColumn()
@@ -33,25 +30,18 @@ class PaymentController extends Controller
     }
 
     public function store(StorePaymentRequest $request) {
-        $data = $request->validated();
-
-        if ($data['active'] == '1'){
+        if ($request->validated()['active']) {
             $this->deactivePayment();
         }
 
-        $payment = new Payment;
-        $payment->application = Auth::user()->application;
-        $payment->title = $data['title'];
-        $payment->account = $data['account'];
-        $payment->name = $data['name'];
-        $payment->active = $data['active'] == '1';
-        $payment->save();
+        $payment = $this->auth()->payments();
+        $payment->create($request->validated());
 
-        return Response()->json(isNull($request->use));
+        return Response()->noContent();
     }
 
     public function update(UpdatePaymentRequest $request){
-        $payment = Payment::find($request->id);
+        $payment = $this->auth()->payments()->find($request->id);
         $payment->update($request->validated());
         
         return Response()->noContent();
@@ -59,18 +49,15 @@ class PaymentController extends Controller
 
     public function patch(PatchPaymentRequest $request) {
         $this->deactivePayment(); 
-        $payment = Payment::find($request->id)->update(['active' => true]);
+        $payment = $this->auth()->payments()->find($request->id);
+        $payment->update(['active' => true]);
 
-        return Response()->json($payment);
+        return Response()->noContent();
     }
 
     public function destroy(Request $request) {
-        $paymeny = Payment::where([
-            ['id', $request->id],
-            ['application', Auth::user()->application]
-        ]);
-
-        $paymeny->delete();
+        $payment = $this->auth()->payments()->find($request->id);
+        $payment->delete();
 
         return Response()->noContent();
     }
