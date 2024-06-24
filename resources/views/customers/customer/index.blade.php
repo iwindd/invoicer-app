@@ -11,8 +11,8 @@
         </a>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" href="#"><i
-              class="fas fa-link fa-fw mr-2 text-secondary"></i>{{ __('invoice.api') }}</a>
+          <button class="dropdown-item" id="copyapi"><i
+              class="fas fa-link fa-fw mr-2 text-secondary"></i>{{ __('invoice.api') }}</button>
           <a class="dropdown-item" href="#"><i
               class="fas fa-cogs fa-fw mr-2 text-info"></i>{{ __('invoice.application') }}</a>
           <button class="dropdown-item" id="delete"><i
@@ -811,6 +811,17 @@
           $('button.editMode').hide();
           $('#edit-form input').attr('disabled', true);
         }
+      });
+    })
+  </script>
+
+  <script type="text/javascript">
+    $("#copyapi").on("click", () => {
+      const api = (`<script src=":src"><\/script>`).replace(":src", `{{ route("notice.api", ["id" => request()->id])}}`);
+      navigator.clipboard.writeText(api);
+      Toast.fire({
+        icon: "success",
+        title: "{{ __('invoice.api-copy') }}"
       });
     })
   </script>
