@@ -85,7 +85,7 @@
     const selectize = $select[0].selectize;
 
     $.ajax({
-      url: "{{ route('customers2') }}",
+      url: "{{ route('customers3') }}",
       success: (data) => {
         selectize.clearOptions();
         data = data.map(d => ({

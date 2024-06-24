@@ -36,6 +36,20 @@ class CustomerController extends Controller
         return view('customers.index');
     }
 
+    public function application()
+    {
+        if (request()->ajax()) {
+            $customers = $this->auth()->customers()
+                ->whereNull('application_id')
+                ->select('id', 'firstname', 'lastname')
+                ->get();
+                
+            return Response()->json($customers);
+        }
+
+        return view('customers.index');
+    }
+
     public function get(Request $request)
     {
         $customer = $this->auth()->customers()->find($request->id);
