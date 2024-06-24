@@ -44,9 +44,8 @@
 
       @php
         $navItems = [
-            ['label' => __('nav.dashboard'), 'icon' => 'fas fa-fw fa-tachometer-alt', 'href' => 'dashboard'],
-            ['label' => __('nav.customers'), 'icon' => 'fas fa-fw fa-users', 'href' => 'customers'],
             ['label' => __('nav.invoices'), 'icon' => 'fas fa-fw fa-receipt', 'href' => 'invoices'],
+            ['label' => __('nav.customers'), 'icon' => 'fas fa-fw fa-users', 'href' => 'customers'],
             ['label' => __('nav.applications'), 'icon' => 'fas fa-fw fa-cogs', 'href' => 'applications'],
             ['label' => __('nav.payments'), 'icon' => 'fas fa-fw fa-credit-card', 'href' => 'payments'],
         ];
