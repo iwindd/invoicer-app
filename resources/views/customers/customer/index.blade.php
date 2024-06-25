@@ -13,7 +13,7 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <button class="dropdown-item" id="copyapi"><i
               class="fas fa-link fa-fw mr-2 text-secondary"></i>{{ __('invoice.api') }}</button>
-          @if (Auth::user()->role == "admin")
+          @if (Auth::user()->role == "user")
             @if ($customer->application)
               <button class="dropdown-item " id="login-application"><i
                   class="fas fa-sign-in-alt mr-2 text-info"></i>{{ __('application.login') }}</button>
