@@ -63,7 +63,7 @@
             </div>
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('customer.joinedAt') }} </small>
-              <input type="date" class="form-control" id="joined_at" name="joined_at" required>
+              <input type="date" class="form-control" id="joined_at" value="{{ now()->toDateString('Y-m-d') }}" name="joined_at" required>
               <div class="invalid-feedback" id="joined_at-feedback"></div>
             </div>
           </form>
