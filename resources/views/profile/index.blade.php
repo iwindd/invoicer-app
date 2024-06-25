@@ -39,7 +39,7 @@
               <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">{{ __('auth.email') }}</label>
               <div class="col-sm-10">
                 <input type="email" class="form-control form-control-sm" id="colFormLabelSm"
-                  placeholder="{{ __('auth.email') }}" disabled>
+                  placeholder="{{ __('auth.email') }}" value="{{ Auth::user()->email }}" disabled>
               </div>
             </div>
             <div class="form-group row">
