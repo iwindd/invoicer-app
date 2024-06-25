@@ -899,7 +899,8 @@
     }
 
     $("#login-application").on("click", () => {
-      var applicationId = {{ $customer->application ? $customer->application->id : -1 }};
+      const applicationId = {{ $customer->application ? $customer->application->id : -1 }};
+      ApplicationLogin(applicationId);
     })
   </script>
 @endsection
