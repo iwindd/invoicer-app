@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\LogActivity;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -15,5 +16,12 @@ class Controller extends BaseController
 
     protected function auth() : User{
         return Auth::user();
+    }
+
+    protected function activity($name, $payload = [], $notify = true) {
+        $user = $this->auth();
+        if (!$user) return;
+
+        LogActivity::dispatch($user, $name, $payload, $notify);
     }
 }

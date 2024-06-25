@@ -6,6 +6,7 @@ use App\Http\Requests\PatchProfileRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Phattarachai\LineNotify\Facade\Line;
 
 class ProfileController extends Controller
 {
@@ -24,7 +25,8 @@ class ProfileController extends Controller
         $this->auth()->update([
             'password' => Hash::make($request->safe()->only("password")['password'])
         ]); 
-
+        $this->activity("profile-password-patch", []);
+        
         return Response()->noContent();
     }
 }
