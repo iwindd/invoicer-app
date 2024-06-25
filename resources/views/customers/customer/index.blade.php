@@ -147,9 +147,6 @@
       <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
           <h6 class="m-0 font-weight-bold text-primary">{{ __('customer.customer') }}</h6>
-          <a href="#" class="sm-3 btn btn-sm btn-secondary shadow-sm"><i
-              class="fas fa-sync fa-sm text-white-50"></i>
-            {{ __('ui.line-connect') }}</a>
         </div>
         <div class="card-body">
           <form action="#" method="post" id="edit-form">
