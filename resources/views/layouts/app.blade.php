@@ -46,9 +46,14 @@
         $navItems = [
             ['label' => __('nav.invoices'), 'icon' => 'fas fa-fw fa-receipt', 'href' => 'invoices'],
             ['label' => __('nav.customers'), 'icon' => 'fas fa-fw fa-users', 'href' => 'customers'],
-            ['label' => __('nav.applications'), 'icon' => 'fas fa-fw fa-cogs', 'href' => 'applications'],
             ['label' => __('nav.payments'), 'icon' => 'fas fa-fw fa-credit-card', 'href' => 'payments'],
         ];
+
+        if (Auth::user()->role == 'user') {
+            $navItems = array_merge($navItems, [
+                ['label' => __('nav.applications'), 'icon' => 'fas fa-fw fa-cogs', 'href' => 'applications'],
+            ]);
+        }
       @endphp
 
       @foreach ($navItems as $item)
@@ -86,7 +91,7 @@
               </a>
               <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="{{route('profile')}}">
+                <a class="dropdown-item" href="{{ route('profile') }}">
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   {{ __('nav.profile') }}
                 </a>
