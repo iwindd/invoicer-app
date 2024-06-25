@@ -119,7 +119,7 @@
         columns: [
           { data: 'joined_at', name: 'joined_at', render: ff.date},
           { data: 'firstname', name: 'firstname', render: (_, __, row) => `${row.firstname} ${row.lastname}`},
-          { data: 'invoices', name: 'invoicesData', render: (data) => {
+          { data: 'invoices', name: 'invoicesData', orderable: false, searchable: false, render: (data) => {
             const process = data.filter(i => ff.invoice(i) == 3).length;
             const checking = data.filter(i => ff.invoice(i) == 2).length;
             const overtime = data.filter(i => ff.invoice(i) == 4).length;
