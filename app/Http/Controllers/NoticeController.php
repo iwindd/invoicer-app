@@ -80,11 +80,15 @@ class NoticeController extends Controller
         if (!$customer) return Response()->noContent();
         $route = route('notice', ['id' => $request->id]);
 
-        $canClose = $customer->invoices()
-            ->where([
-                ['status', 0],
-                ['end', '<', now()]
-            ])->count() <= 0;
+        if ($request->only == null) {
+            $canClose = $customer->invoices()
+                ->where([
+                    ['status', 0],
+                    ['end', '<', now()]
+                ])->count() <= 0;
+        }else{
+            $canClose = $request->only == "0" ? false: true;
+        }
 
         $ui = $canClose ? (
             <<<EOT
