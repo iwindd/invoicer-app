@@ -47,7 +47,7 @@ class LogActivity implements ShouldQueue
         if ($activity && $this->notify) {
             try {
                 Line::setToken($this->user->lineToken)
-                    ->send(trans("activity.{$this->name}"));
+                    ->send(trans("activity.{$this->name}", $this->payload));
             } catch (\Throwable $th) {
                 // Handle exception
             }
