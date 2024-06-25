@@ -16,7 +16,9 @@ class CustomerController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            return datatables()->of($this->auth()->customers()->select('*'))
+            return datatables()->of(
+                    $this->auth()->customers()->with("invoices")->select('*')
+                )
                 ->addColumn("action", "customers.action")
                 ->rawColumns(['action'])
                 ->addIndexColumn()

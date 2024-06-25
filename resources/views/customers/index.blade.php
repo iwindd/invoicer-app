@@ -20,6 +20,7 @@
             <tr>
               <th>{{ __('customer.joinedAt') }}</th>
               <th>{{ __('customer.firstname') }} {{ __('customer.lastname') }}</th>
+              <th>{{ __('invoice.table')}}</th>
               <th style="display: none"></th>
               <th>{{ __('ui.actions') }}</th>
             </tr>
@@ -118,6 +119,21 @@
         columns: [
           { data: 'joined_at', name: 'joined_at', render: ff.date},
           { data: 'firstname', name: 'firstname', render: (_, __, row) => `${row.firstname} ${row.lastname}`},
+          { data: 'invoices', name: 'invoicesData', render: (data) => {
+            const process = data.filter(i => ff.invoice(i) == 3).length;
+            const checking = data.filter(i => ff.invoice(i) == 2).length;
+            const overtime = data.filter(i => ff.invoice(i) == 4).length;
+            const waiting = data.filter(i => ff.invoice(i) == 0).length;
+
+            const returnData =  (`
+              ${ process > 0 ? (` <span class="text-warning mr-2"><i class="fas fa-hourglass-half"></i> : ${process}</span>`):"" }
+              ${ checking > 0 ? (` <span class="text-primary mr-2"><i class="fas fa-search"></i> : ${checking}</span>`):"" }
+              ${ overtime > 0 ? (` <span class="text-danger mr-2"><i class="fas fa-times"></i> : ${overtime}</span>`):"" }
+              ${ waiting > 0 ? (` <span class="text-info mr-2"><i class="fas fa-calendar"></i> : ${waiting}</span>`):"" }
+            `).trim();
+
+            return returnData ? returnData : "<span class='text-muted'>ไม่พบข้อมูล</span>"
+          }},
           { data: 'lastname', name: 'lastname', visible: false},
           { data: 'action', name: 'action', orderable: false},
         ]
