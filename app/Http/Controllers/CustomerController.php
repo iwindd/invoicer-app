@@ -52,7 +52,7 @@ class CustomerController extends Controller
 
     public function get(Request $request)
     {
-        $customer = $this->auth()->customers()->find($request->id);
+        $customer = $this->auth()->customers()->with('application')->find($request->id);
         $invoices = $customer->invoices()->get(['status', 'end']);
 
         return view("customers.customer.index", compact('customer', 'invoices'));

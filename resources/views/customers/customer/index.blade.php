@@ -13,8 +13,13 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <button class="dropdown-item" id="copyapi"><i
               class="fas fa-link fa-fw mr-2 text-secondary"></i>{{ __('invoice.api') }}</button>
-          <button class="dropdown-item" id="create-application"><i
-              class="fas fa-cogs fa-fw mr-2 text-info"></i>{{ __('invoice.application') }}</button>
+          @if ($customer->application)
+            <button class="dropdown-item " id="login-application"><i
+                class="fas fa-sign-in-alt mr-2 text-info"></i>{{ __('application.login') }}</button>
+          @else
+            <button class="dropdown-item" id="create-application"><i
+                class="fas fa-cogs fa-fw mr-2 text-info"></i>{{ __('invoice.application') }}</button>
+          @endif
           <button class="dropdown-item" id="delete"><i
               class="fas fa-trash fa-fw mr-2 text-danger"></i>{{ __('ui.delete-btn') }}</button>
         </div>
@@ -150,8 +155,9 @@
             <div class="form-row">
               <div class="form-group col-md-6">
                 <small class="form-text text-muted"> {{ __('customer.firstname') }} </small>
-                <input type="text" class="form-control" disabled name="firstname" value="{{ $customer['firstname'] }}"
-                  default="{{ $customer['firstname'] }}" placeholder="{{ __('customer.firstname') }}" required>
+                <input type="text" class="form-control" disabled name="firstname"
+                  value="{{ $customer['firstname'] }}" default="{{ $customer['firstname'] }}"
+                  placeholder="{{ __('customer.firstname') }}" required>
                 <div class="invalid-feedback" id="firstname-feedback"></div>
               </div>
               <div class="form-group col-md-6">
@@ -302,7 +308,7 @@
             </div>
             <div class="col-lg-4 col-md-12 evidence-section" style="display: none; overflow-y: scroll;">
               <section class="w-full " style="background: black; width:100%">
-                <img src="" style="width: 100%;" id="evidence-image" alt="evidence"> 
+                <img src="" style="width: 100%;" id="evidence-image" alt="evidence">
               </section>
             </div>
           </div>
@@ -601,7 +607,7 @@
       if (evidence) {
         evidenceSection.show();
         $('.btn-evidence').show();
-        
+
         if (detailSection.hasClass("col-lg-12")) {
           detailSection.removeClass("col-lg-12").addClass("col-lg-8");
         }
@@ -641,7 +647,7 @@
       modal.modal('show');
 
       if (evidence != null) {
-        $('#evidence-image').attr('src', "{{ url('storage/images/'.':image') }}".replace(":image", evidence));
+        $('#evidence-image').attr('src', "{{ url('storage/images/' . ':image') }}".replace(":image", evidence));
         $('.btn-evidence').attr('data-id', id);
       }
 
@@ -694,7 +700,7 @@
       modal.modal('show');
     })
 
-    $('.btn-evidence').on('click', function(){
+    $('.btn-evidence').on('click', function() {
       const action = $(this).attr('data-action');
       const id = $(this).attr('data-id');
 
@@ -707,7 +713,8 @@
   <script type="text/javascript">
     $("#delete").on("click", () => {
       Confirmation.fire({
-        text: `{{ __('ui.delete', ['text' => ':name']) }}`.replace(":name", `{{ $customer['firstname'] }} {{ $customer['lastname'] }}`),
+        text: `{{ __('ui.delete', ['text' => ':name']) }}`.replace(":name",
+          `{{ $customer['firstname'] }} {{ $customer['lastname'] }}`),
         showLoaderOnConfirm: true,
         allowOutsideClick: () => !Swal.isLoading(),
         preConfirm: async () => {
@@ -817,7 +824,8 @@
 
   <script type="text/javascript">
     $("#copyapi").on("click", () => {
-      const api = (`<script src=":src"><\/script>`).replace(":src", `{{ route("notice.api", ["id" => request()->id])}}`);
+      const api = (`<script src=":src"><\/script>`).replace(":src",
+        `{{ route('notice.api', ['id' => request()->id]) }}`);
       navigator.clipboard.writeText(api);
       Toast.fire({
         icon: "success",
@@ -838,7 +846,7 @@
               url: "{{ route('applications') }}",
               type: 'POST',
               data: JSON.stringify({
-                id: '{{request()->id}}'
+                id: '{{ request()->id }}'
               }),
               contentType: 'application/json',
             });
@@ -855,6 +863,40 @@
           })
         }
       });
+    })
+  </script>
+
+  <script>
+    const ApplicationLogin = (id) => {
+      Confirmation.fire({
+        text: `{{ __('application.login-confirm') }}`,
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({
+              url: "{{ route('loginAs', ['id' => ':id']) }}".replace(":id", id),
+              type: 'POST',
+            });
+            return true;
+          } catch (error) {
+            console.error(error);
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Alert.success.fire({
+            text: `{{ __('application.login-success') }}`,
+          }).then(() => {
+            location.reload();
+          });
+        }
+      });
+    }
+
+    $("#login-application").on("click", () => {
+      ApplicationLogin({{$customer->application->id}})
     })
   </script>
 @endsection
