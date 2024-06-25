@@ -167,6 +167,11 @@
   </div>
 
   @yield('modals')
+  @if (Auth::user()->role == "user")
+    @yield('modals:user')
+  @else
+    @yield('modals:application')
+  @endif
 
   <!-- Bootstrap core JavaScript-->
   <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
@@ -244,6 +249,11 @@
   </script>
 
   @yield('scripts')
+  @if (Auth::user()->role == "user")
+    @yield('scripts:user')
+  @else
+    @yield('scripts:application')
+  @endif
 </body>
 
 </html>

@@ -13,12 +13,14 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <button class="dropdown-item" id="copyapi"><i
               class="fas fa-link fa-fw mr-2 text-secondary"></i>{{ __('invoice.api') }}</button>
-          @if ($customer->application)
-            <button class="dropdown-item " id="login-application"><i
-                class="fas fa-sign-in-alt mr-2 text-info"></i>{{ __('application.login') }}</button>
-          @else
-            <button class="dropdown-item" id="create-application"><i
-                class="fas fa-cogs fa-fw mr-2 text-info"></i>{{ __('invoice.application') }}</button>
+          @if (Auth::user()->role == "admin")
+            @if ($customer->application)
+              <button class="dropdown-item " id="login-application"><i
+                  class="fas fa-sign-in-alt mr-2 text-info"></i>{{ __('application.login') }}</button>
+            @else
+              <button class="dropdown-item" id="create-application"><i
+                  class="fas fa-cogs fa-fw mr-2 text-info"></i>{{ __('invoice.application') }}</button>
+            @endif
           @endif
           <button class="dropdown-item" id="delete"><i
               class="fas fa-trash fa-fw mr-2 text-danger"></i>{{ __('ui.delete-btn') }}</button>
@@ -833,7 +835,8 @@
       });
     })
   </script>
-
+@endsection
+@section('scripts:user')
   <script type="text/javascript">
     $('#create-application').on("click", () => {
       Confirmation.fire({
@@ -896,7 +899,7 @@
     }
 
     $("#login-application").on("click", () => {
-      ApplicationLogin({{$customer->application->id}})
+      var applicationId = {{ $customer->application ? $customer->application->id : -1 }};
     })
   </script>
 @endsection
