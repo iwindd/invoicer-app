@@ -17,6 +17,7 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request) {
         $this->auth()->update($request->validated());
+        $this->activity("profile-update", $request->validated());
 
         return Response()->noContent();
     }
