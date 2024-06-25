@@ -43,7 +43,7 @@ class CustomerController extends Controller
                 ->whereNull('application_id')
                 ->select('id', 'firstname', 'lastname')
                 ->get();
-                
+
             return Response()->json($customers);
         }
 
@@ -62,6 +62,7 @@ class CustomerController extends Controller
     {
         $customer = $this->auth()->customers();
         $customer->create($request->validated());
+        $this->activity('customer-create', $request->validated());
 
         return response()->noContent();
     }
@@ -70,6 +71,7 @@ class CustomerController extends Controller
     {
         $customer = $this->auth()->customers()->find($request->id);
         $customer->update($request->validated());
+        $this->activity('customer-update', $request->validated());
 
         return response()->noContent();
     }
@@ -79,6 +81,7 @@ class CustomerController extends Controller
         $customer = $this->auth()->customers()->find($request->id);
         $customer->delete();
 
+        $this->activity('customer-delete', $customer->attributesToArray());
         return response()->noContent();
     }
 }

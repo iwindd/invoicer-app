@@ -19,9 +19,13 @@ class Controller extends BaseController
     }
 
     protected function activity($name, $payload = [], $notify = true) {
-        $user = $this->auth();
-        if (!$user) return;
+        try {
+            $user = $this->auth();
+            if (!$user) return;
 
-        LogActivity::dispatch($user, $name, $payload, $notify);
+            LogActivity::dispatch($user, $name, $payload, $notify);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
 }

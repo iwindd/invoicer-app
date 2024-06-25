@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Phattarachai\LineNotify\Facade\Line;
+use Illuminate\Support\Facades\Log; 
 
 class LogActivity implements ShouldQueue
 {
@@ -46,8 +47,11 @@ class LogActivity implements ShouldQueue
 
         if ($activity && $this->notify) {
             try {
+                $translation = trans("activity.{$this->name}", $this->payload);
+                Log::info("Translation for {$this->name}: {$translation}");
+
                 Line::setToken($this->user->lineToken)
-                    ->send(trans("activity.{$this->name}", $this->payload));
+                    ->send($translation);
             } catch (\Throwable $th) {
                 // Handle exception
             }

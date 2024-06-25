@@ -176,9 +176,9 @@
             </div>
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('customer.joinedAt') }} </small>
-              <input type="date" class="form-control" disabled value="{{ $customer['joinedAt'] }}"
-                default="{{ $customer['joinedAt'] }}" id="joinedAt" name="joinedAt" required>
-              <div class="invalid-feedback" id="joinedAt-feedback"></div>
+              <input type="date" class="form-control" disabled value="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}"
+              value="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}" id="joined_at" name="joined_at" required>
+              <div class="invalid-feedback" id="joined_at-feedback"></div>
             </div>
           </form>
         </div>
@@ -773,7 +773,7 @@
         firstname: $("#edit-form input[name='firstname']").val(),
         lastname: $("#edit-form input[name='lastname']").val(),
         email: $("#edit-form input[name='email']").val(),
-        joinedAt: $("#edit-form input[name='joinedAt']").val(),
+        joined_at: $("#edit-form input[name='joined_at']").val(),
       }
 
       Confirmation.fire({
