@@ -18,14 +18,17 @@ class Controller extends BaseController
         return Auth::user();
     }
 
-    protected function activity($name, $payload = [], $notify = true) {
+    protected function activity($name, $payload = [], $user = null, $notify = true) {
         try {
-            $user = $this->auth();
+            if (!$user) {
+                $user = $this->auth();
+            }
+
             if (!$user) return;
 
             LogActivity::dispatch($user, $name, $payload, $notify);
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (\Exception $e) {
+            //
         }
     }
 }

@@ -36,14 +36,16 @@ class PaymentController extends Controller
 
         $payment = $this->auth()->payments();
         $payment->create($request->validated());
-
+        $this->activity('payment-create', $request->validated());
+        
         return Response()->noContent();
     }
 
     public function update(UpdatePaymentRequest $request){
         $payment = $this->auth()->payments()->find($request->id);
         $payment->update($request->validated());
-        
+        $this->activity('payment-update', $request->validated());
+
         return Response()->noContent();
     }
 
@@ -51,6 +53,7 @@ class PaymentController extends Controller
         $this->deactivePayment(); 
         $payment = $this->auth()->payments()->find($request->id);
         $payment->update(['active' => true]);
+        $this->activity('payment-patch', $payment->attributesToArray());
 
         return Response()->noContent();
     }
@@ -58,6 +61,7 @@ class PaymentController extends Controller
     public function destroy(Request $request) {
         $payment = $this->auth()->payments()->find($request->id);
         $payment->delete();
+        $this->activity('payment-delete', $payment->attributesToArray());
 
         return Response()->noContent();
     }

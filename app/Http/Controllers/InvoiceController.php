@@ -56,6 +56,7 @@ class InvoiceController extends Controller
         $customer = $this->auth()->customers()->find($request->id);
         $invoice  = $customer->invoices()->create($payload);
         $invoice->items()->createMany($request->safe()->only('items')['items']); 
+        $this->activity('invoice-create', $customer->attributesToArray());
 
         return Response()->noContent( );
     }
@@ -67,13 +68,17 @@ class InvoiceController extends Controller
         $invoice->items()->delete();
         $invoice->items()->createMany($request->safe()->only('items')['items']);
 
+        $this->activity('invoice-update', $request->safe()->only(['id']));
+        
         return Response()->noContent();
     }
 
     public function patch(PatchInvoiceRequest $request)
     {
-        $invoice = $this->auth()->invoices()->find($request->id);
+        $invoice   = $this->auth()->invoices()->find($request->id);
+        $oldStatus = $invoice->status;
         $invoice->update($request->safe()->only('status'));
+        $this->activity("invoice-patch-({$oldStatus})-({$request->status})", $request->validated());
 
         return Response()->noContent();
     }

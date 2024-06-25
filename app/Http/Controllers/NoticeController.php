@@ -58,7 +58,7 @@ class NoticeController extends Controller
     public function patch(PatchNoticeRequest $request)
     {
         $invoice = Invoice::find($request->invoice);
-
+        $user = $invoice->user;
         $extention = $request->image->getClientOriginalExtension();
         $imageName = date('mdYHis') . uniqid() . '.' . $extention;
         $request->image->storeAs('images', $imageName, 'public');
@@ -69,6 +69,7 @@ class NoticeController extends Controller
         ]);
 
         $invoice->update(['status' => 2]);
+        $this->activity("invoice-patch-report", ['id' => $request->validated()['invoice']], $user);
 
         return redirect()->back();
     }

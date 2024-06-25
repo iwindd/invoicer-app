@@ -36,6 +36,7 @@ class ApplicationController extends Controller
             'password' => \bcrypt('password'),
         ]);
         $customer->update(['application_id' => $application->id]);
+        $this->activity('application-create', $customer->attributesToArray());
 
         return Response()->noContent();
     }
