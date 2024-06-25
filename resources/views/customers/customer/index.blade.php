@@ -697,6 +697,7 @@
       update();
       validation.clear("#create", false);
       modal.modal('show');
+      updateEvidence(false);
     })
 
     $('.btn-evidence').on('click', function() {
