@@ -35,7 +35,7 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{route('invoices')}}">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('invoices') }}">
         <div class="sidebar-brand-text mx-3">{{ config('app.name', 'Laravel') }}</div>
       </a>
 
@@ -43,6 +43,12 @@
       <hr class="sidebar-divider my-0">
 
       @php
+        function isNavItemActive($href)
+        {
+          $currentPath = \Request::path();
+          return $currentPath && strpos($currentPath, $href) === 0;
+        }
+
         $navItems = [
             ['label' => __('nav.invoices'), 'icon' => 'fas fa-fw fa-receipt', 'href' => 'invoices'],
             ['label' => __('nav.customers'), 'icon' => 'fas fa-fw fa-users', 'href' => 'customers'],
@@ -56,9 +62,10 @@
         }
       @endphp
 
+
       @foreach ($navItems as $item)
-        <li class="nav-item">
-          <a class="nav-link" href="{{ Route::has($item['href']) ? route($item['href']) : '#' }}">
+        <li class="nav-item {{ isNavItemActive($item['href']) ? 'active' : '' }}">
+          <a class="nav-link " href="{{ route($item['href']) }}">
             <i class="{{ $item['icon'] }}"></i>
             <span>{{ $item['label'] }}</span>
           </a>
@@ -167,7 +174,7 @@
   </div>
 
   @yield('modals')
-  @if (Auth::user()->role == "user")
+  @if (Auth::user()->role == 'user')
     @yield('modals:user')
   @else
     @yield('modals:application')
@@ -249,11 +256,11 @@
   </script>
 
   @yield('scripts')
-  @if (Auth::user()->role == "user")
+  @if (Auth::user()->role == 'user')
     @yield('scripts:user')
   @else
     @yield('scripts:application')
-    <script src="{{route('notice.api', ['id' => Auth::user()->id, 'only'=> 1])}}"></script>
+    <script src="{{ route('notice.api', ['id' => Auth::user()->id, 'only' => 1]) }}"></script>
   @endif
 </body>
 
