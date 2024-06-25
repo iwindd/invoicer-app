@@ -27,6 +27,15 @@
               </div>
             </div>
             <div class="form-group row">
+              <label for="lineToken"
+                class="col-sm-2 col-form-label col-form-label-sm">{{ __('ui.line-connect') }}</label>
+              <div class="col-sm-10">
+                <input type="text" autocomplete="off" class="form-control form-control-sm" id="lineToken"
+                  placeholder="{{ __('ui.line-token') }}" name="lineToken" value="{{ Auth::user()->lineToken }}">
+                <div class="invalid-feedback" id="lineToken-feedback"></div>
+              </div>
+            </div>
+            <div class="form-group row">
               <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label-sm">{{ __('auth.email') }}</label>
               <div class="col-sm-10">
                 <input type="email" class="form-control form-control-sm" id="colFormLabelSm"
@@ -108,7 +117,8 @@
               url: "{{ route('profile') }}",
               type: 'PUT',
               data: {
-                name: $('#edit-profile input[name="name"]').val()
+                name: $('#edit-profile input[name="name"]').val(),
+                lineToken: $('#edit-profile input[name="lineToken"]').val()
               }
             });
             return true;

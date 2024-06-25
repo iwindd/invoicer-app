@@ -19,6 +19,7 @@ return [
   'more' => 'เพิ่มเติม',
   'details' => 'รายละเอียด',
   'line-connect' => 'เชื่อมต่อไลน์',
+  'line-token' => "LINE TOKEN",
   'save' => 'บันทึก',
   'total' => 'ยอดรวม',
   'noItems' => 'ไม่มีรายการ',

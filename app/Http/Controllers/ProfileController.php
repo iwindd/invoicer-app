@@ -19,7 +19,7 @@ class ProfileController extends Controller
         $this->auth()->update($request->validated());
         $this->activity("profile-update", $request->validated());
 
-        return Response()->noContent();
+        return Response()->json($request->validated());
     }
 
     public function patch(PatchProfileRequest $request) {
