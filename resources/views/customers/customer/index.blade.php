@@ -13,8 +13,8 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <button class="dropdown-item" id="copyapi"><i
               class="fas fa-link fa-fw mr-2 text-secondary"></i>{{ __('invoice.api') }}</button>
-          <a class="dropdown-item" href="#"><i
-              class="fas fa-cogs fa-fw mr-2 text-info"></i>{{ __('invoice.application') }}</a>
+          <button class="dropdown-item" id="create-application"><i
+              class="fas fa-cogs fa-fw mr-2 text-info"></i>{{ __('invoice.application') }}</button>
           <button class="dropdown-item" id="delete"><i
               class="fas fa-trash fa-fw mr-2 text-danger"></i>{{ __('ui.delete-btn') }}</button>
         </div>
@@ -822,6 +822,38 @@
       Toast.fire({
         icon: "success",
         title: "{{ __('invoice.api-copy') }}"
+      });
+    })
+  </script>
+
+  <script type="text/javascript">
+    $('#create-application').on("click", () => {
+      Confirmation.fire({
+        text: `{{ __('application.create-confirm') }}`,
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({
+              url: "{{ route('applications') }}",
+              type: 'POST',
+              data: JSON.stringify({
+                id: '{{request()->id}}'
+              }),
+              contentType: 'application/json',
+            });
+            return true;
+          } catch (error) {
+            console.log(error);
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Alert.success.fire({
+            text: `{{ __('application.added') }}`,
+          })
+        }
       });
     })
   </script>
