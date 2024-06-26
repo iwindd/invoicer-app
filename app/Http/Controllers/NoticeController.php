@@ -143,12 +143,12 @@ class NoticeController extends Controller
                     iframe.style.border = 0;
                     iframe.setAttribute(
                         "src",
-                        `$route`
+                        "$route"
                     );
                     iframe.setAttribute("scrolling", "no");
                     close.onclick = () => {
                         const date = new Date();
-                        document.cookie = `__payment_delay=\${date.toISOString()}; path=/`
+                        document.cookie = "__payment_delay=\${date.toISOString()}; path=/"
                         container.style.display = "none"
                     }
                     function reSm(x) {
@@ -186,7 +186,7 @@ class NoticeController extends Controller
                     iframe.style.position = 'absolute';
                     iframe.style.top = 0;
                     iframe.style.left = 0;
-                    iframe.setAttribute("src", `$route`);
+                    iframe.setAttribute("src", "$route");
                     iframe.setAttribute('scrolling', 'no');
                     container.appendChild(iframe)
                     return container
