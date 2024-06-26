@@ -19,4 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get("/notice/{id}", [NoticeController::class, 'api'])->name('notice.api');
+Route::get("/script/{id}", [NoticeController::class, 'api'])->name('notice.api');
