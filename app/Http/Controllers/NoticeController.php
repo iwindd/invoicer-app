@@ -79,18 +79,32 @@ class NoticeController extends Controller
         $customer = Customer::find($request->id);
         if (!$customer) return Response()->noContent();
         $route = route('notice', ['id' => $request->id]);
-
+        $isWarning = $customer->invoices()->where([
+            ['status', 0],
+            ['start', '<', now()],
+            ['customer_id', $request->id]
+        ])
+        ->orWhere(function($query) use ($request){
+            $query->where('status', 2)
+            ->where('end', '<', now())
+            ->where('customer_id', $request->id);
+        })
+        ->count() > 0;
+        
+        if (!$isWarning) return Response()->noContent();
+        
         if ($request->only == null) {
             $canClose = $customer->invoices()
                 ->where([
                     ['status', 0],
                     ['end', '<', now()]
-                ])->count() <= 0;
+                ])->count() > 0;
+
         }else{
             $canClose = $request->only == "0" ? false: true;
         }
 
-        $ui = $canClose ? (
+        $ui = $canClose ? ( 
             <<<EOT
                 const createContainer = () => {
                     const container = document.createElement("div");
@@ -104,7 +118,6 @@ class NoticeController extends Controller
                     container.style.left = 0;
                     container.style.top = 0;
                     container.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
-
                     const content = document.createElement("div");
                     content.style.margin = "auto";
                     content.style.padding = "10px";
@@ -115,7 +128,6 @@ class NoticeController extends Controller
                     content.style.display = "flex";
                     content.style.flexDirection = "column";
                     content.style.backgroundColor = "#fefefe";
-
                     const close = document.createElement("span");
                     close.innerHTML = "&times;";
                     close.style.color = "#e64e4e";
@@ -123,10 +135,8 @@ class NoticeController extends Controller
                     close.style.fontWeight = "bold";
                     close.style.marginLeft = "auto";
                     close.style.cursor = "pointer";
-
                     const wrapper = document.createElement("div");
                     wrapper.style.flexGrow = "1";
-
                     const iframe = document.createElement("iframe");
                     iframe.style.width = "100%";
                     iframe.style.height = "100%";
@@ -136,13 +146,11 @@ class NoticeController extends Controller
                         `$route`
                     );
                     iframe.setAttribute("scrolling", "no");
-
                     close.onclick = () => {
                         const date = new Date();
                         document.cookie = `__payment_delay=\${date.toISOString()}; path=/`
                         container.style.display = "none"
                     }
-
                     function reSm(x) {
                         if (x.matches) { // If media query matches
                         content.style.width = "100%";
@@ -154,17 +162,13 @@ class NoticeController extends Controller
                         container.style.paddingTop = "100px";
                         }
                     }
-
                     var sm = window.matchMedia("(max-width: 900px)")
-
                     reSm(sm); // Call listener function at run time
                     sm.addEventListener("change", function() { reSm(sm); });
-
                     wrapper.appendChild(iframe);
                     content.appendChild(close);
                     content.appendChild(wrapper);
                     container.appendChild(content);
-
                     return container
                     }
             EOT
@@ -175,7 +179,6 @@ class NoticeController extends Controller
                     container.style.width = '100%';
                     container.style.height = '100%';
                     container.style.overflow = "hidden";
-
                     const iframe = document.createElement("iframe");
                     iframe.style.zIndex = 999999;
                     iframe.style.width = '100%';
@@ -185,9 +188,7 @@ class NoticeController extends Controller
                     iframe.style.left = 0;
                     iframe.setAttribute("src", `$route`);
                     iframe.setAttribute('scrolling', 'no');
-
                     container.appendChild(iframe)
-
                     return container
                 }
             EOT
@@ -210,13 +211,11 @@ class NoticeController extends Controller
                     }
                     return "";
                 }
-
                 const isDelay = getCookie('__payment_delay');
                 const lastWarningDate = new Date(isDelay);
                 const currentDate = new Date();
                 const timeDifferenceInMilliseconds = currentDate.getTime()- lastWarningDate.getTime()
                 const DayMilliseconds = timeDifferenceInMilliseconds - (24 * (60 * 60000));
-
                 if (DayMilliseconds < 0) return;
                 const modal = createContainer();
                 document.body.appendChild(modal);
