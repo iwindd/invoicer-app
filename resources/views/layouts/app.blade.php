@@ -260,7 +260,7 @@
     @yield('scripts:user')
   @else
     @yield('scripts:application')
-    <script src="{{ route('notice.api', ['id' => Auth::user()->id, 'only' => 1]) }}"></script>
+    <script src="{{ route('notice.api', ['id' => Auth::user()->customer, 'only' => 1]) }}"></script>
   @endif
 </body>
 
