@@ -118,8 +118,18 @@
   </div>
 
   <div class="card shadow mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
       <h6 class="m-0 font-weight-bold text-primary">{{ __('invoice.table') }}</h6>
+      <section>
+        <select class="form-control" id="invoices-filter-type">
+          <option value="--">{{__('invoice.type-all')}}</option>
+          <option value="2">{{__('invoice.type-checking')}}</option>
+          <option value="4">{{__('invoice.type-overtime')}}</option>
+          <option value="3">{{__('invoice.type-process')}}</option>
+          <option value="0">{{__('invoice.type-waiting')}}</option>
+          <option value="-1">{{__('invoice.type-cancel')}}</option>
+        </select>
+      </section>
     </div>
     <div class="card-body">
       <div class="table-responsive">
@@ -334,12 +344,19 @@
       const Table = $("#dataTable").dataTable();
       Table.fnDraw(false);
     }
+        
+    $('#invoices-filter-type').on('change', RefreshTable)
 
     $(document).ready(function() {
       $("#dataTable").DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('invoice', ['id' => $customer['id']]) }}",
+        ajax: {
+          url: "{{ route('invoice', ['id' => $customer['id']]) }}",
+          data: (data) => {
+            data.filterType = $("#invoices-filter-type").val();
+          }
+        },
         order: [
           [0, 'desc']
         ],

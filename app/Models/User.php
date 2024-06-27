@@ -49,9 +49,32 @@ class User extends Authenticatable
         return $this->hasMany(Customer::class);
     }
 
-    public function invoices() : HasMany
+    public function invoices(?string $filterType = '--')
     {
-        return $this->hasMany(Invoice::class);
+        $query = $this->hasMany(Invoice::class);
+
+        if ($filterType !== '--') {
+            switch ($filterType) {
+                case '4':
+                    $query->where([
+                        ['status', 0],
+                        ['end', '<', now()]
+                    ]);
+                    break;
+                case '3':
+                    $query->where([
+                        ['status', 0],
+                        ['start', '<', now()],
+                        ['end', '>', now()]
+                    ]);
+                    break;
+                default:
+                    $query->where('status', $filterType);
+                    break;
+            }
+        }
+
+        return $query;
     }
 
     public function payments() : HasMany {

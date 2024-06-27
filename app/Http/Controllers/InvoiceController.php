@@ -7,28 +7,28 @@ use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\Facades\DataTables;
 
 class InvoiceController extends Controller
 {
     //
-    public function index()
+    public function index(Request $request)
     {
         if (request()->ajax()) {
-            return datatables()->of(
-                $this->auth()->invoices()
-                    ->with(['items', 'customer', 'evidence'])
-                    ->whereHas('customer', function($query) {
-                        $query->withoutTrashed();
-                    })
-                    ->select('*') 
-                )
-                ->addColumn("action", "invoices.action")
-                ->rawColumns(['action'])
-                ->addIndexColumn()
-                ->make(true);
+            $model = $this->auth()->invoices($request->filterType)
+                ->with(['items', 'customer', 'evidence'])
+                ->orderByRaw($this->statusOrder()); 
+
+            return DataTables::eloquent($model)
+            ->addColumn("action", "invoices.action")
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make();
         }
         
         return view('invoices.index');
@@ -37,16 +37,16 @@ class InvoiceController extends Controller
     public function get(Request $request)
     {
         if (request()->ajax()) {
-            return datatables()->of(
-                $this->auth()->customers()->find($request->id)
-                ->invoices()->with([
-                    'items', 
-                    'evidence'
-                ])->select('*'))
-                ->addColumn("action", "customers.customer.action")
-                ->rawColumns(['action'])
-                ->addIndexColumn()
-                ->make(true);
+            $model = $this->auth()->customers()->find($request->id)
+                ->invoices($request->filterType)
+                ->with(['items', 'evidence'])
+                ->orderByRaw($this->statusOrder()); 
+
+            return DataTables::eloquent($model)
+            ->addColumn("action", "customers.customer.action")
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make();
         }
     }
 
@@ -81,5 +81,14 @@ class InvoiceController extends Controller
         $this->activity("invoice-patch-({$oldStatus})-({$request->status})", $request->validated());
 
         return Response()->noContent();
+    }
+
+    public function statusOrder() : string {
+        return "CASE 
+                    WHEN status = 2 THEN 1
+                    WHEN status = 0 THEN 2
+                    WHEN status = 1 THEN 3
+                    WHEN status = -1 THEN 4
+                END";
     }
 }

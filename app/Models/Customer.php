@@ -31,8 +31,31 @@ class Customer extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function invoices() : HasMany
+    public function invoices(?string $filterType = '--') : HasMany
     {
-        return $this->hasMany(Invoice::class);
+        $query = $this->hasMany(Invoice::class);
+
+        if ($filterType !== '--') {
+            switch ($filterType) {
+                case '4':
+                    $query->where([
+                        ['status', 0],
+                        ['end', '<', now()]
+                    ]);
+                    break;
+                case '3':
+                    $query->where([
+                        ['status', 0],
+                        ['start', '<', now()],
+                        ['end', '>', now()]
+                    ]);
+                    break;
+                default:
+                    $query->where('status', $filterType);
+                    break;
+            }
+        }
+
+        return $query;
     }
 }
