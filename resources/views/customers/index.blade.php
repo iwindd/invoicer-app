@@ -124,12 +124,16 @@
             const checking = data.filter(i => ff.invoice(i) == 2).length;
             const overtime = data.filter(i => ff.invoice(i) == 4).length;
             const waiting = data.filter(i => ff.invoice(i) == 0).length;
-
-            const returnData =  (`
+            const success = data.filter(i => ff.invoice(i) == 1).length;
+            const cancel = data.filter(i => ff.invoice(i) == -1).length;
+            
+            const returnData =  (` 
               ${ process > 0 ? (` <span class="text-warning mr-2"><i class="fas fa-hourglass-half"></i> : ${process}</span>`):"" }
               ${ checking > 0 ? (` <span class="text-primary mr-2"><i class="fas fa-search"></i> : ${checking}</span>`):"" }
               ${ overtime > 0 ? (` <span class="text-danger mr-2"><i class="fas fa-times"></i> : ${overtime}</span>`):"" }
               ${ waiting > 0 ? (` <span class="text-info mr-2"><i class="fas fa-calendar"></i> : ${waiting}</span>`):"" }
+              ${ success > 0 ? (` <span class="text-success mr-2"><i class="fas fa-check"></i> : ${success}</span>`):"" }
+              ${ cancel > 0 ? (` <span class="text-dark mr-2"><i class="fas fa-times"></i> : ${cancel}</span>`):"" }
             `).trim();
 
             return returnData ? returnData : "<span class='text-muted'>ไม่พบข้อมูล</span>"
