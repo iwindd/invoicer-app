@@ -29,7 +29,7 @@ class PaymentController extends Controller
      */
     public function index() {
         if (request()->ajax()) {
-            return datatables()->of($this->auth()->payments())
+            return datatables()->of($this->auth()->payments()->select(["id", "active", "account", "title", "name"]))
                 ->addColumn("action", "payments.action")
                 ->rawColumns(['action'])
                 ->addIndexColumn()
