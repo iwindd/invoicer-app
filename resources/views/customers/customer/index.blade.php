@@ -907,7 +907,7 @@
           Alert.success.fire({
             text: `{{ __('application.login-success') }}`,
           }).then(() => {
-            location.reload();
+            window.location.href = "{{route('invoices')}}";
           });
         }
       });
