@@ -253,6 +253,15 @@
         }
       })
     })
+    
+    $('a').on('click', function(e){
+      e.preventDefault();
+      const href = $(this).attr('href');
+
+      if (href != "#") {
+        window.location.href = href;
+      }
+    })
   </script>
 
   @yield('scripts')
