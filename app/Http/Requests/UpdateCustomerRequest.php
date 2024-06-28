@@ -42,4 +42,16 @@ class UpdateCustomerRequest extends FormRequest
             'joined_at' => ['required']
         ];
     }
+
+    /**
+     * Modify the input data before validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'id' => $this->route('id'),
+        ]);
+    }
 }
