@@ -196,10 +196,7 @@
           },
           {
             data: 'customer',
-            name: 'customer',
-            orderable: false,
-            searchable: false,
-            render: data => data ? `${data?.firstname} ${data?.lastname}` : "ไม่พบ",
+            name: 'customer.firstname',
           },
           {
             data: 'action',
