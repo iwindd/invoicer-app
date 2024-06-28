@@ -9,6 +9,7 @@ return [
   "customer-delete" => "ลบลูกค้า :firstname :lastname แล้ว!",
 
   "application-create" => "สร้างแอพพลิเคชั่น :firstname :lastname สำเร็จแล้ว!",
+  "application-patch" => "แก้ไขสถานะแอพพลิเคชั่น :name สำเร็จแล้ว!",
 
   "invoice-create" => "เพิ่มบิลให้ลูกค้า :firstname :lastname แล้ว!",
   "invoice-update" => "แก้ไขบิลหมายเลข #:id แล้ว!",

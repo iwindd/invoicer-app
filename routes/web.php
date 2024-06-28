@@ -59,6 +59,7 @@ Route::middleware(['auth', 'user', 'status:normal'])->group(function() {
   Route::post("/loginAs/{id}", [ApplicationController::class, 'loginAs'])->name("loginAs");
   Route::get("/applications", [ApplicationController::class, 'index'])->name("applications");
   Route::post("/applications", [ApplicationController::class, 'store']);
+  Route::patch("/applications", [ApplicationController::class, 'patch']);
 });
 
 Route::get("/notice/{id}", [NoticeController::class, 'index'])->name("notice");

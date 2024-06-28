@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginAsRequest;
+use App\Http\Requests\PatchApplicationRequest;
 use App\Http\Requests\StoreApplicationRequest;
+use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -49,6 +51,13 @@ class ApplicationController extends Controller
         $customer->update(['application_id' => $application->id]);
         $this->activity('application-create', $customer->attributesToArray());
 
+        return Response()->noContent();
+    }
+
+    public function patch(PatchApplicationRequest $request) {
+        $application = Customer::find($request->id)->application;
+        $application->update($request->safe()->only('status'));
+        $this->activity('application-patch', $application->attributesToArray());
         return Response()->noContent();
     }
 

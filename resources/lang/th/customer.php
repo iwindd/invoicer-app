@@ -9,5 +9,9 @@ return [
   'firstname' => 'ชื่อ',
   'lastname' => 'นามสกุล',
   'invoice' => 'บิลที่กำลังดำเนินการ',
-  'createdBy' => 'เพิ่มโดย'
+  'createdBy' => 'เพิ่มโดย',
+  'status-normal' => "ปกติ",
+  'status-banned' => "ระงับบัญชี",
+  'status-change-confirmation' => "คุณต้องการเปลี่ยนสถานะเป็น :status หรือไม่?",
+  'status-changed' => "แก้ไขสถานะสำเร็จ"
 ];

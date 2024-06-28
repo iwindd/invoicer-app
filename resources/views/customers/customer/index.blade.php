@@ -154,9 +154,15 @@
 
   <div class="row">
     <div class="col-lg-6 col-md-12 col-sm-12">
-      <div class="card shadow mb-4">
+      <div class="card shadow mb-4 ">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
           <h6 class="m-0 font-weight-bold text-primary">{{ __('customer.customer') }}</h6>
+          <section>
+            <select class="form-control" id="status-change">
+              <option value="normal">{{__('customer.status-normal')}}</option>
+              <option value="banned">{{__('customer.status-banned')}}</option>
+            </select>
+          </section>
         </div>
         <div class="card-body">
           <form action="#" method="post" id="edit-form">
@@ -848,6 +854,51 @@
         icon: "success",
         title: "{{ __('invoice.api-copy') }}"
       });
+    })
+  </script>
+
+  <script type="text/javascript">
+    let oldStatus = $("#status-change").val(`{{$customer->application->status}}`);
+    $("#status-change").val(`{{$customer->application->status}}`).change();
+
+    $("#status-change").on("change", function(){
+      const val = $(this).val();
+
+      if (val == oldStatus) return;
+
+      Confirmation.fire({
+        text: `{{ __('customer.status-change-confirmation', ['status' => ":status"]) }}`.replace(':status',
+          val == "banned" ? '{{__("customer.status-banned")}}' : '{{__("customer.status-normal")}}'),
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+        preConfirm: async () => {
+          try {
+            const resp = await $.ajax({
+              url: "{{ route('applications') }}",
+              type: 'PATCH',
+              data: JSON.stringify({
+                id: '{{ request()->id }}',
+                status: val
+              }),
+              contentType: 'application/json',
+            });
+            return true;
+          } catch (error) {
+            console.log(error);
+            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          oldStatus = val;
+          Alert.success.fire({
+            text: `{{ __('customer.status-changed') }}`,
+          })
+        }else{
+          $("#status-change").val(oldStatus).change();
+        }
+      });
+
     })
   </script>
 @endsection
