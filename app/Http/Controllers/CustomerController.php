@@ -105,6 +105,10 @@ class CustomerController extends Controller
     {
         $customer = $this->auth()->customers()->find($request->id);
         $customer->update($request->validated());
+        if ($customer->application){
+            $data = $request->validated();
+            $customer->application->update(array_merge($request->safe()->only(['email']), ['name' => $data['firstname'] . " " . $data['lastname']]));
+        }
         $this->activity('customer-update', $request->validated());
 
         return response()->noContent();
