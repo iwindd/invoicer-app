@@ -13,7 +13,7 @@
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <button class="dropdown-item" id="copyapi"><i
               class="fas fa-link fa-fw mr-2 text-secondary"></i>{{ __('invoice.api') }}</button>
-          @if (Auth::user()->role == "user")
+          @if (Auth::user()->role == 'user')
             @if ($customer->application)
               <button class="dropdown-item " id="login-application"><i
                   class="fas fa-sign-in-alt mr-2 text-info"></i>{{ __('application.login') }}</button>
@@ -122,12 +122,12 @@
       <h6 class="m-0 font-weight-bold text-primary">{{ __('invoice.table') }}</h6>
       <section>
         <select class="form-control" id="invoices-filter-type">
-          <option value="--">{{__('invoice.type-all')}}</option>
-          <option value="2">{{__('invoice.type-checking')}}</option>
-          <option value="4">{{__('invoice.type-overtime')}}</option>
-          <option value="3">{{__('invoice.type-process')}}</option>
-          <option value="0">{{__('invoice.type-waiting')}}</option>
-          <option value="-1">{{__('invoice.type-cancel')}}</option>
+          <option value="--">{{ __('invoice.type-all') }}</option>
+          <option value="2">{{ __('invoice.type-checking') }}</option>
+          <option value="4">{{ __('invoice.type-overtime') }}</option>
+          <option value="3">{{ __('invoice.type-process') }}</option>
+          <option value="0">{{ __('invoice.type-waiting') }}</option>
+          <option value="-1">{{ __('invoice.type-cancel') }}</option>
         </select>
       </section>
     </div>
@@ -157,12 +157,14 @@
       <div class="card shadow mb-4 ">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
           <h6 class="m-0 font-weight-bold text-primary">{{ __('customer.customer') }}</h6>
-          <section>
-            <select class="form-control" id="status-change">
-              <option value="normal">{{__('customer.status-normal')}}</option>
-              <option value="banned">{{__('customer.status-banned')}}</option>
-            </select>
-          </section>
+          @if ($customer->application)
+            <section>
+              <select class="form-control" id="status-change">
+                <option value="normal">{{ __('customer.status-normal') }}</option>
+                <option value="banned">{{ __('customer.status-banned') }}</option>
+              </select>
+            </section>
+          @endif
         </div>
         <div class="card-body">
           <form action="#" method="post" id="edit-form">
@@ -191,8 +193,10 @@
             </div>
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('customer.joinedAt') }} </small>
-              <input type="date" class="form-control" disabled value="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}"
-              value="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}" id="joined_at" name="joined_at" required>
+              <input type="date" class="form-control" disabled
+                value="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}"
+                value="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}" id="joined_at"
+                name="joined_at" required>
               <div class="invalid-feedback" id="joined_at-feedback"></div>
             </div>
           </form>
@@ -350,7 +354,7 @@
       const Table = $("#dataTable").dataTable();
       Table.fnDraw(false);
     }
-        
+
     $('#invoices-filter-type').on('change', RefreshTable)
 
     $(document).ready(function() {
@@ -856,51 +860,6 @@
       });
     })
   </script>
-
-  <script type="text/javascript">
-    let oldStatus = $("#status-change").val(`{{$customer->application->status}}`);
-    $("#status-change").val(`{{$customer->application->status}}`).change();
-
-    $("#status-change").on("change", function(){
-      const val = $(this).val();
-
-      if (val == oldStatus) return;
-
-      Confirmation.fire({
-        text: `{{ __('customer.status-change-confirmation', ['status' => ":status"]) }}`.replace(':status',
-          val == "banned" ? '{{__("customer.status-banned")}}' : '{{__("customer.status-normal")}}'),
-        showLoaderOnConfirm: true,
-        allowOutsideClick: () => !Swal.isLoading(),
-        preConfirm: async () => {
-          try {
-            const resp = await $.ajax({
-              url: "{{ route('applications') }}",
-              type: 'PATCH',
-              data: JSON.stringify({
-                id: '{{ request()->id }}',
-                status: val
-              }),
-              contentType: 'application/json',
-            });
-            return true;
-          } catch (error) {
-            console.log(error);
-            return Swal.showValidationMessage(`{{ __('ui.error') }}`);
-          }
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          oldStatus = val;
-          Alert.success.fire({
-            text: `{{ __('customer.status-changed') }}`,
-          })
-        }else{
-          $("#status-change").val(oldStatus).change();
-        }
-      });
-
-    })
-  </script>
 @endsection
 @section('scripts:user')
   <script type="text/javascript">
@@ -958,7 +917,7 @@
           Alert.success.fire({
             text: `{{ __('application.login-success') }}`,
           }).then(() => {
-            window.location.href = "{{route('invoices')}}";
+            window.location.href = "{{ route('invoices') }}";
           });
         }
       });
@@ -969,4 +928,51 @@
       ApplicationLogin(applicationId);
     })
   </script>
+
+  @if ($customer->application)
+    <script type="text/javascript">
+      let oldStatus = `{{ $customer->application->status }}`;
+      $("#status-change").val(`{{ $customer->application->status }}`).change();
+
+      $("#status-change").on("change", function() {
+        const val = $(this).val();
+
+        if (val == oldStatus) return;
+
+        Confirmation.fire({
+          text: `{{ __('customer.status-change-confirmation', ['status' => ':status']) }}`.replace(':status',
+            val == "banned" ? '{{ __('customer.status-banned') }}' : '{{ __('customer.status-normal') }}'),
+          showLoaderOnConfirm: true,
+          allowOutsideClick: () => !Swal.isLoading(),
+          preConfirm: async () => {
+            try {
+              const resp = await $.ajax({
+                url: "{{ route('applications') }}",
+                type: 'PATCH',
+                data: JSON.stringify({
+                  id: '{{ request()->id }}',
+                  status: val
+                }),
+                contentType: 'application/json',
+              });
+              return true;
+            } catch (error) {
+              console.log(error);
+              return Swal.showValidationMessage(`{{ __('ui.error') }}`);
+            }
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            oldStatus = val;
+            Alert.success.fire({
+              text: `{{ __('customer.status-changed') }}`,
+            })
+          } else {
+            $("#status-change").val(oldStatus).change();
+          }
+        });
+
+      })
+    </script>
+  @endif
 @endsection
