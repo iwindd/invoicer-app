@@ -21,7 +21,7 @@ class CustomerController extends Controller
     {
         if (request()->ajax()) {
             return datatables()->of(
-                    $this->auth()->customers()->with("invoices")->select('*')
+                    $this->auth()->customers()->with("invoices:customer_id,status,start,end")->select(["id", "joined_at", "firstname", "lastname",])
                 )
                 ->addColumn("action", "customers.action")
                 ->rawColumns(['action'])
