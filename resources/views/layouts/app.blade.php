@@ -45,14 +45,22 @@
       @php
         function isNavItemActive($href)
         {
-          $currentPath = \Request::path();
-          return $currentPath && strpos($currentPath, $href) === 0;
+            $currentPath = \Request::path();
+            return $currentPath && strpos($currentPath, $href) === 0;
         }
 
         $navItems = [
             ['label' => __('nav.invoices'), 'icon' => 'fas fa-fw fa-receipt', 'href' => 'invoices'],
             ['label' => __('nav.customers'), 'icon' => 'fas fa-fw fa-users', 'href' => 'customers'],
             ['label' => __('nav.payments'), 'icon' => 'fas fa-fw fa-credit-card', 'href' => 'payments'],
+        ];
+
+        $breadcrumbs = [
+            ['path' => '/invoices', 'label' => __('nav.invoices')],
+            ['path' => '/customers', 'label' => __('nav.customers')],
+            ['path' => '/customers/:id', 'label' => __('nav.customer')],
+            ['path' => '/payments', 'label' => __('nav.payments')],
+            ['path' => '/applications', 'label' => __('nav.applications')],
         ];
 
         if (Auth::user()->role == 'user') {
@@ -117,7 +125,64 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
+          @php
+            $path = Request::path();
+            $pathNames = explode('/', $path);
 
+            function findRoute($breadcrumbs, $pathSegments)
+            {
+                try {
+                    foreach ($breadcrumbs as $route) {
+                        $routeSegments = array_filter(explode('/', $route['path']));
+                        if (count($routeSegments) !== count($pathSegments)) {
+                            continue;
+                        }
+                        $matched = true;
+                        foreach ($routeSegments as $index => $segment) {
+                            if (strpos($segment, ':') === 0 || $segment === $pathSegments[$index - 1]) {
+                                continue;
+                            } else {
+                                $matched = false;
+                                break;
+                            }
+                        }
+                        if ($matched) {
+                            return $route;
+                        }
+                    }
+                } catch (\Exception $e) {
+                }
+                return null;
+            }
+          @endphp
+          <nav aria-label="breadcrumb">
+
+            <ol class="breadcrumb bg-transparent">
+              @foreach ($pathNames as $path)
+                @php
+                  $index = $loop->index;
+                  $pathSegments = array_slice($pathNames, 0, $index + 1);
+                  $path = `/` . join('/', $pathSegments);
+                  $route = findRoute($breadcrumbs, $pathSegments);
+
+                  if (!$route) {
+                      continue;
+                  }
+
+                  $isActive = Request::path() == $path ? 'active' : 'no';
+                @endphp
+                <li class="breadcrumb-item {{ $isActive }}">
+                  @if ($isActive == 'active')
+                    {{ $route['label'] }}
+                  @else
+                    <a href="{{ url($path) }}">
+                      {{ $route['label'] }}
+                    </a>
+                  @endif
+                </li>
+              @endforeach
+            </ol>
+          </nav>
           <!-- Page Heading -->
           @yield('heading')
           @yield('content')
@@ -253,8 +318,8 @@
         }
       })
     })
-    
-    $('a').on('click', function(e){
+
+    $('a').on('click', function(e) {
       e.preventDefault();
       const href = $(this).attr('href');
 

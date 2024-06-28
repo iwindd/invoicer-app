@@ -3,6 +3,7 @@
 return [
   'dashboard' => 'ภาพรวม',
   'customers' => 'ลูกค้า',
+  'customer' => 'รายละเอียดลูกค้า',
   'invoices' => 'บิลทั้งหมด',
   'applications' => 'แอพพลิเคชั่น',
   'payments' => 'ช่องทางการชำระเงิน',
