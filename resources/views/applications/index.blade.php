@@ -20,6 +20,7 @@
             <tr>
               <th>{{ __('ui.created_at') }}</th>
               <th>{{ __('customer.firstname') }}</th>
+              <th>{{ __('customer.status') }}</th>
               <th>{{ __('ui.actions') }}</th>
             </tr>
           </thead>
@@ -158,6 +159,11 @@
           {
             data: 'name',
             name: 'name',
+          },
+          {
+            data: 'status',
+            name: 'status',
+            render: (status) => status == "banned" ? `<span class="text-danger">{{__("customer.status-banned")}}</span>` : `<span>{{__("customer.status-normal")}}</span>`
           },
           {
             data: 'action',

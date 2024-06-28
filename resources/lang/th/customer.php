@@ -10,6 +10,7 @@ return [
   'lastname' => 'นามสกุล',
   'invoice' => 'บิลที่กำลังดำเนินการ',
   'createdBy' => 'เพิ่มโดย',
+  'status' => 'สถานะ',
   'status-normal' => "ปกติ",
   'status-banned' => "ระงับบัญชี",
   'status-change-confirmation' => "คุณต้องการเปลี่ยนสถานะเป็น :status หรือไม่?",

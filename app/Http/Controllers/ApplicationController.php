@@ -21,7 +21,7 @@ class ApplicationController extends Controller
     {
         if (request()->ajax()) {
             return datatables()->of(
-                    User::where("role", "application")->with("customer:application_id,id")->select(["id", "created_at", "name"])
+                    User::where("role", "application")->with("customer:application_id,id")->select(["id", "created_at", "name", "status"])
                 )
                 ->addColumn("action", "applications.action")
                 ->rawColumns(['action'])
