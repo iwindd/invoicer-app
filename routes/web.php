@@ -29,7 +29,7 @@ Route::get("/login", [LoginController::class, 'showLoginForm'])->middleware('gue
 Route::post("/login", [LoginController::class, 'login']);
 Route::post("/logout", [LoginController::class, 'logout'])->name("logout");
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'status:normal'])->group(function () {
   Route::get("/profile", [ProfileController::class, 'index'])->name("profile");
   Route::put("/profile", [ProfileController::class, 'update']);
   Route::patch("/profile", [ProfileController::class, 'patch']);
@@ -55,7 +55,7 @@ Route::middleware(['auth'])->group(function () {
   Route::delete("/payments", [PaymentController::class, 'destroy']);
 });
 
-Route::middleware(['auth', 'user'])->group(function() {
+Route::middleware(['auth', 'user', 'status:normal'])->group(function() {
   Route::post("/loginAs/{id}", [ApplicationController::class, 'loginAs'])->name("loginAs");
   Route::get("/applications", [ApplicationController::class, 'index'])->name("applications");
   Route::post("/applications", [ApplicationController::class, 'store']);

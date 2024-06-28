@@ -110,4 +110,13 @@ class User extends Authenticatable
     public function activities() : HasMany {
         return $this->hasMany(Activity::class);
     }
+        
+    /**
+     * isStatus
+     *
+     * @return bool
+     */
+    public function isStatus($status) : bool {
+        return $this->status == $status;
+    }
 }
