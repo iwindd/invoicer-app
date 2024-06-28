@@ -69,6 +69,44 @@
 
 @section('scripts')
   <script type="text/javascript">
+    const RefreshTable = () => {
+      const Table = $("#dataTable").dataTable();
+      Table.fnDraw(false);
+    }
+
+    $("#dataTable").DataTable({
+      processing: true,
+      serverSide: true,
+      ajax: "{{ route('applications') }}",
+      order: [
+        [0, 'desc']
+      ],
+      columns: [{
+          data: 'created_at',
+          name: 'created_at',
+          render: ff.date
+        },
+        {
+          data: 'name',
+          name: 'name',
+        },
+        {
+          data: 'status',
+          name: 'status',
+          render: (status) => status == "banned" ?
+            `<span class="text-danger">{{ __('customer.status-banned') }}</span>` :
+            `<span>{{ __('customer.status-normal') }}</span>`
+        },
+        {
+          data: 'action',
+          name: 'action',
+          orderable: false
+        },
+      ]
+    })
+  </script>
+
+  <script type="text/javascript">
     const modal = $('#create');
 
     const $select = $('#select-tools').selectize({
@@ -118,6 +156,7 @@
         success: (data) => {
           modal.modal('hide');
           validation.clear("#create", false);
+          RefreshTable();
           Toast.fire({
             icon: "success",
             timer: 15000,
@@ -134,44 +173,6 @@
           }
         }
       });
-    })
-  </script>
-
-  <script type="text/javascript">
-    $(document).ready(function() {
-      const RefreshTable = () => {
-        const Table = $("#dataTable").dataTable();
-        Table.fnDraw(false);
-      }
-
-      $("#dataTable").DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: "{{ route('applications') }}",
-        order: [
-          [0, 'desc']
-        ],
-        columns: [{
-            data: 'created_at',
-            name: 'created_at',
-            render: ff.date
-          },
-          {
-            data: 'name',
-            name: 'name',
-          },
-          {
-            data: 'status',
-            name: 'status',
-            render: (status) => status == "banned" ? `<span class="text-danger">{{__("customer.status-banned")}}</span>` : `<span>{{__("customer.status-normal")}}</span>`
-          },
-          {
-            data: 'action',
-            name: 'action',
-            orderable: false
-          },
-        ]
-      })
     })
   </script>
 
@@ -198,7 +199,7 @@
           Alert.success.fire({
             text: `{{ __('application.login-success') }}`,
           }).then(() => {
-            window.location.href = "{{route('invoices')}}";
+            window.location.href = "{{ route('invoices') }}";
           });
         }
       });
