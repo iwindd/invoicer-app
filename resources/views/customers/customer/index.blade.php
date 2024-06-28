@@ -32,13 +32,19 @@
         {{ __('invoice.create') }}</a>
     </div>
   </div>
+
+  <style>
+    [data-filterType]{
+      cursor: pointer;
+    }
+  </style>
 @endsection
 
 @section('content')
   <!-- Content Row -->
   <div class="row">
     <!-- ALL INVOICES -->
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-md-6 mb-4" data-filterType="--">
       <div class="card border-left-primary shadow  py-2">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
@@ -57,7 +63,7 @@
     </div>
 
     <!-- INVOICE SUCCESS -->
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-md-6 mb-4" data-filterType="1">
       <div class="card border-left-success shadow  py-2">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
@@ -77,7 +83,7 @@
     </div>
 
     <!-- INVOICE PROCESS -->
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-md-6 mb-4" data-filterType="3">
       <div class="card border-left-warning shadow  py-2">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
@@ -97,7 +103,7 @@
     </div>
 
     <!-- INVOICE OVERTIME -->
-    <div class="col-xl-3 col-md-6 mb-4">
+    <div class="col-xl-3 col-md-6 mb-4" data-filterType="4">
       <div class="card border-left-danger shadow  py-2">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
@@ -357,6 +363,10 @@
     }
 
     $('#invoices-filter-type').on('change', RefreshTable)
+    $('[data-filterType]').on('click', function(){
+      if ($('#invoices-filter-type').val() == $(this).attr('data-filterType')) return;
+      $('#invoices-filter-type').val($(this).attr('data-filterType')).change();
+    })
 
     $(document).ready(function() {
       $("#dataTable").DataTable({
