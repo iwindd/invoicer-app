@@ -12,11 +12,21 @@ use Illuminate\Support\Facades\Auth;
 use function PHPUnit\Framework\isNull;
 
 class PaymentController extends Controller
-{
+{    
+    /**
+     * deactivePayment
+     *
+     * @return void
+     */
     private function deactivePayment(){
         $this->auth()->payments()->where('active', true)->update(['active' => false]);
     }
-    //
+        
+    /**
+     * index
+     *
+     * @return void
+     */
     public function index() {
         if (request()->ajax()) {
             return datatables()->of($this->auth()->payments())
@@ -28,7 +38,13 @@ class PaymentController extends Controller
 
         return view('payments.index');
     }
-
+    
+    /**
+     * store
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function store(StorePaymentRequest $request) {
         if ($request->validated()['active']) {
             $this->deactivePayment();
@@ -40,7 +56,13 @@ class PaymentController extends Controller
         
         return Response()->noContent();
     }
-
+    
+    /**
+     * update
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function update(UpdatePaymentRequest $request){
         $payment = $this->auth()->payments()->find($request->id);
         $payment->update($request->validated());
@@ -48,7 +70,13 @@ class PaymentController extends Controller
 
         return Response()->noContent();
     }
-
+    
+    /**
+     * patch
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function patch(PatchPaymentRequest $request) {
         $this->deactivePayment(); 
         $payment = $this->auth()->payments()->find($request->id);
@@ -57,7 +85,13 @@ class PaymentController extends Controller
 
         return Response()->noContent();
     }
-
+    
+    /**
+     * destroy
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function destroy(Request $request) {
         $payment = $this->auth()->payments()->find($request->id);
         $payment->delete();

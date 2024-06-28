@@ -15,8 +15,13 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class InvoiceController extends Controller
-{
-    //
+{    
+    /**
+     * index
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function index(Request $request)
     {
         if (request()->ajax()) {
@@ -33,7 +38,13 @@ class InvoiceController extends Controller
         
         return view('invoices.index');
     }
-
+    
+    /**
+     * get
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function get(Request $request)
     {
         if (request()->ajax()) {
@@ -49,7 +60,13 @@ class InvoiceController extends Controller
             ->make();
         }
     }
-
+    
+    /**
+     * store
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function store(StoreInvoiceRequest $request)
     {
         $payload  = array_merge($request->safe()->except('items'), ['user_id' => auth()->id()]);
@@ -60,7 +77,13 @@ class InvoiceController extends Controller
 
         return Response()->noContent( );
     }
-
+    
+    /**
+     * update
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function update(UpdateInvoiceRequest $request)
     {
         $invoice = $this->auth()->invoices()->find($request->id);
@@ -72,7 +95,13 @@ class InvoiceController extends Controller
         
         return Response()->noContent();
     }
-
+    
+    /**
+     * patch
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function patch(PatchInvoiceRequest $request)
     {
         $invoice   = $this->auth()->invoices()->find($request->id);
@@ -82,7 +111,12 @@ class InvoiceController extends Controller
 
         return Response()->noContent();
     }
-
+    
+    /**
+     * statusOrder
+     *
+     * @return string
+     */
     public function statusOrder() : string {
         return "CASE 
                     WHEN status = 2 THEN 1

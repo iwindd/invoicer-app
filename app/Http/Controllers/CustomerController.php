@@ -11,8 +11,12 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
-{
-    //
+{    
+    /**
+     * index
+     *
+     * @return void
+     */
     public function index()
     {
         if (request()->ajax()) {
@@ -27,7 +31,12 @@ class CustomerController extends Controller
 
         return view('customers.index');
     }
-
+    
+    /**
+     * selectize
+     *
+     * @return void
+     */
     public function selectize()
     {
         if (request()->ajax()) {
@@ -37,7 +46,12 @@ class CustomerController extends Controller
 
         return view('customers.index');
     }
-
+    
+    /**
+     * application
+     *
+     * @return void
+     */
     public function application()
     {
         if (request()->ajax()) {
@@ -51,7 +65,13 @@ class CustomerController extends Controller
 
         return view('customers.index');
     }
-
+    
+    /**
+     * get
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function get(Request $request)
     {
         $customer = $this->auth()->customers()->with('application')->find($request->id);
@@ -59,7 +79,13 @@ class CustomerController extends Controller
 
         return view("customers.customer.index", compact('customer', 'invoices'));
     }
-
+    
+    /**
+     * store
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function store(StoreCustomerRequest $request)
     {
         $customer = $this->auth()->customers();
@@ -68,7 +94,13 @@ class CustomerController extends Controller
 
         return response()->noContent();
     }
-
+    
+    /**
+     * update
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function update(UpdateCustomerRequest $request)
     {
         $customer = $this->auth()->customers()->find($request->id);
@@ -77,7 +109,13 @@ class CustomerController extends Controller
 
         return response()->noContent();
     }
-
+    
+    /**
+     * destroy
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function destroy(Request $request)
     {
         $customer = $this->auth()->customers()->find($request->id);

@@ -12,8 +12,13 @@ use Illuminate\Http\Request;
 use NumberFormatter;
 
 class NoticeController extends Controller
-{
-    //
+{    
+    /**
+     * index
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function index(Request $request)
     {
         // customer
@@ -54,7 +59,13 @@ class NoticeController extends Controller
 
         return view('notice.index', compact("invoices", "payment", "endDate", "total"));
     }
-
+    
+    /**
+     * patch
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function patch(PatchNoticeRequest $request)
     {
         $invoice = Invoice::find($request->invoice);
@@ -73,7 +84,13 @@ class NoticeController extends Controller
 
         return redirect()->back();
     }
-
+    
+    /**
+     * api
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function api(Request $request)
     {
         $customer = Customer::find($request->id);

@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
-    //
+    /**
+     * index
+     *
+     * @return void
+     */
     public function index()
     {
         if (request()->ajax()) {
@@ -26,6 +30,13 @@ class ApplicationController extends Controller
         return view('applications.index');
     }
 
+        
+    /**
+     * store
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function store(StoreApplicationRequest $request)
     {
         $customer = $this->auth()->customers()->find($request->id);
@@ -41,7 +52,13 @@ class ApplicationController extends Controller
         return Response()->noContent();
     }
 
-    
+        
+    /**
+     * loginAs
+     *
+     * @param  mixed $request
+     * @return void
+     */
     public function loginAs(LoginAsRequest $request) {
         Auth::loginUsingId($request->id);
         

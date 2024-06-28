@@ -13,11 +13,25 @@ use Illuminate\Support\Facades\Auth;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
+    
+    /**
+     * auth
+     *
+     * @return User
+     */
     protected function auth() : User{
         return Auth::user();
     }
-
+    
+    /**
+     * activity
+     *
+     * @param  mixed $name
+     * @param  mixed $payload
+     * @param  mixed $user
+     * @param  mixed $notify
+     * @return void
+     */
     protected function activity($name, $payload = [], $user = null, $notify = true) {
         try {
             if (!$user) {
