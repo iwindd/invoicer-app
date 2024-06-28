@@ -19,6 +19,7 @@
           <option value="4">{{__('invoice.type-overtime')}}</option>
           <option value="3">{{__('invoice.type-process')}}</option>
           <option value="0">{{__('invoice.type-waiting')}}</option>
+          <option value="1">{{__('invoice.type-success')}}</option>
           <option value="-1">{{__('invoice.type-cancel')}}</option>
         </select>
       </section>
