@@ -13,7 +13,12 @@ class Report extends Model
     protected $fillable = [
         'image', 'status'
     ];
-
+    
+    /**
+     * invoice
+     *
+     * @return BelongsTo
+     */
     public function invoice() : BelongsTo
     {
         return $this->belongsTo(Invoice::class);

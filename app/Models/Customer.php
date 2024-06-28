@@ -16,21 +16,42 @@ class Customer extends Model
     protected $fillable = [
         'id', 'firstname', 'lastname', 'email', 'joined_at', 'application_id'
     ];
-
+    
+    /**
+     * application
+     *
+     * @return BelongsTo
+     */
     public function application() : BelongsTo {
         return $this->belongsTo(User::class);
     }
-    
+        
+    /**
+     * customer
+     *
+     * @return BelongsTo
+     */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'application_id', 'customer_id');
     }
-
+    
+    /**
+     * user
+     *
+     * @return BelongsTo
+     */
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-
+    
+    /**
+     * invoices
+     *
+     * @param  mixed $filterType
+     * @return HasMany
+     */
     public function invoices(?string $filterType = '--') : HasMany
     {
         $query = $this->hasMany(Invoice::class);

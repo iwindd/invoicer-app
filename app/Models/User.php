@@ -38,17 +38,33 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
+    
+    /**
+     * customer
+     *
+     * @return HasOne
+     */
     public function customer(): HasOne
     {
         return $this->hasOne(Customer::class, 'application_id');
     }
-
+    
+    /**
+     * customers
+     *
+     * @return HasMany
+     */
     public function customers() : HasMany
     {
         return $this->hasMany(Customer::class);
     }
-
+    
+    /**
+     * invoices
+     *
+     * @param  mixed $filterType
+     * @return void
+     */
     public function invoices(?string $filterType = '--')
     {
         $query = $this->hasMany(Invoice::class);
@@ -76,11 +92,21 @@ class User extends Authenticatable
 
         return $query;
     }
-
+    
+    /**
+     * payments
+     *
+     * @return HasMany
+     */
     public function payments() : HasMany {
         return $this->hasMany(Payment::class);
     }
-
+    
+    /**
+     * activities
+     *
+     * @return HasMany
+     */
     public function activities() : HasMany {
         return $this->hasMany(Activity::class);
     }

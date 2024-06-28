@@ -13,7 +13,12 @@ class Activity extends Model
     protected $fillable = [
         'name', 'payload'
     ];
-
+    
+    /**
+     * user
+     *
+     * @return BelongsTo
+     */
     public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);

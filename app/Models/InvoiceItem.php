@@ -14,7 +14,12 @@ class InvoiceItem extends Model
     protected $fillable = [
         'name', 'amount', 'value'
     ];
-
+    
+    /**
+     * customer
+     *
+     * @return BelongsTo
+     */
     public function customer() : BelongsTo
     {
         return $this->belongsTo(Invoice::class);

@@ -15,7 +15,12 @@ class Payment extends Model
     protected $fillable = [
         'title', 'name', 'account', 'active'
     ];
-    
+        
+    /**
+     * user
+     *
+     * @return BelongsTo
+     */
     public function user() : BelongsTo
     {
         return $this->belongsTo(Payment::class);
