@@ -63,9 +63,9 @@ class User extends Authenticatable
      * invoices
      *
      * @param  mixed $filterType
-     * @return void
+     * @return HasMany
      */
-    public function invoices(?string $filterType = '--')
+    public function invoices(?string $filterType = '--') : HasMany
     {
         $query = $this->hasMany(Invoice::class);
 
