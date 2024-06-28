@@ -4,6 +4,7 @@
   </a>
 
   <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+    <a class="dropdown-item fa-fw" href="{{route("customer", ['id' => $customer['id']])}}"><i class="fas fa-user mr-2 text-secondary"></i>{{__('customer.customer')}}</a>
     <button class="dropdown-item fa-fw" onclick="ApplicationLogin({{$id}})" ><i class="fas fa-sign-in-alt mr-2 text-info"></i>{{__('application.login')}}</button>
   </div>
 </div>
