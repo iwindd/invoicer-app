@@ -27,7 +27,7 @@ class NoticeController extends Controller
         // invoices
         $invoices = $customer->invoices()
             ->whereIn('status', [0, 2])
-            ->where('start', '<=', now())->with('items')->get();
+            ->where('start', '<=', now())->with('items:invoice_id,amount,value')->get(['id', 'customer_id', 'end', 'status']);
 
         if ($invoices->count() <= 0) abort(404);
 
@@ -35,7 +35,7 @@ class NoticeController extends Controller
         $payment = Payment::where([
             ['active', true],
             ['user_id', $customer->user_id]
-        ])->first();
+        ])->first(['title', 'account', 'name']);
 
         if (!$payment) abort(404);
 
