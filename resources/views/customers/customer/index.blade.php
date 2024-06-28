@@ -201,7 +201,7 @@
             <div class="form-group">
               <small class="form-text text-muted"> {{ __('customer.joinedAt') }} </small>
               <input type="date" class="form-control" disabled
-                value="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}"
+                default="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}"
                 value="{{ \Carbon\Carbon::parse($customer['joined_at'])->format('Y-m-d') }}" id="joined_at"
                 name="joined_at" required>
               <div class="invalid-feedback" id="joined_at-feedback"></div>
