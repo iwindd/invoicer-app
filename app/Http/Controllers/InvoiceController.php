@@ -56,8 +56,10 @@ class InvoiceController extends Controller
         if (request()->ajax()) {
             $model = $this->auth()->customers()->find($request->id)
                 ->invoices($request->filterType)
-                ->with(['items', 'evidence'])
-                ->orderByRaw($this->statusOrder()); 
+                ->with([
+                    'items:invoice_id,amount,value', 
+                    'evidence:invoice_id,image,id'
+                ])->orderByRaw($this->statusOrder())->select(["id", "customer_id", "status", "note", "start", "end"]); 
 
             return DataTables::eloquent($model)
             ->addColumn("action", "customers.customer.action")
