@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\PatchProfileRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Phattarachai\LineNotify\Facade\Line;
 
@@ -26,7 +27,9 @@ class ProfileController extends Controller
      * @return void
      */
     public function update(UpdateProfileRequest $request) {
-        $this->auth()->update($request->validated());
+        $guard = ['name'];
+        if (Auth::user()->role == "application") $guard = [];
+        $this->auth()->update($request->safe()->only(array_merge(['lineToken'], $guard)));
         $this->activity("profile-update", $request->validated());
 
         return Response()->json($request->validated());

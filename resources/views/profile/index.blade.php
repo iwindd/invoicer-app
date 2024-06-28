@@ -22,7 +22,7 @@
                 class="col-sm-2 col-form-label col-form-label-sm">{{ __('profile.name') }}</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control form-control-sm" id="colFormLabelSm"
-                  placeholder="{{ __('profile.name') }}" required name="name" value="{{ Auth::user()->name }}">
+                  placeholder="{{ __('profile.name') }}" required name="name" @if(Auth::user()->role == 'application') disabled @endif value="{{ Auth::user()->name }}">
                 <div class="invalid-feedback" id="name-feedback"></div>
               </div>
             </div>
