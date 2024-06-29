@@ -27,7 +27,7 @@ class InvoiceController extends Controller
         if (request()->ajax()) {
             $model = $this->auth()->invoices($request->filterType)
                 ->with([
-                    'items:invoice_id,amount,value', 
+                    'items:invoice_id,amount,value,name', 
                     'customer:id,firstname,lastname', 
                     'evidence:invoice_id,image,id'
                 ])->orderByRaw($this->statusOrder())->select(["id", "customer_id", "status", "note", "start", "end"]); 
@@ -57,7 +57,7 @@ class InvoiceController extends Controller
             $model = $this->auth()->customers()->find($request->id)
                 ->invoices($request->filterType)
                 ->with([
-                    'items:invoice_id,amount,value', 
+                    'items:invoice_id,amount,value,name', 
                     'evidence:invoice_id,image,id'
                 ])->orderByRaw($this->statusOrder())->select(["id", "customer_id", "status", "note", "start", "end"]); 
 
