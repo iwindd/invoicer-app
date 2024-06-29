@@ -545,8 +545,8 @@
 
     $('#create-btn').on('click', () => {
       status = 0;
-      startInput.val("");
-      endInput.val("");
+      startInput.val(dayjs().format('YYYY-MM-DD'));
+      endInput.val(dayjs().endOf('month').format('YYYY-MM-DD'));
       items = [];
       update();
       validation.clear("#create", false);
