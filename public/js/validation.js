@@ -20,7 +20,7 @@ validation.error = (scope, error) => {
       }
       const feedback = $(`${scope} #${key}-feedback`);
       input.addClass("is-invalid");
-      feedback.html(value)
+      feedback.html(value.join('<br>'));
     }
 
     return true
