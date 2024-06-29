@@ -61,12 +61,12 @@
           <div class="row">
             <div class="col-lg-12 col-md-12 detail-section">
               <form action="#" method="post" id="create-invoice-form">
-                <input type="hidden" name="id" value="0">
+                <input type="hidden" data-validate="#customer-col .selectize-control" name="id" value="0">
                 <div class="row">
                   <div class="col-sm-12" id="customer-col">
                     <small class="form-text text-muted"> {{ __('customer.customer') }} </small>
                     <select id="select-tools" class="w-100" placeholder="{{ __('customer.customer') }}"></select>
-                    <div class="id-feedback" id="note-feedback"></div>
+                    <div class="invalid-feedback" id="id-feedback"></div>
                   </div>
                   <div class="col-lg-6 col-md-12">
                     <small class="form-text text-muted"> {{ __('invoice.note') }} </small>

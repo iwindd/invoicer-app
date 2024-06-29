@@ -27,7 +27,7 @@ class CustomerOwnership implements Rule
      */
     public function passes($attribute, $value)
     {
-        return (Customer::findOrFail($value))->user_id === auth()->id(); 
+        return $value != '0' && (Customer::findOrFail($value))->user_id === auth()->id(); 
     }
 
     /**

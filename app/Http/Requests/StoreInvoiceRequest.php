@@ -26,7 +26,7 @@ class StoreInvoiceRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['required', 'exists:customers,id', new CustomerOwnership],
+            'id' => ['required', 'not_in:0', 'exists:customers,id', new CustomerOwnership],
             'note' => ['max:255'],
             'start' => ['required', 'date'],
             'end' => ['required', 'date', 'after_or_equal:start'],
