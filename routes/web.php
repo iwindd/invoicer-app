@@ -36,7 +36,6 @@ Route::middleware(['auth', 'status:normal'])->group(function () {
 
   Route::get("/customers", [CustomerController::class, 'index'])->name("customers");
   Route::get("/customers2", [CustomerController::class, 'selectize'])->name("customers2");
-  Route::get("/customers3", [CustomerController::class, 'application'])->name("customers3");
   Route::get("/customers/{id}", [CustomerController::class, 'get'])->name("customer");
   Route::put("/customers/{id}", [CustomerController::class, 'update']);
   Route::post("/customers", [CustomerController::class, 'store']);

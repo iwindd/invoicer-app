@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class ApplicationController extends Controller
 {
@@ -50,6 +51,17 @@ class ApplicationController extends Controller
         ]);
         $customer->update(['application_id' => $application->id]);
         $this->activity('application-create', $customer->attributesToArray());
+
+        // Update the cache
+        $customers = collect(Cache::get('selectize', []));
+        $updatedCustomers = $customers->map(function ($cachedCustomer) use ($customer) {
+            if ($cachedCustomer['id'] == $customer->id) {
+                $cachedCustomer['application_id'] = $customer->application_id;
+            }
+            return $cachedCustomer;
+        });
+        
+        Cache::put('selectize', $updatedCustomers->toArray(), 86400 * 30);
 
         return Response()->noContent();
     }
