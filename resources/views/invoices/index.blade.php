@@ -106,7 +106,8 @@
                       </tfoot>
                     </table>
                   </div>
-                  <div class="col-sm-12 d-flex justify-content-end">
+                  <div class="col-sm-12 d-flex justify-content-between">
+                    <div class="text-danger re-invalid" id="items-feedback"></div>
                     <button id="add-invoice-item" class="sm-3 btn btn-sm btn-primary shadow-sm"><i
                         class="fas fa-plus fa-sm text-white-50"></i>
                       {{ __('ui.dialogHeaderAdd') }}</button>
@@ -476,6 +477,7 @@
     }
 
     const editFunc = (id, note, start, end, _items) => {
+      validation.clear('#create');
       status = 1;
       $("#create-invoice-form input[name='id']").val(id);
       startInput.val(dayjs(start).format('YYYY-MM-DD'));
@@ -491,6 +493,7 @@
 
     const lookFunc = (id, note, start, end, _items, evidence = null) => {
       status = -1;
+      validation.clear('#create');
       $("#create-invoice-form input[name='id']").val(id)
       startInput.val(dayjs(start).format('YYYY-MM-DD'));
       endInput.val(dayjs(end).format('YYYY-MM-DD'));
@@ -545,6 +548,7 @@
 
     $('#create-btn').on('click', () => {
       status = 0;
+      validation.clear('#create');
       startInput.val(dayjs().format('YYYY-MM-DD'));
       endInput.val(dayjs().endOf('month').format('YYYY-MM-DD'));
       items = [];

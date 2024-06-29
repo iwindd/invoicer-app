@@ -4,6 +4,7 @@ validation.clear = (scope, disable = true) => {
   $(`${scope} .is-invalid`).removeClass("is-invalid");
   $(`${scope} .is-valid`).removeClass("is-is-valid");
   $(`${scope} .was-validated`).removeClass("is-was-validated");
+  $(`${scope} .re-invalid`).html('');
   $(`${scope} [type="submit"]`).attr('disabled', disable);
 }
 
