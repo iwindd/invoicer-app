@@ -1,5 +1,15 @@
 const ff = {};
 
+ff.text = (text, replacer = "-") => {
+    try {
+        if (!text) return replacer;
+        if (text.length <= 0) return replacer;
+        return text;
+    } catch (error) {
+        return replacer;
+    }
+};
+
 ff.money = (val) => {
     try {
         if (!val) return 0;
@@ -110,8 +120,8 @@ ff.invoice_label = (status, colored = false) => {
             default:
                 return "warning";
         }
-    }
+    };
 
     if (!colored) return getLabel();
-    return `<span class="text-${getColor()}">${getLabel()}</span>`
+    return `<span class="text-${getColor()}">${getLabel()}</span>`;
 };

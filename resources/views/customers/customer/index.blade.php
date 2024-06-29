@@ -395,7 +395,7 @@
           {
             data: 'note',
             name: 'note',
-            render: ff.text
+            render: (t) => ff.text(t)
           },
           {
             data: 'items',
