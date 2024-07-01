@@ -176,9 +176,9 @@ class NoticeController extends Controller
                     iframe.setAttribute("scrolling", "no");
                     const onClose = () => {
                         const date = new Date();
-                        document.cookie = "__payment_delay=\${date.toISOString()}; path=/"
+                        document.cookie = "__payment_delay="+ date.toISOString() +"; path=/"
                         container.style.display = "none"
-                    }
+                    }                       
                     close.onclick = onClose;
                     let countdownValue = 5;
                     const countdownInterval = setInterval(() => {
