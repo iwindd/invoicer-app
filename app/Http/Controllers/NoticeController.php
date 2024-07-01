@@ -147,13 +147,22 @@ class NoticeController extends Controller
                     content.style.display = "flex";
                     content.style.flexDirection = "column";
                     content.style.backgroundColor = "#fefefe";
+                    const header = document.createElement("div");
+                    header.style.display = "flex";
+                    header.style.justifyContent = "space-between";
                     const close = document.createElement("span");
                     close.innerHTML = "&times;";
                     close.style.color = "#e64e4e";
                     close.style.fontSize = "5em";
                     close.style.fontWeight = "bold";
-                    close.style.marginLeft = "auto";
                     close.style.cursor = "pointer";
+                    close.style.lineHeight = 0.5;
+                    const countdown = document.createElement("span");
+                    countdown.innerHTML = "5";
+                    countdown.style.color = "grey";
+                    countdown.style.fontSize = "1em";
+                    countdown.style.fontWeight = "bold";
+                    countdown.style.cursor = "pointer";
                     const wrapper = document.createElement("div");
                     wrapper.style.flexGrow = "1";
                     const iframe = document.createElement("iframe");
@@ -165,11 +174,21 @@ class NoticeController extends Controller
                         "$route"
                     );
                     iframe.setAttribute("scrolling", "no");
-                    close.onclick = () => {
+                    const onClose = () => {
                         const date = new Date();
                         document.cookie = "__payment_delay=\${date.toISOString()}; path=/"
                         container.style.display = "none"
                     }
+                    close.onclick = onClose;
+                    let countdownValue = 5;
+                    const countdownInterval = setInterval(() => {
+                        countdownValue -= 1;
+                        countdown.textContent = countdownValue;
+                        if (countdownValue <= 0) {
+                            clearInterval(countdownInterval);
+                            onClose();
+                        }
+                    }, 1000);
                     function reSm(x) {
                         if (x.matches) { // If media query matches
                         content.style.width = "100%";
@@ -185,7 +204,9 @@ class NoticeController extends Controller
                     reSm(sm); // Call listener function at run time
                     sm.addEventListener("change", function() { reSm(sm); });
                     wrapper.appendChild(iframe);
-                    content.appendChild(close);
+                    header.appendChild(countdown);
+                    header.appendChild(close);
+                    content.appendChild(header);
                     content.appendChild(wrapper);
                     container.appendChild(content);
                     return container
