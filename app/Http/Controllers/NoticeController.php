@@ -96,7 +96,7 @@ class NoticeController extends Controller
         $customer = Customer::find($request->id);
         if (!$customer) return Response()->noContent();
         $route = route('notice', ['id' => $request->id]);
-        $isWarning = $customer->invoices()->where([
+        $invoices = $customer->invoices()->where([
             ['status', 0],
             ['start', '<', now()],
             ['customer_id', $request->id]
@@ -105,17 +105,20 @@ class NoticeController extends Controller
             $query->where('status', 2)
             ->where('end', '<', now())
             ->where('customer_id', $request->id);
-        })
-        ->count() > 0;
+        });
+        $isWarning = $invoices->count();
         
         if (!$isWarning) return Response()->noContent();
         
         if ($request->only == null) {
-            $canClose = $customer->invoices()
+            $canClose = ($customer->invoices()
                 ->where([
                     ['status', 0],
                     ['end', '<', now()]
-                ])->count() <= 0;
+                ])->orWhere(function($query) use ($request){
+                    $query->where('status', 2)
+                    ->where('end', '<', now());
+                })->count() <= 0) ;
         }else{
             $canClose = $request->only == "0" ? false: true;
         }
