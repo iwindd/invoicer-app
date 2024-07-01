@@ -115,8 +115,7 @@ class NoticeController extends Controller
                 ->where([
                     ['status', 0],
                     ['end', '<', now()]
-                ])->count() > 0;
-
+                ])->count() <= 0;
         }else{
             $canClose = $request->only == "0" ? false: true;
         }
