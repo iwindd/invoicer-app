@@ -7,7 +7,6 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Payment;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Request;
 use NumberFormatter;
 
@@ -114,11 +113,15 @@ class NoticeController extends Controller
             $canClose = ($customer->invoices()
                 ->where([
                     ['status', 0],
-                    ['end', '<', now()]
+                    ['end', '<', now()],
+                    ['customer_id', $request->id]
                 ])->orWhere(function($query) use ($request){
                     $query->where('status', 2)
-                    ->where('end', '<', now());
-                })->count() <= 0) ;
+                    ->where([
+                        ['end', '<', now()],
+                        ['customer_id', $request->id]
+                    ]);
+                }))->count() <= 0;
         }else{
             $canClose = $request->only == "0" ? false: true;
         }
@@ -268,6 +271,7 @@ class NoticeController extends Controller
         );
 
         $code = <<<EOT
+            //notice-1.0.5
             document.addEventListener('DOMContentLoaded', function () {
                 $ui
                 $script
