@@ -8,6 +8,7 @@ use App\Http\Controllers\NoticeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,3 +64,14 @@ Route::middleware(['auth', 'user', 'status:normal'])->group(function() {
 
 Route::get("/notice/{id}", [NoticeController::class, 'index'])->name("notice");
 Route::post("/notice", [NoticeController::class, 'patch'])->name("notice.patch");
+
+// CACHE CLEAR
+Route::get('/clearCache', function () {
+  Artisan::call('config:clear'); 
+  Artisan::call('cache:clear'); 
+  Artisan::call('route:clear'); 
+  Artisan::call('view:clear'); 
+  Artisan::call('clear-compiled'); 
+
+  echo "success";
+});
