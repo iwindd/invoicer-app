@@ -129,6 +129,7 @@ class NoticeController extends Controller
         $ui = $canClose ? ( 
             <<<EOT
                 const createContainer = () => {
+                    let cancelAutoClose = false;
                     const container = document.createElement("div");
                     container.style.display = "block";
                     container.style.width = "100%";
@@ -140,6 +141,9 @@ class NoticeController extends Controller
                     container.style.left = 0;
                     container.style.top = 0;
                     container.style.backgroundColor = "rgba(0, 0, 0, 0.4)";
+                    document.body.addEventListener("click", function(){
+                        cancelAutoClose = true;
+                    });
                     const content = document.createElement("div");
                     content.style.margin = "auto";
                     content.style.padding = "10px";
@@ -186,10 +190,16 @@ class NoticeController extends Controller
                     let countdownValue = 5;
                     const countdownInterval = setInterval(() => {
                         countdownValue -= 1;
-                        countdown.textContent = countdownValue;
+                        
                         if (countdownValue <= 0) {
                             clearInterval(countdownInterval);
-                            onClose();
+                            if (!cancelAutoClose) onClose(); 
+                        }else{
+                            if (cancelAutoClose) {
+                                countdown.textContent = "";
+                            }else{
+                                countdown.textContent = countdownValue;
+                            }
                         }
                     }, 1000);
                     function reSm(x) {
@@ -271,7 +281,7 @@ class NoticeController extends Controller
         );
 
         $code = <<<EOT
-            //notice-1.0.5
+            //notice-1.0.6
             document.addEventListener('DOMContentLoaded', function () {
                 $ui
                 $script
