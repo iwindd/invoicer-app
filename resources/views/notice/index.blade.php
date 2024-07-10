@@ -17,9 +17,6 @@
     rel="stylesheet">
 
 
-  <!-- CSRF Token -->
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-
   <title>{{ config('app.name', 'Laravel') }}</title>
 </head>
 
@@ -59,7 +56,6 @@
         </div>
         <div class="modal-body">
           <form action="{{ route('notice.patch') }}" method="post" id="payment-form" enctype="multipart/form-data">
-            @csrf
             <div class="row">
               <div class="col-sm-4"><b>{{ __('payment.title') }}</b></div>
               <div class="col-sm-8">{{ $payment->title }}</div>
