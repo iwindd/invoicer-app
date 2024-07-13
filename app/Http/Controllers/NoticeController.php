@@ -290,7 +290,7 @@ class NoticeController extends Controller
         );
 
         $code = <<<EOT
-            //notice-1.0.6.1
+            //notice-1.0.6.2
             document.addEventListener('DOMContentLoaded', function () {
                 $ui
                 $script
