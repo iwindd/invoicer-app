@@ -55,7 +55,7 @@
           </button>
         </div>
         <div class="modal-body">
-          <form action="{{ route('notice.patch') }}" method="post" id="payment-form" enctype="multipart/form-data">
+          <form method="post" id="payment-form" enctype="multipart/form-data">
             <div class="row">
               <div class="col-sm-4"><b>{{ __('payment.title') }}</b></div>
               <div class="col-sm-8">{{ $payment->title }}</div>
@@ -145,6 +145,23 @@
     })
 
     $(`.invoice[data-id="${selected.val()}"]`).addClass('border-primary');
+
+    $("#payment-form").submit(async function(e) {
+      e.preventDefault();
+      const invoiceInput = $('input[name="invoice"]')
+      const fileInput = $('input[name="image"]');
+      const formData = new FormData(this);
+      $("button").attr("disabled", true);
+
+      try {
+        const resp = await fetch("{{ route('notice.patch') }}", {method: "POST", body: formData })
+      } catch (error) {
+        alert("{{__('ui.error')}}");
+        $("button").attr("disabled", false);
+      } finally {
+        window.location.reload();
+      }
+    })
   </script>
 </body>
 

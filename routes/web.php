@@ -63,7 +63,6 @@ Route::middleware(['auth', 'user', 'status:normal'])->group(function() {
 });
 
 Route::get("/notice/{id}", [NoticeController::class, 'index'])->name("notice");
-Route::post("/notice", [NoticeController::class, 'patch'])->name("notice.patch");
 
 // CACHE CLEAR
 Route::get('/clearCache', function () {

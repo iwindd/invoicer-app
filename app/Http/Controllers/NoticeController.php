@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use NumberFormatter;
 
 class NoticeController extends Controller
@@ -65,23 +66,31 @@ class NoticeController extends Controller
      * @param  mixed $request
      * @return void
      */
-    public function patch(PatchNoticeRequest $request)
+    public function patch(Request $request)
     {
-        $invoice = Invoice::find($request->invoice);
-        $user = $invoice->user;
-        $extention = $request->image->getClientOriginalExtension();
-        $imageName = date('mdYHis') . uniqid() . '.' . $extention;
-        $request->image->storeAs('images', $imageName, 'public');
+        try {
+            $request->validate([
+                'invoice' => ['required', 'exists:invoices,id'],
+                'image' => ['required', 'image', 'mimes:jpeg,png,jpg', 'max:2048']
+            ]);
+            $invoice = Invoice::find($request->invoice);
+            $user = $invoice->user;
+            $extention = $request->image->getClientOriginalExtension();
+            $imageName = date('mdYHis') . uniqid() . '.' . $extention;
+            $request->image->storeAs('images', $imageName, 'public');
+    
+            $invoice->evidence()->create([
+                'image' => $imageName,
+                'status' => false
+            ]);
+    
+            $invoice->update(['status' => 2]);
+            $this->activity("invoice-patch-report", ['id' => $request->invoice], $user);
 
-        $invoice->evidence()->create([
-            'image' => $imageName,
-            'status' => false
-        ]);
-
-        $invoice->update(['status' => 2]);
-        $this->activity("invoice-patch-report", ['id' => $request->validated()['invoice']], $user);
-
-        return redirect()->back();
+            return Response()->noContent();
+        } catch (ValidationException $e) {
+            return response()->json([], 404);
+        }
     }
     
     /**
