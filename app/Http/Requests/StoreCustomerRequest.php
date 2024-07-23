@@ -27,7 +27,8 @@ class StoreCustomerRequest extends FormRequest
             'firstname' => ['required', 'min:5', 'max:255'],
             'lastname' => ['required', 'min:5', 'max:255'],
             'email' => ['required', 'max:255', 'email', 'unique:customers', 'unique:users'],
-            'joined_at' => ['required', 'date']
+            'joined_at' => ['required', 'date'],
+            'city_id' => []
         ];
     }
 }

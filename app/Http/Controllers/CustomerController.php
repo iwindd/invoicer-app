@@ -143,4 +143,38 @@ class CustomerController extends Controller
         $this->activity('customer-delete', $customer->attributesToArray());
         return response()->noContent();
     }
+
+    public function getCitys()
+    {
+        try {
+            $user_info = Auth::user();
+
+            $url = $user_info->domain . '/api/getCityAuthApiKey/21fe7c05-b45b-45a9-8b08-3064afc8b2e0';
+            $curl = curl_init();
+
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'GET',
+            ));
+
+            $response = curl_exec($curl);
+
+            curl_close($curl);
+            $response = json_decode($response);
+
+            if ($response->status) {
+                return $response->res;
+            } else {
+                return [];
+            }
+        } catch (\Throwable $th) {
+            return [];
+        }
+    }
 }
