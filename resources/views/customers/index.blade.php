@@ -60,13 +60,12 @@
                             </div>
                         </div>
 
-                        <div class="form-row">
-                            <input type="hidden" data-validate="#city-col .selectize-control" name="city_id"
-                                value="0">
+                        <div class="form-row" style="@if ($role != 'application') display: none; @endif">
+                            <input type="hidden" data-validate="#city-col .selectize-control" name="city_id">
                             <div class="form-group col-sm-12" id="city-col">
                                 <small class="form-text text-muted"> {{ __('customer.city') }} </small>
                                 <select id="select-tools" class="w-100" placeholder="{{ __('customer.city') }}"
-                                    required></select>
+                                    @if ($role == 'application') required @endif></select>
                                 <div class="invalid-feedback" id="city_id-feedback"></div>
                             </div>
                         </div>
@@ -243,7 +242,7 @@
             labelField: 'name',
             searchField: 'name',
             options: [],
-            create: true,
+            create: '{{ $role }}' ? false : true,
             onChange: (val) => {
                 $("#create-form input[name='city_id']").val(val);
             }

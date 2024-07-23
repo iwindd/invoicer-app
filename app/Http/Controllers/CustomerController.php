@@ -30,7 +30,7 @@ class CustomerController extends Controller
                 ->make(true);
         }
 
-        return view('customers.index');
+        return view('customers.index', ["role" => Auth::user()->role]);
     }
 
     /**
