@@ -22,8 +22,8 @@ class ApplicationController extends Controller
     {
         if (request()->ajax()) {
             return datatables()->of(
-                    User::where("role", "application")->with("customer:application_id,id")->select(["id", "created_at", "name", "status"])
-                )
+                User::where("role", "application")->with("customer:application_id,id")->select(["id", "created_at", "name", "status"])
+            )
                 ->addColumn("action", "applications.action")
                 ->rawColumns(['action'])
                 ->addIndexColumn()
@@ -33,7 +33,7 @@ class ApplicationController extends Controller
         return view('applications.index');
     }
 
-        
+
     /**
      * store
      *
@@ -44,10 +44,11 @@ class ApplicationController extends Controller
     {
         $customer = $this->auth()->customers()->find($request->id);
         $application = $customer->application()->create([
-            'name' => ($customer->firstname)." ".($customer->lastname),
+            'name' => ($customer->firstname) . " " . ($customer->lastname),
             'email' => $customer->email,
             'role' => "application",
             'password' => \bcrypt('password'),
+            'domain' => $request->domain
         ]);
         $customer->update(['application_id' => $application->id]);
         $this->activity('application-create', $customer->attributesToArray());
@@ -60,29 +61,31 @@ class ApplicationController extends Controller
             }
             return $cachedCustomer;
         });
-        
+
         Cache::put('selectize', $updatedCustomers->toArray(), 86400 * 30);
 
         return Response()->noContent();
     }
 
-    public function patch(PatchApplicationRequest $request) {
+    public function patch(PatchApplicationRequest $request)
+    {
         $application = Customer::find($request->id)->application;
         $application->update($request->safe()->only('status'));
         $this->activity('application-patch', $application->attributesToArray());
         return Response()->noContent();
     }
 
-        
+
     /**
      * loginAs
      *
      * @param  mixed $request
      * @return void
      */
-    public function loginAs(LoginAsRequest $request) {
+    public function loginAs(LoginAsRequest $request)
+    {
         Auth::loginUsingId($request->id);
-        
+
         return Response()->noContent();
     }
 }

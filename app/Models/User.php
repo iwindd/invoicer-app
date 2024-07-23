@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'role', 'lineToken', 'status'
+        'name', 'email', 'password', 'role', 'lineToken', 'status', 'domain'
     ];
 
     /**
@@ -38,7 +38,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    
+
     /**
      * customer
      *
@@ -48,7 +48,7 @@ class User extends Authenticatable
     {
         return $this->hasOne(Customer::class, 'application_id');
     }
-    
+
     /**
      * customers
      *
@@ -58,7 +58,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Customer::class);
     }
-    
+
     /**
      * invoices
      *
@@ -92,7 +92,7 @@ class User extends Authenticatable
 
         return $query;
     }
-    
+
     /**
      * payments
      *
@@ -101,7 +101,7 @@ class User extends Authenticatable
     public function payments() : HasMany {
         return $this->hasMany(Payment::class);
     }
-    
+
     /**
      * activities
      *
@@ -110,7 +110,7 @@ class User extends Authenticatable
     public function activities() : HasMany {
         return $this->hasMany(Activity::class);
     }
-        
+
     /**
      * isStatus
      *

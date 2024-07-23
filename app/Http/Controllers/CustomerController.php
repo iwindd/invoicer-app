@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class CustomerController extends Controller
-{    
+{
     /**
      * index
      *
@@ -22,8 +22,8 @@ class CustomerController extends Controller
     {
         if (request()->ajax()) {
             return datatables()->of(
-                    $this->auth()->customers()->with("invoices:customer_id,status,start,end")->select(["id", "joined_at", "firstname", "lastname",])
-                )
+                $this->auth()->customers()->with("invoices:customer_id,status,start,end")->select(["id", "joined_at", "firstname", "lastname",])
+            )
                 ->addColumn("action", "customers.action")
                 ->rawColumns(['action'])
                 ->addIndexColumn()
@@ -32,7 +32,7 @@ class CustomerController extends Controller
 
         return view('customers.index');
     }
-    
+
     /**
      * selectize
      *
@@ -41,15 +41,22 @@ class CustomerController extends Controller
     public function selectize()
     {
         if (request()->ajax()) {
-            $customers =  Cache::remember('selectize', 86400*30, function () {
-                return $this->auth()->customers()->get(['id', 'firstname', 'lastname', 'application_id']);
+            $user_info = Auth::user();
+
+            $customers =  Cache::remember('selectize_' . $user_info->id, 86400 * 30, function () use ($user_info) {
+                return $this->auth()->customers()
+                    ->where('user_id', $user_info->id)
+                    ->whereNull('deleted_at')
+                    ->get(['id', 'firstname', 'lastname', 'application_id']);
             });
+            Cache::flush();
+
             return Response()->json($customers);
         }
 
         return view('customers.index');
     }
-    
+
     /**
      * get
      *
@@ -63,7 +70,7 @@ class CustomerController extends Controller
 
         return view("customers.customer.index", compact('customer', 'invoices'));
     }
-    
+
     /**
      * store
      *
@@ -79,11 +86,11 @@ class CustomerController extends Controller
         // add to cache
         $selectize = Cache::get('selectize', []);
         $selectize[] = $customer->only(['id', 'firstname', 'lastname', 'application_id']);
-        Cache::put('selectize', $selectize, 86400*30);
+        Cache::put('selectize', $selectize, 86400 * 30);
 
         return response()->noContent();
     }
-    
+
     /**
      * update
      *
@@ -94,7 +101,7 @@ class CustomerController extends Controller
     {
         $customer = $this->auth()->customers()->find($request->id);
         $customer->update($request->validated());
-        if ($customer->application){
+        if ($customer->application) {
             $data = $request->validated();
             $customer->application->update(array_merge($request->safe()->only(['email']), ['name' => $data['firstname'] . " " . $data['lastname']]));
         }
@@ -114,7 +121,7 @@ class CustomerController extends Controller
 
         return response()->noContent();
     }
-    
+
     /**
      * destroy
      *

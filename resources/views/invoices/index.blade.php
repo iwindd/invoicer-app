@@ -147,7 +147,7 @@
       const Table = $("#dataTable").dataTable();
       Table.fnDraw(false);
     }
-    
+
     $('#invoices-filter-type').on('change', RefreshTable)
 
     $(document).ready(function() {
@@ -319,7 +319,7 @@
                 <td><input type="number" id="${index}-value" class="form-control" onchange='onChange("value", ${index})' onkeyup='onChange("value", ${index})' value='${item.value}' min="0" placeholder="{{ __('invoice.item-value') }}" required></td>
                 <td id="${index}-total">${ff.money(item.amount * item.value)}</td>
                 <td>
-                  <button 
+                  <button
                     class="sm-3 btn btn-sm btn-danger shadow-sm"
                     data-index='${index}'
                     onclick='removeItem(${index})'
@@ -341,7 +341,7 @@
                 <td>${ff.money(item.value)}</td>
                 <td id="${index}-total">${ff.money(item.amount * item.value)}</td>
                 <td>
-                  <button 
+                  <button
                     class="sm-3 btn btn-sm btn-danger shadow-sm"
                     disabled={true}
                     >
@@ -462,7 +462,7 @@
       if (evidence) {
         evidenceSection.show();
         $('.btn-evidence').show();
-        
+
         if (detailSection.hasClass("col-lg-12")) {
           detailSection.removeClass("col-lg-12").addClass("col-lg-8");
         }
@@ -487,7 +487,7 @@
       update();
       validation.clear("#create", false);
       modal.modal('show');
-      
+
       updateEvidence(false);
     }
 
@@ -502,7 +502,7 @@
       update();
       validation.clear("#create", false);
       modal.modal('show');
-      
+
       if (evidence != null) {
         $('#evidence-image').attr('src', "{{ url('storage/images/'.':image') }}".replace(":image", evidence));
         $('.btn-evidence').attr('data-id', id);

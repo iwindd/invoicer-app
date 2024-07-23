@@ -25,7 +25,8 @@ class StoreApplicationRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => ['required', 'exists:customers,id', new ApplicationAlready]
+            'id' => ['required', 'exists:customers,id', new ApplicationAlready],
+            'domain' => ['required', 'max:255']
         ];
     }
 }
