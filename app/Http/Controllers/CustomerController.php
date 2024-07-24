@@ -67,11 +67,24 @@ class CustomerController extends Controller
     public function get(Request $request)
     {
         $customer = $this->auth()->customers()->with('application')->find($request->id);
-        $user = User::find($customer->application_id);
-        $customer->domain = $user && !!$user ? $user->domain : null;
+
+        if ($customer->application_id) {
+            $user = User::find($customer->application_id);
+            $customer->domain = $user && !!$user ? $user->domain : null;
+        } else {
+            $customer->domain = null;
+        }
+
         $invoices = $customer->invoices()->get(['status', 'end']);
 
-        return view("customers.customer.index", compact('customer', 'invoices'));
+        $user_application = User::find($customer->user_id);
+        if ($user_application && $user_application->domain) {
+            $citys = self::getCitys($user_application->domain);
+        } else {
+            $citys = [];
+        }
+
+        return view("customers.customer.index", compact('customer', 'invoices', 'citys'));
     }
 
     /**
@@ -147,12 +160,15 @@ class CustomerController extends Controller
         return response()->noContent();
     }
 
-    public function getCitys()
+    public function getCitys($domain = null)
     {
         try {
-            $user_info = Auth::user();
+            if ($domain == null) {
+                $user_info = Auth::user();
+                $domain = $user_info->domain;
+            }
 
-            $url = $user_info->domain . '/api/getCityAuthApiKey/21fe7c05-b45b-45a9-8b08-3064afc8b2e0';
+            $url = $domain . '/api/getCityAuthApiKey/21fe7c05-b45b-45a9-8b08-3064afc8b2e0';
             $curl = curl_init();
 
             curl_setopt_array($curl, array(

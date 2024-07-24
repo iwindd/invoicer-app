@@ -40,7 +40,8 @@ class UpdateCustomerRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($applicationId)
             ],
             'joined_at' => ['required'],
-            'domain' => []
+            'domain' => ['max:255'],
+            'city_id' => []
         ];
     }
 

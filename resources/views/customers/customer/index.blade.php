@@ -214,6 +214,28 @@
                         @else
                             <input type="hidden" name="domain" value="">
                         @endif
+                        @if (count($citys) > 0)
+                            <div class="form-group">
+                                <input type="hidden" data-validate="#city-col .selectize-control"
+                                    value="{{ $customer['city_id'] }}" name="city_id" id="city_id">
+                                <div id="city-col">
+                                    <small class="form-text text-muted"> {{ __('customer.city') }} </small>
+                                    <select id="select-tools" disabled class="w-100"
+                                        default="{{ $customer['city_id'] }}" placeholder="{{ __('customer.city') }}"
+                                        required>
+                                        @foreach ($citys as $city)
+                                            <option value="{{ $city->id }}"
+                                                @if ($customer['city_id'] == $city->id) selected @endif>
+                                                {{ $city->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback" id="city_id-feedback"></div>
+                                </div>
+                            </div>
+                        @else
+                            <input type="hidden" name="city_id" value="">
+                        @endif
                         <div class="form-group">
                             <small class="form-text text-muted"> {{ __('customer.joinedAt') }} </small>
                             <input type="date" class="form-control" disabled
@@ -444,6 +466,20 @@
                 ],
             })
         })
+
+        const $select = $('#select-tools').selectize({
+            maxItems: 1,
+            delimiter: " - ",
+            valueField: 'id',
+            labelField: 'name',
+            searchField: 'name',
+            options: [],
+            create: '{{ count($citys) }}' == 0 ? false : true,
+            onChange: (val) => {
+                $("#edit-form input[name='city_id']").val(val);
+            }
+        });
+        const selectize = $select[0].selectize;
     </script>
 
     <script type="text/javascript">
@@ -816,6 +852,8 @@
                 $('#edit-form input').attr('disabled', false)
                 $('#edit-form input')[0].focus();
                 $('button.editMode').show();
+
+                selectize.enable();
             })
 
             $("#cancel-edit-profile").on('click', () => {
@@ -827,6 +865,11 @@
                     const input = $(inputs[ele]);
                     input.val(input.attr('default'))
                 })
+
+                selectize.disable();
+                if ($("#city_id")) {
+                    selectize.setValue($("#city_id").val());
+                }
             })
         })
 
@@ -840,6 +883,7 @@
                 email: $("#edit-form input[name='email']").val(),
                 joined_at: $("#edit-form input[name='joined_at']").val(),
                 domain: $("#edit-form input[name='domain']").val(),
+                city_id: $("#city_id").val()
             }
 
             Confirmation.fire({
@@ -883,6 +927,7 @@
                     $('#edit-profile').show();
                     $('button.editMode').hide();
                     $('#edit-form input').attr('disabled', true);
+                    selectize.disable();
                 }
             });
         })

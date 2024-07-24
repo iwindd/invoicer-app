@@ -242,7 +242,7 @@
             labelField: 'name',
             searchField: 'name',
             options: [],
-            create: '{{ $role }}' ? false : true,
+            create: '{{ $role }}' != 'application' ? false : true,
             onChange: (val) => {
                 $("#create-form input[name='city_id']").val(val);
             }
