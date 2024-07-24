@@ -33,13 +33,14 @@ class UpdateCustomerRequest extends FormRequest
             'firstname' => ['required', 'min:5', 'max:255'],
             'lastname' => ['required', 'min:5', 'max:255'],
             'email' => [
-                'required', 
-                'max:255', 
-                'email', 
-                Rule::unique('customers')->ignore($customerId), 
+                'required',
+                'max:255',
+                'email',
+                Rule::unique('customers')->ignore($customerId),
                 Rule::unique('users', 'email')->ignore($applicationId)
             ],
-            'joined_at' => ['required']
+            'joined_at' => ['required'],
+            'domain' => []
         ];
     }
 

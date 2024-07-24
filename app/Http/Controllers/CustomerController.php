@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -66,6 +67,8 @@ class CustomerController extends Controller
     public function get(Request $request)
     {
         $customer = $this->auth()->customers()->with('application')->find($request->id);
+        $user = User::find($customer->application_id);
+        $customer->domain = $user && !!$user ? $user->domain : null;
         $invoices = $customer->invoices()->get(['status', 'end']);
 
         return view("customers.customer.index", compact('customer', 'invoices'));
@@ -103,7 +106,7 @@ class CustomerController extends Controller
         $customer->update($request->validated());
         if ($customer->application) {
             $data = $request->validated();
-            $customer->application->update(array_merge($request->safe()->only(['email']), ['name' => $data['firstname'] . " " . $data['lastname']]));
+            $customer->application->update(array_merge($request->safe()->only(['email']), ['name' => $data['firstname'] . " " . $data['lastname'], 'domain' => $data['domain']]));
         }
         $this->activity('customer-update', $request->validated());
 
