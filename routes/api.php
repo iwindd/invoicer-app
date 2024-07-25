@@ -20,4 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get("/script/{id}", [NoticeController::class, 'api'])->name('notice.api');
+Route::get("/notice/{id}", [NoticeController::class, 'openPayment'])->name('notice.open.payment');
 Route::post("/notice", [NoticeController::class, 'patch'])->name("notice.patch");

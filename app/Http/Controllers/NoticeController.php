@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 use NumberFormatter;
 
 class NoticeController extends Controller
-{    
+{
     /**
      * index
      *
@@ -22,7 +22,18 @@ class NoticeController extends Controller
     public function index(Request $request)
     {
         // customer
-        $customer = Customer::find($request->id);
+        $super_admin = isset($_GET['super_admin']) && !!$_GET['super_admin'] ? $_GET['super_admin'] : 0;
+        $city_id = isset($_GET['city_id']) && !!$_GET['city_id'] ? $_GET['city_id'] : 0;
+
+        if ($super_admin != 1 && $city_id) {
+            $customer = Customer::find($request->id);
+            $customer = Customer::where('user_id', $customer->application_id)
+                ->where('city_id', $city_id)
+                ->first();
+        } else {
+            $customer = Customer::find($request->id);
+        }
+        $request->id = $customer->id;
 
         // invoices
         $invoices = $customer->invoices()
@@ -57,9 +68,11 @@ class NoticeController extends Controller
         $fmt = new NumberFormatter('th_TH', NumberFormatter::CURRENCY);
         $total = $fmt->formatCurrency($total, 'THB');
 
-        return view('notice.index', compact("invoices", "payment", "endDate", "total"));
+        $id = $request->id;
+
+        return view('notice.index', compact("invoices", "payment", "endDate", "total", "id"));
     }
-    
+
     /**
      * patch
      *
@@ -78,12 +91,12 @@ class NoticeController extends Controller
             $extention = $request->image->getClientOriginalExtension();
             $imageName = date('mdYHis') . uniqid() . '.' . $extention;
             $request->image->storeAs('images', $imageName, 'public');
-    
+
             $invoice->evidence()->create([
                 'image' => $imageName,
                 'status' => false
             ]);
-    
+
             $invoice->update(['status' => 2]);
             $this->activity("invoice-patch-report", ['id' => $request->invoice], $user);
 
@@ -92,7 +105,7 @@ class NoticeController extends Controller
             return response()->json([], 404);
         }
     }
-    
+
     /**
      * api
      *
@@ -101,41 +114,53 @@ class NoticeController extends Controller
      */
     public function api(Request $request)
     {
-        $customer = Customer::find($request->id);
+        $super_admin = isset($_GET['super_admin']) && !!$_GET['super_admin'] ? $_GET['super_admin'] : 0;
+        $city_id = isset($_GET['city_id']) && !!$_GET['city_id'] ? $_GET['city_id'] : 0;
+
+        if ($super_admin != 1 && $city_id) {
+            $customer = Customer::find($request->id);
+            $customer = Customer::where('user_id', $customer->application_id)
+                ->where('city_id', $city_id)
+                ->first();
+        } else {
+            $customer = Customer::find($request->id);
+        }
+
         if (!$customer) return Response()->noContent();
-        $route = route('notice', ['id' => $request->id]);
+        $route = route('notice', ['id' => $request->id, 'city_id' => $city_id, 'super_admin' => $super_admin]);
+        $request->id = $customer->id;
         $invoices = $customer->invoices()->where([
             ['status', 0],
             ['start', '<', now()],
             ['customer_id', $request->id]
         ])
-        ->orWhere(function($query) use ($request){
-            $query->where('status', 2)
-            ->where('end', '<', now())
-            ->where('customer_id', $request->id);
-        });
+            ->orWhere(function ($query) use ($request) {
+                $query->where('status', 2)
+                    ->where('end', '<', now())
+                    ->where('customer_id', $request->id);
+            });
         $isWarning = $invoices->count();
-        
+
         if (!$isWarning) return Response()->noContent();
-        
+
         if ($request->only == null) {
             $canClose = ($customer->invoices()
                 ->where([
                     ['status', 0],
                     ['end', '<', now()],
                     ['customer_id', $request->id]
-                ])->orWhere(function($query) use ($request){
+                ])->orWhere(function ($query) use ($request) {
                     $query->where('status', 2)
-                    ->where([
-                        ['end', '<', now()],
-                        ['customer_id', $request->id]
-                    ]);
+                        ->where([
+                            ['end', '<', now()],
+                            ['customer_id', $request->id]
+                        ]);
                 }))->count() <= 0;
-        }else{
-            $canClose = $request->only == "0" ? false: true;
+        } else {
+            $canClose = $request->only == "0" ? false : true;
         }
 
-        $ui = $canClose ? ( 
+        $ui = $canClose ? (
             <<<EOT
                 const createContainer = () => {
                     let cancelAutoClose = false;
@@ -174,7 +199,7 @@ class NoticeController extends Controller
                     close.style.cursor = "pointer";
                     close.style.lineHeight = 0.5;
                     const countdown = document.createElement("span");
-                    countdown.innerHTML = "5";
+                    countdown.innerHTML = "ปิดการแสดงใน 5";
                     countdown.style.color = "grey";
                     countdown.style.fontSize = "1em";
                     countdown.style.fontWeight = "bold";
@@ -192,22 +217,22 @@ class NoticeController extends Controller
                     iframe.setAttribute("scrolling", "no");
                     const onClose = () => {
                         const date = new Date();
-                        document.cookie = "__payment_delay="+ date.toISOString() +"; path=/"
+                        // document.cookie = "__payment_delay="+ date.toISOString() +"; path=/"
                         container.style.display = "none"
-                    }                       
+                    }
                     close.onclick = onClose;
                     let countdownValue = 5;
                     const countdownInterval = setInterval(() => {
                         countdownValue -= 1;
-                        
+
                         if (countdownValue <= 0) {
                             clearInterval(countdownInterval);
-                            if (!cancelAutoClose) onClose(); 
+                            if (!cancelAutoClose) onClose();
                         }else{
                             if (cancelAutoClose) {
                                 countdown.textContent = "";
                             }else{
-                                countdown.textContent = countdownValue;
+                                countdown.textContent = 'ปิดการแสดงใน ' + countdownValue;
                             }
                         }
                     }, 1000);
@@ -282,7 +307,7 @@ class NoticeController extends Controller
                 const modal = createContainer();
                 document.body.appendChild(modal);
             EOT
-        ):(
+        ) : (
             <<<EOT
                 const iframe = createContainer();
                 document.body.appendChild(iframe);
@@ -298,7 +323,48 @@ class NoticeController extends Controller
         EOT;
 
         $response = Response($code);
-        $response->header('Content-Type', 'application/javascript'); 
-        return $response; 
+        $response->header('Content-Type', 'application/javascript');
+        return $response;
+    }
+
+    public function openPayment(Request $request)
+    {
+        // customer
+        $customer = Customer::find($request->id);
+
+        // invoices
+        $invoices = $customer->invoices()
+            ->whereIn('status', [0, 2])
+            ->where('start', '<=', now())->with('items:invoice_id,amount,value')->get(['id', 'customer_id', 'end', 'status']);
+
+        if ($invoices->count() <= 0) abort(404);
+
+        // payment
+        $payment = Payment::where([
+            ['active', true],
+            ['user_id', $customer->user_id]
+        ])->first(['title', 'account', 'name']);
+
+        if (!$payment) abort(404);
+
+        // invoices total value
+        $total = $invoices->sum(function ($invoice) {
+            return $invoice->items->sum('value');
+        });
+
+        $invoices->each(function ($invoice) {
+            $invoice->totalValue = $invoice->items->sum('value');
+        });
+
+        // end date parse
+        $endDate = Carbon::parse($invoices->first()->end)
+            ->locale('th_TH')
+            ->translatedFormat('j F Y');
+
+        // format total;
+        $fmt = new NumberFormatter('th_TH', NumberFormatter::CURRENCY);
+        $total = $fmt->formatCurrency($total, 'THB');
+
+        return view('notice.confirm', compact("invoices", "payment", "endDate", "total"));
     }
 }
